@@ -33,7 +33,7 @@ export async function main(args: any) {
   const uri = Config.getOrThrow('mongodb.uri', 'string');
   await connect(uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
 
-  const user = new User();
+  const user  = new User();
   user.firstName = args.firstName;
   user.secondName = args.secondName;
   user.email = args.email;
