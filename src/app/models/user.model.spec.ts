@@ -5,8 +5,6 @@ import { User } from "../models";
 type ObjectId = Schema.Types.ObjectId;
 
 describe("The user model", () => {
-  let user;
-
   before(async () => {
     const uri = Config.getOrThrow("mongodb.uri", "string");
     await connect(uri, {
@@ -16,16 +14,16 @@ describe("The user model", () => {
     });
   });
 
-  beforeEach(() => {
-    user = new User();
+  afterEach(async () => {
+    await new User().collection.drop();
   });
 
   after(async () => {
-    await new User().collection.drop();
     await disconnect();
   });
 
   it("should be able to be insterted in the db", async () => {
+    const user = new User();
     user.firstName = "Mario";
     user.secondName = "Rossi";
     user.email = "mario.rossi@rossi.com";

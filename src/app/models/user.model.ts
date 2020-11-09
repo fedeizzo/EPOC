@@ -1,35 +1,26 @@
 import { hashPassword } from '@foal/core';
 import { model, models, Schema } from 'mongoose';
+import { prop, DocumentType, getModelForClass } from '@typegoose/typegoose'
 
-const userSchema: Schema = new Schema({
-  firstName: {
-    required: true,
-    type: String,
-    unique: false
-  },
-  secondName: {
-    required: true,
-    type: String,
-    unique: false
-  },
-  email: {
-    required: true,
-    type: String,
-    unique: true
-  },
-  username: {
-    required: true,
-    type: String,
-    unique: true
-  },
-  password: {
-    required: true,
-    type: String,
+class UserClass {
+  @prop({ type: String, required: true })
+  public firstName: string;
+
+  @prop({ type: String })
+  public secondName?: string;
+
+  @prop({ required: true, index: true, unique: true })
+  public email: string;
+
+  @prop({ required: true, index: true, unique: true })
+  public username: string;
+
+  @prop({ required: true })
+  private password?: string;
+
+  public async setPassword(this: DocumentType<UserClass>, password: string) {
+    this.password = await hashPassword(password);
   }
-});
-
-userSchema.methods.setPassword = async function(password: string) {
-  this.password = await hashPassword(password);
 };
 
-export const User = models.User || model('User', userSchema);
+export const User = getModelForClass(UserClass);
