@@ -1,11 +1,8 @@
-import { model, Schema, Document } from "mongoose";
+import { prop, getModelForClass } from "@typegoose/typegoose";
 
-export interface IIngredient extends Document {
-  name: string;
+class IngredientClass {
+  @prop({ type: String, required: true, unique: true })
+  public name: string;
 }
 
-const IngredientSchema: Schema = new Schema({
-  name: { type: String, unique: true, required: true },
-});
-
-export default model<IIngredient>("Ingredient", IngredientSchema);
+export const Ingredient = getModelForClass(IngredientClass);

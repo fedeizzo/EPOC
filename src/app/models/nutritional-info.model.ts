@@ -1,28 +1,27 @@
-import { model, Schema, Document } from "mongoose";
+import { prop, getModelForClass } from "@typegoose/typegoose";
 
-export interface INutritionalInfo extends Document {
-  calories: number;
-  carbohydrate: number;
-  cholesterol: number;
-  fat: number;
-  fiber: number;
-  saturedFat: number;
-  sodium: number;
-  sugar: number;
+export class NutritionalInfo {
+  @prop({ type: String, required: true })
+  public calories: number;
+
+  @prop({ type: String, required: true })
+  public carbohydrate: number;
+
+  @prop({ type: String, required: true })
+  public cholesterol: number;
+
+  @prop({ type: String, required: true })
+  public fat: number;
+
+  @prop({ type: String, required: true })
+  public fiber: number;
+
+  @prop({ type: String, required: true })
+  public saturedFat: number;
+
+  @prop({ type: String, required: true })
+  public sodium: number;
+
+  @prop({ type: String, required: true })
+  public sugar: number;
 }
-
-export const NutritionalInfoSchema: Schema = new Schema({
-  calories: Number,
-  carbohydrate: Number,
-  cholesterol: Number,
-  fat: Number,
-  fiber: Number,
-  saturedFat: Number,
-  sodium: Number,
-  sugar: Number,
-});
-
-export default model<INutritionalInfo>(
-  "NutritionalInfo",
-  NutritionalInfoSchema
-);

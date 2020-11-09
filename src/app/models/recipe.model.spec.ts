@@ -1,11 +1,8 @@
 import { Config } from "@foal/core";
 import { connect, disconnect, connection } from "mongoose";
-import NutritionalInfo from "./nutritional-info.model";
-import Recipe, { Cost, IRecipe } from "./recipe.model";
-import Tool from "./tool.model";
+import { Cost, NutritionalInfo, Recipe, Tool } from ".";
 
 describe("The recipe model", () => {
-  let recipe: IRecipe;
   const tool = new Tool();
   tool.name = "forno";
 
@@ -20,10 +17,6 @@ describe("The recipe model", () => {
     await tool.save();
   });
 
-  beforeEach(() => {
-    recipe = new Recipe();
-  });
-
   after(async () => {
     await tool.remove();
     await new Recipe().collection.drop();
@@ -31,6 +24,7 @@ describe("The recipe model", () => {
   });
 
   it("should be able to be inserted in the db", async () => {
+    const recipe = new Recipe();
     const nInfo = new NutritionalInfo();
 
     nInfo.calories = 100;

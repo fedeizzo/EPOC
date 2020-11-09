@@ -1,11 +1,8 @@
-import { model, Schema, Document } from "mongoose";
+import { prop, getModelForClass } from "@typegoose/typegoose";
 
-export interface ITool extends Document {
-  name: string;
+class ToolClass {
+  @prop({ type: String, required: true, unique: true })
+  public name: string;
 }
 
-const ToolSchema: Schema = new Schema({
-  name: { type: String, unique: true, required: true },
-});
-
-export default model<ITool>("Tool", ToolSchema);
+export const Tool = getModelForClass(ToolClass);

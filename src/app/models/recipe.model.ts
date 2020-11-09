@@ -1,55 +1,66 @@
-import { model, Schema, Document } from "mongoose";
-import {
-  INutritionalInfo,
-  NutritionalInfoSchema,
-} from "./nutritional-info.model";
+import { prop, getModelForClass } from "@typegoose/typegoose";
+import { NutritionalInfo } from "./nutritional-info.model";
 
 export enum Cost {
-  low = "low",
-  medium = "medium",
-  high = "high",
+  "low",
+  "medium",
+  "high",
 }
 
-export interface IRecipe extends Document {
-  name: String;
-  dateModified: Date;
-  estimatedCost: Cost;
-  image: String;
-  categories: String[];
-  description: String;
-  prepTime: Number;
-  cookTime: Number;
-  totalTime: Number;
-  conservationTime: Number;
-  peopleFor: Number;
-  ingredients: Schema.Types.ObjectId[];
-  keywords: String[];
-  lables: String[];
-  averageRating: Number;
-  numberOfRatings: Number;
-  nutritionalInfos: INutritionalInfo;
-  requiredTools: Schema.Types.ObjectId[];
+class RecipeClass {
+  @prop({ type: String, required: true, unique: true })
+  public name: string;
+
+  @prop({ type: Date, required: true })
+  public dateModified: Date;
+
+  @prop({ enum: Cost, required: true })
+  public estimatedCost: Cost;
+
+  @prop({ type: String, required: true })
+  public image: string;
+
+  @prop({ type: [String], required: true })
+  public categories: string[];
+
+  @prop({ type: String, required: true })
+  public description: string;
+
+  @prop({ type: Number, required: true })
+  public prepTime: Number;
+
+  @prop({ type: Number, required: true })
+  public cookTime: Number;
+
+  @prop({ type: Number, required: true })
+  public totalTime: Number;
+
+  @prop({ type: Number, required: true })
+  public conservationTime: Number;
+
+  @prop({ type: Number, required: true })
+  public peopleFor: Number;
+
+  @prop({ type: [String], required: true })
+  public ingredients: string[];
+
+  @prop({ type: [String], required: true })
+  public keywords: string[];
+
+  @prop({ type: [String], required: true })
+  public lables: string[];
+
+  @prop({ type: Number, required: true })
+  public averageRating: Number;
+
+  @prop({ type: Number, required: true })
+  public numberOfRatings: Number;
+
+  @prop({ type: NutritionalInfo, required: true })
+  public nutritionalInfos: NutritionalInfo;
+
+  @prop({ type: [String], required: true })
+  public requiredTools: string[];
 }
 
-const recipeSchema: Schema = new Schema({
-  name: String,
-  dateModified: Date,
-  estimatedCost: { type: String, enum: Object.values(Cost) },
-  image: { type: String, max: 2048 },
-  categories: [String],
-  description: String,
-  prepTime: Number,
-  cookTime: Number,
-  totalTime: Number,
-  conservationTime: Number,
-  peopleFor: Number,
-  ingredients: [Schema.Types.ObjectId],
-  keywords: [String],
-  lables: [String],
-  averageRating: Number,
-  numberOfRatings: Number,
-  nutritionalInfos: NutritionalInfoSchema,
-  requiredTools: [Schema.Types.ObjectId],
-});
-
-export default model<IRecipe>("Recipe", recipeSchema);
+export const Recipe = getModelForClass(RecipeClass);
