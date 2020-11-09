@@ -1,6 +1,6 @@
 import { Config } from "@foal/core";
 import { connect, disconnect } from "mongoose";
-import Ingredient, { IIngredient } from "./ingredient.model";
+import { Ingredient, IIngredient } from ".";
 
 describe("The ingredient model", () => {
   let ingredient: IIngredient;

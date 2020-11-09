@@ -1,10 +1,8 @@
 import { Config } from "@foal/core";
-import { connect, disconnect, Schema, FilterQuery } from "mongoose";
-import NutritionalInfo from "./Nutritional-info.model";
+import { connect, disconnect, connection } from "mongoose";
+import NutritionalInfo from "./nutritional-info.model";
 import Recipe, { Cost, IRecipe } from "./recipe.model";
 import Tool from "./tool.model";
-
-type ObjectId = Schema.Types.ObjectId;
 
 describe("The recipe model", () => {
   let recipe: IRecipe;

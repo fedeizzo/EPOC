@@ -2,7 +2,7 @@ import { model, Schema, Document } from "mongoose";
 import {
   INutritionalInfo,
   NutritionalInfoSchema,
-} from "./Nutritional-info.model";
+} from "./nutritional-info.model";
 
 export enum Cost {
   low = "low",
@@ -31,7 +31,7 @@ export interface IRecipe extends Document {
   requiredTools: Schema.Types.ObjectId[];
 }
 
-const RecipeSchema: Schema = new Schema({
+const recipeSchema: Schema = new Schema({
   name: String,
   dateModified: Date,
   estimatedCost: { type: String, enum: Object.values(Cost) },
@@ -52,4 +52,4 @@ const RecipeSchema: Schema = new Schema({
   requiredTools: [Schema.Types.ObjectId],
 });
 
-export default model<IRecipe>("Recipe", RecipeSchema);
+export default model<IRecipe>("Recipe", recipeSchema);
