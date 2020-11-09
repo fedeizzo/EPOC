@@ -1,0 +1,1 @@
+export { UserService as User } from './user.service';

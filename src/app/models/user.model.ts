@@ -1,5 +1,3 @@
-import { hashPassword } from '@foal/core';
-import { model, models, Schema } from 'mongoose';
 import { prop, DocumentType, getModelForClass } from '@typegoose/typegoose'
 
 class UserClass {
@@ -16,11 +14,7 @@ class UserClass {
   public username: string;
 
   @prop({ required: true })
-  private password?: string;
-
-  public async setPassword(this: DocumentType<UserClass>, password: string) {
-    this.password = await hashPassword(password);
-  }
+  public password: string;
 };
 
 export const User = getModelForClass(UserClass);
