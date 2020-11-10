@@ -1,4 +1,4 @@
-swagger: '2.0'
+openapi: '3.0.0'
 info:
   version: '1.0'
   title: "EPOC"
@@ -6,12 +6,10 @@ info:
   license:
     name: MIT
     url: https://github.com/apiaryio/polls-api/blob/master/LICENSE
-host: polls.apiblueprint.org
-basePath: /
-schemes:
-- https
-consumes:
-- application/json
+servers:
+  - url: http://localhost:3000/
+    description: Localhost
+
 paths:
   /login:
     x-summary: Questions Collection
@@ -19,36 +17,49 @@ paths:
       description: >-
         You may call this endpoint with your user credentials to validate them against our internal db.
       summary: Login
-      parameters:
-        - name: body
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/LoginRequest'
+      requestBody:
+            $ref: '#/components/requestBodies/LoginRequest'
       responses:
-        200:
+        '200':
           description: ''
-          schema:
-            $ref: '#/definitions/JWT'
-        401:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JWT'
+        '401':
           description: 'Invalid username/password combination'
 
-definitions:
-  LoginRequest:
-    title: Login Request
-    type: object
-    properties:
-      username:
-        type: string
-      password:
-        type: string
-    required:
-      - username
-      - password
-    example:
-      username: admin
-      password: admin
-  JWT:
-    title: Json Web Token
-    type: string
-    example: 3fnadn8cwu9leorfbi2o9reebd8wbed832
+components:
+  
+  schemas:
+  
+    LoginBody:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - username
+        - password 
+      example:
+        username: admin
+        password: admin
+    JWT:
+      title: Json Web Token
+      type: string
+      example: 3fnadn8cwu9leorfbi2o9reebd8wbed832
+  
+  requestBodies:
+  
+    LoginRequest:
+      description: 'Login Request'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LoginBody' 
+          example:
+            username: 'Mario'
+            password: 'mariuccio123'  
+  
