@@ -1,6 +1,6 @@
 import { prop, DocumentType, getModelForClass } from '@typegoose/typegoose'
 
-class UserClass {
+export class UserClass {
   @prop({ type: String, required: true })
   public firstName: string;
 
@@ -15,6 +15,15 @@ class UserClass {
 
   @prop({ required: true })
   public password: string;
+
+  public getInfo() {
+    return {
+      firstName: this.firstName,
+      secondName: this.secondName ? this.secondName : "",
+      email: this.email,
+      username: this.username
+    };
+  }
 };
 
 export const User = getModelForClass(UserClass);

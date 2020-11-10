@@ -5,20 +5,39 @@ import { connect, disconnect } from 'mongoose';
 
 // App
 import { User } from '../models'
+import { UserClass } from '../models/user.model';
+import { Response } from '../services';
+
+class ResponseUserService implements Response {
+  code: number;
+  text: string;
+  prop?: UserClass;
+
+  setValues = (code: number, text: string, prop?: UserClass) => {
+    this.code = code;
+    this.text = text;
+    this.prop = prop;
+  }
+
+  buildResponse = () => {
+    return {
+      code: this.code,
+      text: this.text,
+      userInfo: this.prop ? this.prop.getInfo() : ""
+    }
+  }
+}
 
 export class UserService {
-  /**
-   * Insert a user into the database
-   * @returns 0 for no error, 1 for common password error, 2 for db error
-   */
-  async insertUser(firstName: string, email: string, username: string, password: string, secondName?: string): Promise<number> {
-    let returnCode: number = 0; // no error
+  private uri: string = Config.getOrThrow('mongodb.uri', 'string');
+
+  async insertUser(firstName: string, email: string, username: string, password: string, secondName?: string): Promise<Response> {
+    let response: ResponseUserService = new ResponseUserService();
 
     if (await isCommon(password)) {
-      returnCode = 1;
+      response.setValues(300, "Password to common");
     } else {
-      const uri = Config.getOrThrow('mongodb.uri', 'string');
-      await connect(uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
+      await connect(this.uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
 
       const user = new User();
       user.firstName = firstName;
@@ -29,13 +48,14 @@ export class UserService {
 
       try {
         await user.save();
+        response.setValues(200, "OK", user);
       } catch (error) {
-        returnCode = 2; // db error
+        response.setValues(301, "Db error, probably duplicate key");
         console.error(error.message);
       }
 
       await disconnect();
     }
-    return returnCode;
+    return response;
   }
 }
