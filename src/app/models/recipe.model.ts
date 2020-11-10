@@ -1,10 +1,25 @@
 import { prop, getModelForClass } from "@typegoose/typegoose";
 import { NutritionalInfo } from "./nutritional-info.model";
 
-export enum Cost {
-  "low",
-  "medium",
-  "high",
+export enum CostLevels {
+  low = "low",
+  medium = "medium",
+  high = "high",
+}
+
+export enum UnitsOfMeasure {
+  grams = "grams",
+  liters = "liters",
+  pieces = "pieces",
+}
+
+export class IngredientInRecipe {
+  @prop({ type: String, required: true, unique: true })
+  public name: String;
+  @prop({ enum: UnitsOfMeasure })
+  public unitOfMeasure?: UnitsOfMeasure;
+  @prop({ type: Number, required: true })
+  public quantity: number;
 }
 
 class RecipeClass {
@@ -14,8 +29,8 @@ class RecipeClass {
   @prop({ type: Date, required: true })
   public dateModified: Date;
 
-  @prop({ enum: Cost, required: true })
-  public estimatedCost: Cost;
+  @prop({ enum: CostLevels, required: true })
+  public estimatedCost: CostLevels;
 
   @prop({ type: String, required: true })
   public image: string;
@@ -41,8 +56,8 @@ class RecipeClass {
   @prop({ type: Number, required: true })
   public peopleFor: Number;
 
-  @prop({ type: [String], required: true })
-  public ingredients: string[];
+  @prop({ type: [IngredientInRecipe], required: true })
+  public ingredients: IngredientInRecipe[];
 
   @prop({ type: [String], required: true })
   public keywords: string[];
