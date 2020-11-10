@@ -1,7 +1,7 @@
-import { Context, Get, Post, HttpResponseOK, ValidateBody } from '@foal/core';
+import { Context, Get, Post, ValidateBody, HttpResponseNotFound, render, HttpResponseRedirect, HttpResponseBadRequest } from '@foal/core';
 
 // App
-import { User, Response } from '../services';
+import { UserService, Response } from '../services';
 
 const signupSchema = {
   properites: {
@@ -15,7 +15,16 @@ const signupSchema = {
   type: 'object'
 }
 export class UserController {
-  private userService: User = new User();
+  private userService: UserService = new UserService();
+
+  @Get('/signup')
+  async showSignupForm(ctx: Context) {
+    if (!ctx.request.accepts('html')) {
+      return new HttpResponseNotFound();
+    }
+
+    return await render('./public/signup.html');
+  }
 
   @Post('/signup')
   @ValidateBody(signupSchema)
@@ -27,7 +36,11 @@ export class UserController {
     const password = ctx.request.body.password;
     const response: Response = await this.userService.insertUser(firstName, email, username, password, secondName);
 
-    return new HttpResponseOK(response.buildResponse());
+    if (response.code === 200) {
+      return new HttpResponseRedirect('/');
+    } else {
+      return new HttpResponseBadRequest(response.buildResponse());
+    }
   }
 
 }

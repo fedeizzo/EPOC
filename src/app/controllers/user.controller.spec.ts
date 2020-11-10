@@ -7,24 +7,24 @@ import { Context, createController, getHttpMethod, getPath, isHttpResponseOK } f
 // App
 import { UserController } from './user.controller';
 
-describe('UserController', () => {
+// describe('UserController', () => {
 
-  let controller: UserController;
+//   let controller: UserController;
 
-  beforeEach(() => controller = createController(UserController));
+//   beforeEach(() => controller = createController(UserController));
 
-  describe('has a "foo" method that', () => {
+//   describe('has a "foo" method that', () => {
 
-    it('should handle requests at GET /.', () => {
-      strictEqual(getHttpMethod(UserController, 'foo'), 'GET');
-      strictEqual(getPath(UserController, 'foo'), '/');
-    });
+//     it('should handle requests at GET /.', () => {
+//       strictEqual(getHttpMethod(UserController, 'foo'), 'GET');
+//       strictEqual(getPath(UserController, 'foo'), '/');
+//     });
 
-    it('should return an HttpResponseOK.', () => {
-      const ctx = new Context({});
-      ok(isHttpResponseOK(controller.foo(ctx)));
-    });
+//     it('should return an HttpResponseOK.', () => {
+//       const ctx = new Context({});
+//       ok(isHttpResponseOK(controller.foo(ctx)));
+//     });
 
-  });
+//   });
 
-});
+// });
