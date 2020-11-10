@@ -2,7 +2,7 @@ openapi: '3.0.0'
 info:
   version: '1.0'
   title: "EPOC"
-  description: Polls is a simple API allowing consumers to view polls and vote in them.
+  description: EPOC gives you simple apis to get a well-built eating plan, and much much more.
   license:
     name: MIT
     url: https://github.com/apiaryio/polls-api/blob/master/LICENSE
@@ -28,9 +28,37 @@ paths:
                 $ref: '#/components/schemas/JWT'
         '401':
           description: 'Invalid username/password combination'
+  
+  /search/recipe:
+    x-summary: search targeted only to recipes
+    get:
+      description: >-
+        Ssimple search request for recipes 
+      summary: Simple recipe search
+      parameters:
+      - $ref: '#/components/parameters/searchString'
+      responses:
+        '200':
+          description: A list of recipes.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Recipe'
 
 components:
+
+  parameters:
   
+    searchString:
+      name: searchString
+      in: query
+      description: The string to be searched
+      schema:
+        type: string
+      required: true
+
   schemas:
   
     LoginBody:
@@ -46,10 +74,100 @@ components:
       example:
         username: admin
         password: admin
+
     JWT:
       title: Json Web Token
       type: string
       example: 3fnadn8cwu9leorfbi2o9reebd8wbed832
+    
+    NutritionalInfo:
+      type: object
+      description: nutritional info of a recipe
+      properties:
+        calories:
+          type: number
+        carbohydrate:
+          type: number
+        cholesterol:
+          type: number
+        fat:
+          type: number
+        fiber:
+          type: number
+        saturedFat:
+          type: number
+        sodium:
+          type: number
+        sugar:
+          type: number
+      
+    Recipe:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the recipe
+        dateModified: 
+          type: string
+          description: Date of last modification
+        estimatedCost:
+          type: integer
+          description: estimated cost class
+        image:
+          type: string
+          description: url to the image of the recipe
+        categories:
+          type: array
+          items:
+            type: string
+          description: list of the cathegories of a recipe
+        description:
+          type: string
+          description: description of the recipe
+        prepTime:
+          type: number
+          description: time for preparation
+        cookTime:
+          type: number
+          description: time for cooking
+        totalTime:
+          type: number
+          description: total estimated time
+        conservationTime:
+          type: number
+          description: estimated conservation time
+        peopleFor:
+          type: number
+          description: number of portions
+        ingredients:
+          type: array
+          items:
+            type: string
+          description: ingredients of the recipe
+        keywords:
+          type: array
+          items:
+            type: string
+          description: keywords to identify the recipe
+        lables:
+          type: array
+          items:
+            type: string
+          description: labels of the recipe
+        averageRating:
+          type: number
+          description: average rating of the recipe
+        numberOfRatings:
+          type: number
+          description: number of ratings for the recipe
+        requiredTools:
+          type: array
+          items:
+            type: string
+          description: list of tools needed for this recipe
+        nutritionalInfos:
+          $ref: '#/components/schemas/NutritionalInfo'
+
   
   requestBodies:
   
