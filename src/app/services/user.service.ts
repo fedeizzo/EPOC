@@ -35,7 +35,7 @@ export class UserService {
     let response: ResponseUserService = new ResponseUserService();
 
     if (await isCommon(password)) {
-      response.setValues(300, "Password to common");
+      response.setValues(300, "Password too common");
     } else {
       await connect(this.uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
 
