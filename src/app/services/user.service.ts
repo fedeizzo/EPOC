@@ -1,5 +1,5 @@
 // 3p
-import { Config, hashPassword } from '@foal/core';
+import { Config, hashPassword, verifyPassword } from '@foal/core';
 import { isCommon } from '@foal/password'
 import { connect, disconnect } from 'mongoose';
 
@@ -58,4 +58,18 @@ export class UserService {
     }
     return response;
   }
+
+  async areValidCredentials(username: string, password: string): Promise<boolean> {
+    await connect(this.uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
+    const doc = await User.findOne({ username: username });
+    await disconnect();
+
+    if (doc != undefined) {
+      let isValidPassword: boolean = await verifyPassword(password, doc.password);
+      return isValidPassword;
+    }
+
+    return false;
+  }
+
 }
