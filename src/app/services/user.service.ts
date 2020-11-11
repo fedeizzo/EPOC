@@ -59,17 +59,25 @@ export class UserService {
     return response;
   }
 
-  async areValidCredentials(username: string, password: string): Promise<boolean> {
+  async areValidCredentials(username: string, password: string): Promise<Response> {
+    let response: ResponseUserService = new ResponseUserService();
+
     await connect(this.uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
     const doc = await User.findOne({ username: username });
     await disconnect();
 
     if (doc != undefined) {
       let isValidPassword: boolean = await verifyPassword(password, doc.password);
-      return isValidPassword;
+      if (isValidPassword) {
+        response.setValues(200, "User found, right credentials", doc);
+      } else {
+        response.setValues(302, "User found, wrong credentials");
+      }
+    } else {
+      response.setValues(303, "User not found, probably");
     }
 
-    return false;
+    return response;
   }
 
 }
