@@ -1,15 +1,14 @@
 {
-  "name": "EPOC",
+  "name": "epoc",
   "version": "0.0.0",
   "description": "description of the application",
-  "license": "MIT",
+  "license": "ISC",
   "repository": {},
   "scripts": {
     "build:app": "foal rmdir build/app && copy-cli \"src/**/*.html\" build && tsc -p tsconfig.app.json",
     "build:app:w": "tsc -p tsconfig.app.json -w",
     "start": "node ./build/index.js",
     "start:w": "supervisor -w ./build --no-restart-on error ./build/index.js",
-    "develop": "npm run build:app && concurrently \"npm run build:app:w\" \"npm run start:w\"",
     "build:test": "foal rmdir build && copy-cli \"src/**/*.html\" build && tsc -p tsconfig.test.json",
     "build:test:w": "tsc -p tsconfig.test.json -w",
     "start:test": "mocha --file \"./build/test.js\" \"./build/**/*.spec.js\"",
@@ -23,7 +22,12 @@
     "build:scripts": "foal rmdir build/scripts && tsc -p tsconfig.scripts.json",
     "build:scripts:w": "tsc -p tsconfig.scripts.json -w",
     "lint": "eslint --ext ts src",
-    "lint:fix": "eslint --ext ts --fix src"
+    "lint:fix": "eslint --ext ts --fix src",
+    "build:frontend": "foal rmdir public/src; tsc --project frontend --outDir public/src",
+    "build:frontend:w": "foal rmdir public/src; tsc --project frontend --watch --outDir public/src",
+    "build:both": "concurrently \"npm run build:app\" \"npm run build:frontend\"",
+    "start:both": "concurrently \"npm run build:app:w\" \"npm run build:frontend:w\" \"npm run start:w\" ",
+    "develop": "npm run build:both && npm run start:both"
   },
   "engines": {
     "node": ">=8"
