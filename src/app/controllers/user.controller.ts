@@ -1,7 +1,7 @@
 import { Context, Get, Post, ValidateBody, HttpResponseNotFound, render, HttpResponseRedirect, HttpResponseBadRequest, HttpResponseOK } from '@foal/core';
 
 // App
-import { UserService, Response } from '../services';
+import { UserService, ServiceResponse } from '../services';
 
 const signupSchema = {
   properites: {
@@ -43,7 +43,7 @@ export class UserController {
     const email = ctx.request.body.email;
     const username = ctx.request.body.username;
     const password = ctx.request.body.password;
-    const response: Response = await this.userService.insertUser(firstName, email, username, password, secondName);
+    const response: ServiceResponse = await this.userService.insertUser(firstName, email, username, password, secondName);
 
     if (response.code === 200) {
       return new HttpResponseRedirect('/');
@@ -57,7 +57,7 @@ export class UserController {
   async login(ctx: Context) {
     const username = ctx.request.body.username;
     const password = ctx.request.body.password;
-    const response = await this.userService.areValidCredentials(username, password);
+    const response: ServiceResponse = await this.userService.areValidCredentials(username, password);
 
     if (response.code === 200) {
       return new HttpResponseOK(response.buildResponse());

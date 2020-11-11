@@ -6,9 +6,9 @@ import { connect, disconnect } from 'mongoose';
 // App
 import { User } from '../models'
 import { UserClass } from '../models/user.model';
-import { Response } from '../services';
+import { ServiceResponse } from '../services';
 
-class ResponseUserService implements Response {
+class UserServiceResponse implements ServiceResponse {
   code: number;
   text: string;
   prop?: UserClass;
@@ -31,8 +31,8 @@ class ResponseUserService implements Response {
 export class UserService {
   private uri: string = Config.getOrThrow('mongodb.uri', 'string');
 
-  async insertUser(firstName: string, email: string, username: string, password: string, secondName?: string): Promise<Response> {
-    let response: ResponseUserService = new ResponseUserService();
+  async insertUser(firstName: string, email: string, username: string, password: string, secondName?: string): Promise<UserServiceResponse> {
+    let response: UserServiceResponse = new UserServiceResponse();
 
     if (await isCommon(password)) {
       response.setValues(300, "Password too common");
@@ -59,8 +59,8 @@ export class UserService {
     return response;
   }
 
-  async areValidCredentials(username: string, password: string): Promise<Response> {
-    let response: ResponseUserService = new ResponseUserService();
+  async areValidCredentials(username: string, password: string): Promise<UserServiceResponse> {
+    let response: UserServiceResponse = new UserServiceResponse();
 
     await connect(this.uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
     const doc = await User.findOne({ username: username });
