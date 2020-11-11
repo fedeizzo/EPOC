@@ -1,10 +1,9 @@
 import { controller } from '@foal/core';
 
-import { ApiController, UserController } from './controllers';
+import { AuthenticationController } from './controllers';
 
 export class AppController {
   subControllers = [
-    controller('/api', ApiController),
-    controller('/', UserController),
+    controller('/', AuthenticationController),
   ];
 }
