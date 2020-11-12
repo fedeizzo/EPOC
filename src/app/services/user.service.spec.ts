@@ -1,107 +1,108 @@
 import { Config, createService } from '@foal/core';
 import { strictEqual } from 'assert';
-import { connect, connection, disconnect } from 'mongoose';
 import { UserService } from './user.service';
+import { connection, connect, disconnect } from 'mongoose';
 
 describe("The User Service", () => {
-  describe('Check user insertion', () => {
-    it('should insert correctly a user in the db', async () => {
-      const service: UserService = createService(UserService);
-      const expectedReturnCode = 200;
-      const actualReturnCode = await service.insertUser(
-        'Mario',
-        'mario@rossi32.it',
-        "mario12332",
-        "sfcseckjnweuhc234325"
-      );
+  const userService: UserService = createService(UserService);
 
-      strictEqual(actualReturnCode.code, expectedReturnCode);
-    });
-
-    it('should deny inserting a user with a common password', async () => {
-      const service: UserService = createService(UserService);
-      const expectedReturnCode = 300;
-      const actualReturnCode = await service.insertUser(
-        'Mario',
-        'mario@rossis.it',
-        "mario123ds",
-        "password"
-      );
-
-      strictEqual(actualReturnCode.code, expectedReturnCode);
-    });
-
-    it('should deny inserting two user with the same username', async () => {
-      const service: UserService = createService(UserService);
-      const expectedReturnCodeFirstUser = 200;
-      const expectedReturnCodeSecondUser = 301;
-
-      const actualReturnCodeFirstUser = await service.insertUser(
-        'Mario',
-        'mario@rossi.it',
-        "mario123",
-        "sfcseckjnweuhc2343f25"
-      );
-
-      const actualReturnCodeSecondUser = await service.insertUser(
-        'Mario',
-        'mario@rossi.it',
-        "mario123",
-        "fakjdhaefhvg384623407v9"
-      );
-
-      strictEqual(actualReturnCodeFirstUser.code, expectedReturnCodeFirstUser);
-      strictEqual(actualReturnCodeSecondUser.code, expectedReturnCodeSecondUser);
-    });
-  });
-
-  describe('Check user credentials', () => {
-    it('should verify that user credentials are correct', async () => {
-      const service: UserService = createService(UserService);
-      const username = "tizio.caio.123";
-      const password = "sdwwvrvgwer436";
-      const userResponse = await service.insertUser(
-        'Tizio',
-        'tizio@rossi.it',
-        username,
-        password
-      );
-
-      const expectedReturnCode = 200;
-      const actualResponse = await service.areValidCredentials(username, password);
-      strictEqual(actualResponse.code, expectedReturnCode);
-    });
-
-    it('should verify that user credentials are wrong', async () => {
-      const service: UserService = createService(UserService);
-      const username = "tizio.caio.123";
-      const password = "sdwwvrvgwer436";
-      const wrongPassword = "sdwwvrvgwer416"
-      const userResponse = await service.insertUser(
-        'Tizio',
-        'tizio@rossi.it',
-        username,
-        password
-      );
-
-      const expectedReturnCode = 302;
-      const actualResponse = await service.areValidCredentials(username, wrongPassword);
-      strictEqual(actualResponse.code, expectedReturnCode);
-    });
-
-    it('should verify that user is not in the db', async () => {
-      const service: UserService = createService(UserService);
-      const expectedReturnCode = 303;
-      const actualResponse = await service.areValidCredentials('user-not-in-db', 'test');
-      strictEqual(actualResponse.code, expectedReturnCode);
-    });
-  });
-
-  after(async () => {
-    const uri: string = Config.getOrThrow('mongodb.uri', 'string');
-    await connect(uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
+  afterEach(async () => {
+    await connect(Config.getOrThrow('mongodb.uri', 'string'), { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
     await connection.db.dropCollection('userclasses');
     await disconnect();
+  });
+
+  describe('insertUser', () => {
+    describe('When the password is to common', () => {
+      it('returns a bad response with error code 300', async () => {
+        const expectedErrorCode = 300;
+        const firstName = "test";
+        const secondName = "test";
+        const email = "test";
+        const username = "test";
+        const password = "123";
+        const actualErrorCode = await userService.insertUser(firstName, email, username, password, secondName);
+        strictEqual(expectedErrorCode, actualErrorCode.code);
+      });
+    });
+    describe('When user does not exist', () => {
+      it('creates the user and returns a good response with code 200', async () => {
+        const expectedErrorCode = 200;
+        const firstName = "test";
+        const secondName = "test";
+        const email = "test";
+        const username = "test";
+        const password = "qqweupodfsksjfd232@";
+        const actualErrorCode = await userService.insertUser(firstName, email, username, password, secondName);
+        strictEqual(expectedErrorCode, actualErrorCode.code);
+      });
+    });
+    describe('When username already exists', () => {
+      it('returns a bad response with error code 301', async () => {
+        const expectedErrorCode = 200;
+        const firstName = "test";
+        const secondName = "test";
+        const email = "test";
+        const email2 = "test";
+        const username = "test";
+        const password = "qqweupodfsksjfd232@";
+        await userService.insertUser(firstName, email, username, password, secondName);
+        const actualErrorCode = await userService.insertUser(firstName, email2, username, password, secondName);
+        strictEqual(expectedErrorCode, actualErrorCode.code);
+      });
+    });
+    describe('When email already exists', () => {
+      it('returns a bad response with error code 301', async () => {
+        const expectedErrorCode = 200;
+        const firstName = "test";
+        const secondName = "test";
+        const email = "test";
+        const username = "test";
+        const username2 = "test";
+        const password = "qqweupodfsksjfd232@";
+        await userService.insertUser(firstName, email, username, password, secondName);
+        const actualErrorCode = await userService.insertUser(firstName, email, username2, password, secondName);
+        strictEqual(expectedErrorCode, actualErrorCode.code);
+      });
+    });
+  });
+
+  describe('areValidCredentials', () => {
+    beforeEach(async () => {
+      const firstName = "test";
+      const secondName = "test";
+      const email = "test";
+      const username = "test";
+      const password = "qqweupodfsksjfd232@";
+      await userService.insertUser(firstName, email, username, password, secondName);
+    });
+    describe('When credentials are right', () => {
+      it('returns a good response with code 200 and the user instance', async () => {
+        const expectedErrorCode = 200;
+        const username = "test";
+        const password = "qqweupodfsksjfd232@";
+        const actualErrorCode = await userService.areValidCredentials(username, password);
+        strictEqual(expectedErrorCode, actualErrorCode.code);
+      });
+    });
+    describe('When password is wrong', () => {
+      it('returns a bad response with code 302', async () => {
+        const expectedErrorCode = 302;
+        const username = "test";
+        const password = "ciao";
+        const actualErrorCode = await userService.areValidCredentials(username, password);
+        strictEqual(expectedErrorCode, actualErrorCode.code);
+      });
+    });
+    describe('When username is wrong', () => {
+      it('returns a bad response with code 303', async () => {
+        const expectedErrorCode = 303;
+        const username = "ciao";
+        const password = "qqweupodfsksjfd232@";
+        const actualErrorCode = await userService.areValidCredentials(username, password);
+        strictEqual(expectedErrorCode, actualErrorCode.code);
+      });
+    });
   });
 });
 

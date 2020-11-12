@@ -1,30 +1,58 @@
-// std
 import { ok, strictEqual } from 'assert';
+import { Context, createController, getHttpMethod, getPath, isHttpResponseOK, Config } from '@foal/core';
+import { AuthenticationController } from './authentication.controller';
+import { connection, connect, disconnect } from 'mongoose';
 
-// 3p
-import { Context, createController, getHttpMethod, getPath, isHttpResponseOK } from '@foal/core';
+describe('The Authentication Controller', () => {
+  const controller: AuthenticationController = createController(AuthenticationController);
 
-// App
-import { UserController } from './user.controller';
+  // afterEach(async () => {
+  //   await connect(Config.getOrThrow('mongodb.uri', 'string'), { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
+  //   await connection.db.dropCollection('userclasses');
+  //   await disconnect();
+  // });
 
-// describe('UserController', () => {
+  describe('signup', () => {
+    describe('When request accepts html', () => {
+      it('returns the signup html page', async () => {
+      });
+    });
+    describe('When request does not accept html', () => {
+      it('returns not found error', async () => {
+      });
+    });
+  });
 
-//   let controller: UserController;
+  describe('signupCheck', () => {
+    describe('When request accepts html', () => {
+      it('returns the signup html page', async () => {
+      });
+    });
+    describe('When request does not accept html', () => {
+      it('returns not found error', async () => {
+      });
+    });
+  });
 
-//   beforeEach(() => controller = createController(UserController));
+  describe('login', () => {
+    describe('When request accepts html', () => {
+      it('returns the signup html page', async () => {
+      });
+    });
+    describe('When request does not accept html', () => {
+      it('returns not found error', async () => {
+      });
+    });
+  });
 
-//   describe('has a "foo" method that', () => {
-
-//     it('should handle requests at GET /.', () => {
-//       strictEqual(getHttpMethod(UserController, 'foo'), 'GET');
-//       strictEqual(getPath(UserController, 'foo'), '/');
-//     });
-
-//     it('should return an HttpResponseOK.', () => {
-//       const ctx = new Context({});
-//       ok(isHttpResponseOK(controller.foo(ctx)));
-//     });
-
-//   });
-
-// });
+  describe('loginCheck', () => {
+    describe('When request accepts html', () => {
+      it('returns the signup html page', async () => {
+      });
+    });
+    describe('When request does not accept html', () => {
+      it('returns not found error', async () => {
+      });
+    });
+  });
+});

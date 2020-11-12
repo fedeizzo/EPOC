@@ -60,6 +60,7 @@ export class AuthenticationController {
 
   @Get('/login')
   async login(ctx: Context) {
+  console.log("ctx: ", ctx)
     if (!ctx.request.accepts('html')) {
       return new HttpResponseNotFound();
     }
@@ -68,10 +69,9 @@ export class AuthenticationController {
   }
 
   @Post('/login')
-  // @ValidateBody(loginSchema)
+  @ValidateBody(loginSchema)
   async loginCheck(ctx: Context) {
     if (ctx.user) {
-      console.log("ciao")
       const res = new HttpResponseRedirect("/");
       return res;
     } else {
