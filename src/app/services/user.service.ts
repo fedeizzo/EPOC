@@ -80,4 +80,22 @@ export class UserService {
     return response;
   }
 
+  // TODO: we are doing two calls to the db: we can do it better
+  async deleteUser(username: string, password: string): Promise<UserServiceResponse> {
+    let response: UserServiceResponse = await this.areValidCredentials(username, password);
+    
+    if (response.code === 200){
+      await connect(this.uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
+      const doc = await User.findOneAndDelete({ username: username});
+      await disconnect();
+      if (doc != undefined){
+        response.setValues(200, "User deleted definitively", doc ? doc : undefined);
+      } else {
+        response.setValues(303, "Error deleting the user");
+      }
+    }
+
+    return response;
+  }
+
 }

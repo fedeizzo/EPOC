@@ -1,4 +1,4 @@
-import { Config, Context, Get, Post, ValidateBody, HttpResponseNotFound, render, HttpResponseRedirect, HttpResponseBadRequest, HttpResponseOK } from '@foal/core';
+import { Config, Context, Get, Post, ValidateBody, HttpResponseNotFound, render, HttpResponseRedirect, HttpResponseBadRequest, HttpResponseOK, Delete } from '@foal/core';
 import { sign } from 'jsonwebtoken';
 import { JWTOptional } from '@foal/jwt';
 
@@ -108,4 +108,20 @@ export class AuthenticationController {
     }
   }
 
+  @Delete('/deleteUser')
+  @ValidateBody(loginSchema)
+  async deleteUser(ctx: Context) {
+    const username = ctx.request.body.username;
+    const password = ctx.request.body.password;
+    const response: ServiceResponse = await this.userService.deleteUser(username, password);
+
+    if (response.code === 200) {
+      const res = new HttpResponseOK(response.buildResponse());
+      res.setCookie('JWT', "");
+      console.log("res: ", res);
+      return res;
+    } else {
+      return new HttpResponseBadRequest(response.buildResponse());
+    }
+  }
 }

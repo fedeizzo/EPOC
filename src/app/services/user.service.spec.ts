@@ -104,5 +104,26 @@ describe("The User Service", () => {
       });
     });
   });
+
+  describe('deleteUser', () => {
+    beforeEach(async () => {
+      const firstName = "user";
+      const secondName = "test";
+      const email = "test@gmail";
+      const username = "test22";
+      const password = "wfwefwoikjjnc9@";
+      await userService.insertUser(firstName, email, username, password, secondName);
+    });
+    describe('When user has been deleted', () => {
+      it('returns a good response with code 200 and the deleted user instance', async () => {
+        const expectedErrorCode = 200;
+        const username = "test22";
+        const password = "wfwefwoikjjnc9@";
+        const actualErrorCode = await userService.deleteUser(username, password);
+        strictEqual(expectedErrorCode, actualErrorCode.code);
+      });
+    });
+
+  });
 });
 
