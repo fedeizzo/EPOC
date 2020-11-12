@@ -12,7 +12,7 @@
 ## Initialize
 Development setup:
 ```bash=
-npm install
+npm i && npm i -D
 npm i -g @foal/cli
 docker-compose -f docker-compose.dev.yaml build
 ```
