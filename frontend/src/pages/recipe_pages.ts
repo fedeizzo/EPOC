@@ -43,7 +43,7 @@ const _recipe = {
 
 async function getRecipeAndPopulate(): Promise<void> {
   //const response = await fetch("endpoint");
-  const recipe = _recipe; //TODO: await response.json();
+  const recipe: Recipe = _recipe; //TODO: await response.json();
 
   const leftmost = _getLeftmostDiv(recipe);
   const centralDiv = _getCentralDiv(recipe);
@@ -55,19 +55,19 @@ async function getRecipeAndPopulate(): Promise<void> {
 
   document.body.appendChild(mainContainer);
 
-  function _getLeftmostDiv(recipe): HTMLElement {
+  function _getLeftmostDiv(recipe: Recipe): HTMLElement {
     const leftmost = document.createElement("div");
     leftmost.classList.add("leftmost");
     leftmost.innerHTML = `<img class='recipe_thumbnail' src='${recipe.image}'></img>`;
     return leftmost;
   }
 
-  function _getCentralDiv(recipe): HTMLElement {
+  function _getCentralDiv(recipe: Recipe): HTMLElement {
     const centralDiv = document.createElement("div");
     centralDiv.classList.add("centralDiv");
 
     const tableContent = recipe.ingredients.reduce(
-      (previous: string, v) =>
+      (previous, v) =>
         `${previous}<tr><td>${v.name}</td><td>${v.quantity}</td><td>${v.unitOfMeasure}</td></tr>`,
       ""
     );
@@ -80,7 +80,7 @@ async function getRecipeAndPopulate(): Promise<void> {
     return centralDiv;
   }
 
-  function _getRightmostDiv(recipe): HTMLElement {
+  function _getRightmostDiv(recipe: Recipe): HTMLElement {
     const rightmost = document.createElement("div");
     rightmost.classList.add("rightmost");
     rightmost.style.backgroundImage = recipe.image;
