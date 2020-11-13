@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <script type="text/javascript" src="./src/authentication.js"></script>
+    <title>Delete</title>
+</head>
+<body>
+    <div class="mdl-card mdl-shadow--8dp">
+        <div class="mdl-card__title">
+            <h1 class="mdl-card__title-text">Insert your credentials to delete everything related to you on our servers.</h1>
+        </div>
+        <div class="mdl-card__supporting-text">
+            <div class="form">
+                <div class="mdl-textfield mdl-js-textfield">
+                    <input type="text" name="username" id="username" class="mdl-textfield__input" required>
+                    <label class="mdl-textfield__label" for="username">Username</label>
+                </div>
+                <div class="mdl-textfield mdl-js-textfield">
+                    <input type="password" name="password" id="password" class="mdl-textfield__input" required>
+                    <label class="mdl-textfield__label" for="password">Password</label>
+                </div>
+                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" onclick="fetchDelete()" >Delete permanently</button>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>
+
+<style>
+    body {
+        background-image: url('images/back.jpg');
+        background-attachment: fixed;
+        background-size: cover;
+    }
+
+    .form {
+        display: table;
+        text-align: center;
+        margin: 0 auto; 
+        width: 200px;
+    }
+
+    button[type="submit"] {
+        margin: 20px;
+    }
+
+    .mdl-card {
+        width: 400px;
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+        /* padding: 0px; */
+    }
+</style>

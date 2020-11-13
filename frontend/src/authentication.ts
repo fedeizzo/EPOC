@@ -14,18 +14,25 @@ async function fetchLogin() {
   const headers = {
     'Content-type': 'application/json'
   };
-  const data: LoginData = { username: 'empty', password: 'empty' };
-  const token = getCookie('JWT');
 
-  console.log("---", token, "----")
-  if (token !== null && token !== undefined && token !== '') {
-    headers['Authorization'] = 'Bearer ' + token;
-  } else {
-    const username = (<HTMLInputElement>document.getElementById('username')).value;
-    const password = (<HTMLInputElement>document.getElementById('password')).value;
-    data['username'] = username;
-    data['password'] = password;
-  }
+  // const data: LoginData = { username: 'empty', password: 'empty' };
+  // const token = getCookie('JWT');
+
+  // console.log("---", token, "----")
+  // if (token !== null && token !== undefined && token !== '') {
+  //   headers['Authorization'] = 'Bearer ' + token;
+  // } else {
+  //   const username = (<HTMLInputElement>document.getElementById('username')).value;
+  //   const password = (<HTMLInputElement>document.getElementById('password')).value;
+  //   data['username'] = username;
+  //   data['password'] = password;
+  // }
+
+  const data: LoginData = { 
+    username: (<HTMLInputElement>document.getElementById('username')).value,
+    password: (<HTMLInputElement>document.getElementById('password')).value
+  };
+
   const response = await fetch(url, {
     method: 'POST',
     mode: 'same-origin',
@@ -61,7 +68,39 @@ async function fetchLogout() {
     cache: 'no-cache',
     redirect: 'follow',
     credentials: 'same-origin',
+    headers
+  });
+  if (response.status == 200) {
+    window.location.replace(response.url);
+  } else {
+  }
+}
+
+async function fetchDelete() {
+  const url: string = 'http://localhost:3001/deleteUser'
+  const headers = {
+    'Content-type': 'application/json'
+  };
+
+  const token = getCookie('JWT');
+
+  if (token !== null && token !== undefined) {
+    headers['Authorization'] = 'Bearer ' + token;
+  }
+
+  const data: LoginData = { 
+    username: (<HTMLInputElement>document.getElementById('username')).value,
+    password: (<HTMLInputElement>document.getElementById('password')).value
+  };
+
+  const response = await fetch(url, {
+    method: 'DELETE',
+    mode: 'same-origin',
+    cache: 'no-cache',
+    redirect: 'follow',
+    credentials: 'same-origin',
     headers,
+    body: JSON.stringify(data)
   });
   if (response.status == 200) {
     window.location.replace(response.url);

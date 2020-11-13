@@ -33,7 +33,7 @@ export class AuthenticationController {
   private userService: UserService = new UserService();
 
   @Get('/signup')
-  async signup(ctx: Context) {
+  async signupPage(ctx: Context) {
     if (!ctx.request.accepts('html')) {
       return new HttpResponseNotFound();
     }
@@ -59,7 +59,7 @@ export class AuthenticationController {
   }
 
   @Get('/login')
-  async login(ctx: Context) {
+  async loginPage(ctx: Context) {
     if (!ctx.request.accepts('html')) {
       return new HttpResponseNotFound();
     }
@@ -71,6 +71,8 @@ export class AuthenticationController {
   @ValidateBody(loginSchema)
   async loginCheck(ctx: Context) {
     if (ctx.user) {
+      console.log("login with JWT");
+      console.log(ctx.user);
       const res = new HttpResponseRedirect("/");
       return res;
     } else {
@@ -78,32 +80,36 @@ export class AuthenticationController {
       const password = ctx.request.body.password;
       const response: ServiceResponse = await this.userService.areValidCredentials(username, password);
 
-
       if (response.code === 200) {
+        // generate new jwt
         const token = sign(
           { username: username },
           Config.get<string>('settings.jwt.secretOrPublicKey'),
           { expiresIn: '1h' }
         );
         const res = new HttpResponseRedirect("/");
-        // TODO
-        // .setCookie('sessionID', 'xxxx', {
-        //   domain: 'example.com',
-        //   // expires: new Date(2020, 12, 12),
-        // });
-        // res.setCookie('JWT', token, {
-        //   httpOnly: true,
-        //   maxAge: 3600,
-        //   path: '/',
-        //   secure: true,
-        //   sameSite: 'lax',
-        // });
-        res.setCookie('JWT', token);
+
+        // set cookie expiring time equals to jwt expiring time
+        res.setCookie('JWT', token, {
+          maxAge: 3600
+        });
+
+        console.log("login with credentials for user:" + username);
+
         return res;
       } else {
         return new HttpResponseBadRequest(response.buildResponse());
       }
     }
+  }
+
+  @Get('/deleteUser')
+  async deleteUserPage(ctx: Context) {
+    if (!ctx.request.accepts('html')) {
+      return new HttpResponseNotFound();
+    }
+
+    return await render('./public/deleteUser.html');
   }
 
   @Delete('/deleteUser')
@@ -125,8 +131,11 @@ export class AuthenticationController {
   @JWTRequired()
   @Post('/logout')
   async logout(ctx: Context) {
+    console.log("logout for user");
+    console.log(ctx.user);
     const res = new HttpResponseRedirect('/');
     res.setCookie('JWT', '');
     return res;
   }
+
 }
