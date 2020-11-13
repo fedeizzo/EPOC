@@ -1,6 +1,6 @@
 import { Config, Context, Get, Post, ValidateBody, HttpResponseNotFound, render, HttpResponseRedirect, HttpResponseBadRequest, HttpResponseOK, Delete } from '@foal/core';
 import { sign } from 'jsonwebtoken';
-import { JWTOptional } from '@foal/jwt';
+import { JWTOptional, JWTRequired } from '@foal/jwt';
 
 // App
 import { UserService, ServiceResponse } from '../services';
@@ -60,7 +60,6 @@ export class AuthenticationController {
 
   @Get('/login')
   async login(ctx: Context) {
-  console.log("ctx: ", ctx)
     if (!ctx.request.accepts('html')) {
       return new HttpResponseNotFound();
     }
@@ -100,7 +99,6 @@ export class AuthenticationController {
         //   sameSite: 'lax',
         // });
         res.setCookie('JWT', token);
-        console.log("res: ", res);
         return res;
       } else {
         return new HttpResponseBadRequest(response.buildResponse());
@@ -118,10 +116,17 @@ export class AuthenticationController {
     if (response.code === 200) {
       const res = new HttpResponseOK(response.buildResponse());
       res.setCookie('JWT', "");
-      console.log("res: ", res);
       return res;
     } else {
       return new HttpResponseBadRequest(response.buildResponse());
     }
+  }
+
+  @JWTRequired()
+  @Post('/logout')
+  async logout(ctx: Context) {
+    const res = new HttpResponseRedirect('/');
+    res.setCookie('JWT', '');
+    return res;
   }
 }
