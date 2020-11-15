@@ -23,5 +23,4 @@ export class SearchController {
     }
     return new HttpResponseBadRequest("You did'nt specify the query string");
   }
-
 }

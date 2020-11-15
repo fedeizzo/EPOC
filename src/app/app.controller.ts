@@ -1,5 +1,4 @@
-import { controller } from '@foal/core';
-
+import { controller } from "@foal/core";
 import { ApiController, SearchController, RecipeController } from './controllers';
 
 export class AppController {

@@ -17,5 +17,4 @@ export class RecipeController {
       return new HttpResponseBadRequest(response.buildResponse());
     }
   }
-
 }
