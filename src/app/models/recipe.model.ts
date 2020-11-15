@@ -22,7 +22,7 @@ export class IngredientInRecipe {
   public quantity: number;
 }
 
-class RecipeClass {
+export class RecipeClass {
   @prop({ type: String, required: true, unique: true })
   public name: string;
 
@@ -76,6 +76,38 @@ class RecipeClass {
 
   @prop({ type: [String], required: true })
   public requiredTools: string[];
+
+  public getShortInfo(){
+    return {
+      name: this.name,
+      image: this.image,
+      averageRating: this.averageRating,
+      description: this.description
+    }
+  }
+
+  public getCompleteInfo(){
+    return {
+      name: this.name,
+      dateModified: this.dateModified,
+      estimatedCost: this.estimatedCost,
+      image: this.image,
+      categories: this.categories,
+      description: this.description,
+      prepTime: this.prepTime,
+      cookTime: this.cookTime,
+      totalTime: this.totalTime,
+      conservationTime: this.conservationTime,
+      peopleFor: this.peopleFor,
+      ingredients: this.ingredients,
+      keywords: this.keywords,
+      labels: this.lables,
+      averageRating: this.averageRating,
+      numberOfRatings: this.numberOfRatings,
+      nutritionalInfos: this.nutritionalInfos,
+      requiredTools: this.requiredTools
+    }
+  }
 }
 
 export const Recipe = getModelForClass(RecipeClass);
