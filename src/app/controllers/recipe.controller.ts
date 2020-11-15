@@ -1,4 +1,4 @@
-import { Context, Get, HttpResponseOK, HttpResponseBadRequest } from '@foal/core';
+import { Context, Get, HttpResponseOK, HttpResponseInternalServerError, HttpResponseNotFound, } from '@foal/core';
 import { RecipeService, ServiceResponse } from '../services/index';
 
 export class RecipeController {
@@ -13,8 +13,10 @@ export class RecipeController {
 
     if (response.code === 200) {
       return new HttpResponseOK(response.buildResponse());
+    } else if (response.code === 404) { 
+      return new HttpResponseNotFound(response.buildResponse());
     } else {
-      return new HttpResponseBadRequest(response.buildResponse());
+      return new HttpResponseInternalServerError(response.buildResponse());
     }
   }
 }

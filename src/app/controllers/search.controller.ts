@@ -14,7 +14,7 @@ export class SearchController {
     const searched = ctx.request.query.searchString;
     if(searched){
       let recipeService = await new RecipeService();
-      let response : ServiceResponse = await recipeService.getShortRecipeList(searched);
+      let response : ServiceResponse = await recipeService.getPartialRecipeList(searched);
       if (response.code === 200) {
         return new HttpResponseOK(response.buildResponse());
       } else {

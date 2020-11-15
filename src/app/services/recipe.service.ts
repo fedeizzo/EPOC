@@ -1,10 +1,22 @@
 // 3p
 import { Config } from "@foal/core";
+import { DocumentType } from "@typegoose/typegoose";
+// import {  } from 'mongoose';
 
 // App
 import { ServiceResponse } from ".";
 import { Recipe, RecipeClass } from "../models/recipe.model";
 
+
+function getShortInfo(docRecipe){
+  return {
+    name: docRecipe.name,
+    image: docRecipe.image,
+    averageRating: docRecipe.averageRating,
+    description: docRecipe.description,
+    id: docRecipe._id
+  }
+}
 
 enum RecipeResponseType {
   shortList,
@@ -15,7 +27,7 @@ export class RecipeResponse implements ServiceResponse {
   public code: number;
   public text: string;
   public type: RecipeResponseType;
-  public prop?: RecipeClass | RecipeClass[];
+  public prop?: RecipeClass | DocumentType<RecipeClass>[];
 
   setValuesComplete = (
     code: number,
@@ -31,7 +43,7 @@ export class RecipeResponse implements ServiceResponse {
   setValuesList = (
     code: number,
     text: string,
-    prop?: RecipeClass[]
+    prop?: DocumentType<RecipeClass>[]
   ) => {
     this.code = code;
     this.text = text;
@@ -39,11 +51,12 @@ export class RecipeResponse implements ServiceResponse {
     this.type = RecipeResponseType.shortList;
   };
 
-  buildResponseShortList = () => {
+  buildResponsePartialList = () => {
+    console.log(this.prop);
     return {
       code: this.code,
       text: this.text,
-      recipes: this.prop ? (this.prop as RecipeClass[]).map((rec) => rec.getShortInfo()) : "",
+      recipes: this.prop ? (this.prop as DocumentType<RecipeClass>[]).map((rec)  => getShortInfo(rec)): "",
     };
   };
 
@@ -56,14 +69,14 @@ export class RecipeResponse implements ServiceResponse {
   };
 
   buildResponse = () => {
-    return this.type == RecipeResponseType.shortList ? this.buildResponseShortList() : this.buildResponseComplete(); 
+    return this.type == RecipeResponseType.shortList ? this.buildResponsePartialList() : this.buildResponseComplete(); 
   };
 }
 
 export class RecipeService {
   private uri: string = Config.getOrThrow("mongodb.uri", "string");
 
-  async getShortRecipeList(searchString: string): Promise<RecipeResponse> {
+  async getPartialRecipeList(searchString: string): Promise<RecipeResponse> {
     const response: RecipeResponse = new RecipeResponse();
 
     // TODO: set as search in array
@@ -87,7 +100,11 @@ export class RecipeService {
     const query = await Recipe.findById(recipeId)
       .exec()
       .then((result) => {
-        response.setValuesComplete(200, "All ok", result as RecipeClass);
+        if(result == null){
+          response.setValuesComplete(404, "Recipe not found");
+        } else {
+          response.setValuesComplete(200, "All ok", result as RecipeClass);
+        }
       })
       .catch((error) => {
         response.setValuesComplete(500, error);
