@@ -31,6 +31,49 @@ paths:
         "500":
           $ref: "#/components/responses/500InternalServerError"
 
+  /signup:
+    x-summary: Signup to the service
+    get:
+      description: >-
+        Get html page for signup
+      summary: Signup html page
+      responses:
+        "200":
+          description: "Html page"
+          content:
+            text/html
+        "404":
+          description: Request does not accepts html response
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+    post:
+      description: >-
+        Signup to the service
+      summary: Signup
+      requestBody:
+        $ref: "#/components/requestBodies/SignupRequest"
+      responses:
+        "302":
+          description: "Signup to the service"
+          content:
+            text/html
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+          
+  /logout:
+    x-summary: Questions Collection
+    get:
+      description: >-
+        Logout from the service
+      summary: Logout
+      responses:
+        "302":
+          description: "Correctly logged out"
+        "401":
+          description: "JWT not set"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+          
   /search/recipe:
     x-summary: Search targeted only to recipes
     get:
@@ -103,7 +146,32 @@ components:
       example:
         username: admin
         password: admin
-
+        
+    SignupBody:
+      type: object
+      properties:
+        firstName:
+          type: string
+        secondName:
+          type: string
+        email:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - firstName
+        - email
+        - username
+        - password
+      example:
+        firstName: mario
+        secondName: rossi
+        emaiL: mario.rossi@mrossi.com
+        username: marioRossi
+        password: mario123
+        
     JWT:
       title: Json Web Token
       type: string
@@ -300,7 +368,17 @@ components:
           example:
             username: "Mario"
             password: "mariuccio123"
-
+            
+    SignupRequest:
+      description: "Signup Request"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/SignupBody"
+          example:
+            username: "Mario"
+            password: "mariuccio123"
+            
   responses:
     404NotFound:
       description: Resource not found
