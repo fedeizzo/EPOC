@@ -1,2 +1,2 @@
 export { UserService } from './user.service';
-export { ServiceResponse } from './response.service';
+export { ServiceResponse, ServiceResponseCode } from './response.service';

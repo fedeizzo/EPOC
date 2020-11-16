@@ -6,14 +6,14 @@ import { connect, disconnect } from 'mongoose';
 // App
 import { User } from '../models'
 import { UserClass } from '../models/user.model';
-import { ServiceResponse } from '../services';
+import { ServiceResponse, ServiceResponseCode } from '../services';
 
 class UserServiceResponse implements ServiceResponse {
-  code: number;
+  code: ServiceResponseCode;
   text: string;
   prop?: UserClass;
 
-  setValues = (code: number, text: string, prop?: UserClass) => {
+  setValues = (code: ServiceResponseCode, text: string, prop?: UserClass) => {
     this.code = code;
     this.text = text;
     this.prop = prop;
@@ -21,7 +21,6 @@ class UserServiceResponse implements ServiceResponse {
 
   buildResponse = () => {
     return {
-      code: this.code,
       text: this.text,
       userInfo: this.prop ? this.prop.getInfo() : ""
     }
@@ -35,7 +34,7 @@ export class UserService {
     let response: UserServiceResponse = new UserServiceResponse();
 
     if (await isCommon(password)) {
-      response.setValues(300, "Password too common");
+      response.setValues(ServiceResponseCode.passwordTooCommon, "Password too common");
     } else {
       await connect(this.uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
 
@@ -48,9 +47,9 @@ export class UserService {
 
       try {
         await user.save();
-        response.setValues(200, "OK", user);
+        response.setValues(ServiceResponseCode.ok, "OK", user);
       } catch (error) {
-        response.setValues(301, "Db error, probably duplicate key");
+        response.setValues(ServiceResponseCode.duplicateKeyInDb, "Db error, probably duplicate key");
         console.error(error.message);
       }
 
@@ -69,12 +68,12 @@ export class UserService {
     if (doc != undefined) {
       let isValidPassword: boolean = await verifyPassword(password, doc.password);
       if (isValidPassword) {
-        response.setValues(200, "User found, right credentials", doc);
+        response.setValues(ServiceResponseCode.ok, "User found, right credentials", doc);
       } else {
-        response.setValues(302, "User found, wrong credentials");
+        response.setValues(ServiceResponseCode.wrongCredentials, "User found, wrong credentials");
       }
     } else {
-      response.setValues(303, "User not found, probably");
+      response.setValues(ServiceResponseCode.elementNotFound, "User not found, probably");
     }
 
     return response;
@@ -83,15 +82,15 @@ export class UserService {
   // TODO: we are doing two calls to the db: we can do it better
   async deleteUser(username: string, password: string): Promise<UserServiceResponse> {
     let response: UserServiceResponse = await this.areValidCredentials(username, password);
-    
-    if (response.code === 200){
+
+    if (response.code === ServiceResponseCode.ok) {
       await connect(this.uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
-      const doc = await User.findOneAndDelete({ username: username});
+      const doc = await User.findOneAndDelete({ username: username });
       await disconnect();
-      if (doc != undefined){
-        response.setValues(200, "User deleted definitively", doc ? doc : undefined);
+      if (doc != undefined) {
+        response.setValues(ServiceResponseCode.ok, "User deleted definitively", doc ? doc : undefined);
       } else {
-        response.setValues(303, "Error deleting the user");
+        response.setValues(304, "Error deleting the user");
       }
     }
 

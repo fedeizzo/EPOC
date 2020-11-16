@@ -1,3 +1,11 @@
+interface SignupData {
+  firstName: string;
+  secondName: string;
+  email: string;
+  username: string;
+  password: string;
+};
+
 interface LoginData {
   username: string;
   password: string;
@@ -6,7 +14,37 @@ interface LoginData {
 function getCookie(name: string) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
-  return parts[1]
+  return parts[1];
+}
+
+async function fetchSignUp() {
+  const url: string = 'http://localhost:3001/signup'
+  const headers = {
+    'Content-type': 'application/json'
+  };
+
+  const data: SignupData = { 
+    firstName: (<HTMLInputElement>document.getElementById('firstName')).value,
+    secondName: (<HTMLInputElement>document.getElementById('secondName')).value,
+    email: (<HTMLInputElement>document.getElementById('email')).value,
+    username: (<HTMLInputElement>document.getElementById('username')).value,
+    password: (<HTMLInputElement>document.getElementById('password')).value
+  };
+
+  const response = await fetch(url, {
+    method: 'POST',
+    mode: 'same-origin',
+    cache: 'no-cache',
+    redirect: 'follow',
+    credentials: 'same-origin',
+    headers,
+    body: JSON.stringify(data)
+  });
+  if (response.status == 200) {
+    window.location.replace("/");
+  } else {
+    console.log(await response.json()["text"]);
+  }
 }
 
 async function fetchLogin() {
@@ -14,19 +52,6 @@ async function fetchLogin() {
   const headers = {
     'Content-type': 'application/json'
   };
-
-  // const data: LoginData = { username: 'empty', password: 'empty' };
-  // const token = getCookie('JWT');
-
-  // console.log("---", token, "----")
-  // if (token !== null && token !== undefined && token !== '') {
-  //   headers['Authorization'] = 'Bearer ' + token;
-  // } else {
-  //   const username = (<HTMLInputElement>document.getElementById('username')).value;
-  //   const password = (<HTMLInputElement>document.getElementById('password')).value;
-  //   data['username'] = username;
-  //   data['password'] = password;
-  // }
 
   const data: LoginData = { 
     username: (<HTMLInputElement>document.getElementById('username')).value,
@@ -43,11 +68,13 @@ async function fetchLogin() {
     body: JSON.stringify(data)
   });
   if (response.status == 200) {
-    window.location.replace(response.url);
+    window.location.replace("/");
   } else {
     const passwordField = (<HTMLInputElement>document.getElementById('password'));
     passwordField.value = '';
     passwordField.placeholder = 'Wrong password';
+
+    console.log(await response.json()["text"]);
   }
 }
 
@@ -71,8 +98,9 @@ async function fetchLogout() {
     headers
   });
   if (response.status == 200) {
-    window.location.replace(response.url);
+    window.location.replace("/");
   } else {
+    console.log(await response.json()["text"]);
   }
 }
 
@@ -103,7 +131,8 @@ async function fetchDelete() {
     body: JSON.stringify(data)
   });
   if (response.status == 200) {
-    window.location.replace(response.url);
+    window.location.replace("/");
   } else {
+    console.log(await response.json()["text"]);
   }
 }
