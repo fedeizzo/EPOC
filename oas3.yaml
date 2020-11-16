@@ -7,70 +7,126 @@ info:
     name: MIT
     url: https://github.com/apiaryio/polls-api/blob/master/LICENSE
 servers:
-  - url: http://localhost:3000/
+  - url: http://localhost:3001/
     description: Localhost
 
 paths:
-  /login:
-    x-summary: Questions Collection
+  /signup:
+    x-summary: Signup to the service
+    get:
+      description: Get html page for signup
+      summary: Signup html page
+      responses:
+        "200":
+          $ref: "#/components/responses/200OkHtml"
+        "404":
+          $ref: "#/components/responses/404NotFoundHtml"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
     post:
-      description: >-
-        You may call this endpoint with your user credentials to validate them against our internal db.
+      description: Signup to the service
+      summary: Signup
+      requestBody:
+        $ref: "#/components/requestBodies/SignupRequest"
+      responses:
+        "200":
+          description: "Correctly signed up"
+        "400":
+          $ref: "#/components/responses/400BadRequest"
+        "403":
+          description: "Invalid password: too common"
+        "409":
+          description: "Username already used"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+  
+  /login:
+    x-summary: Login to the service
+    get:
+      description: Get html page for signup
+      summary: Login html page
+      responses:
+        "200":
+          $ref: "#/components/responses/200OkHtml"
+        "404":
+          $ref: "#/components/responses/404NotFoundHtml"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+    post:
+      description: Login to the service providing your credentials.
       summary: Login
       requestBody:
         $ref: "#/components/requestBodies/LoginRequest"
       responses:
         "200":
-          description: ""
-          content:
-            application/json:
+          description: "Correctly logged in"
+          headers:
+            Set-Cookie:
               schema:
-                $ref: "#/components/schemas/JWT"
+                type: string
+                example: JWT=dijubnewuycfgwec6wec76w598uighc
+        "400":
+          $ref: "#/components/responses/400BadRequest"
         "401":
-          description: Invalid username/password combination
-        "500":
-          $ref: "#/components/responses/500InternalServerError"
-
-  /signup:
-    x-summary: Signup to the service
-    get:
-      description: >-
-        Get html page for signup
-      summary: Signup html page
-      responses:
-        "200":
-          description: "Html page"
-          content:
-            text/html
+          $ref: "#/components/responses/401UnauthorizedErrorCredentials"
         "404":
-          description: Request does not accepts html response
-        "500":
-          $ref: "#/components/responses/500InternalServerError"
-    post:
-      description: >-
-        Signup to the service
-      summary: Signup
-      requestBody:
-        $ref: "#/components/requestBodies/SignupRequest"
-      responses:
-        "302":
-          description: "Signup to the service"
-          content:
-            text/html
+          $ref: "#/components/responses/404NotFound"
         "500":
           $ref: "#/components/responses/500InternalServerError"
           
   /logout:
-    x-summary: Questions Collection
+    x-summary: Logout from the service
     get:
-      description: >-
-        Logout from the service
+      security:
+        - jwtAuth: []
+      description: Logout from the service
       summary: Logout
       responses:
-        "302":
+        "200":
           description: "Correctly logged out"
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: JWT=
         "401":
-          description: "JWT not set"
+          $ref: "#/components/responses/401UnauthorizedErrorJWT"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+  
+  /deleteUser:
+    x-summary: Delete user account from the service
+    get:
+      description: Get html page for deleting user
+      summary: Delete user html page
+      responses:
+        "200":
+          $ref: "#/components/responses/200OkHtml"
+        "400":
+          $ref: "#/components/responses/400BadRequest"
+        "404":
+          $ref: "#/components/responses/404NotFoundHtml"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+    post:
+      security:
+        - jwtAuth: []
+      description: Delete user account from the service
+      summary: Delete user account
+      requestBody:
+        $ref: "#/components/requestBodies/LoginRequest"
+      responses:
+        "200":
+          description: "Correctly deleted user account"
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: JWT=
+        "401":
+          $ref: "#/components/responses/401UnauthorizedErrorJWT"
+        "404":
+          description: "No user found in the database with that credentials"
         "500":
           $ref: "#/components/responses/500InternalServerError"
           
@@ -121,6 +177,13 @@ paths:
           $ref: "#/components/responses/500InternalServerError"
 
 components:
+  # https://swagger.io/docs/specification/authentication/bearer-authentication/
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      
   parameters:
     searchString:
       name: searchString
@@ -144,8 +207,8 @@ components:
         - username
         - password
       example:
-        username: admin
-        password: admin
+        username: mario
+        password: rossi
         
     SignupBody:
       type: object
@@ -172,11 +235,6 @@ components:
         username: marioRossi
         password: mario123
         
-    JWT:
-      title: Json Web Token
-      type: string
-      example: 3fnadn8cwu9leorfbi2o9reebd8wbed832
-
     Ingredient:
       type: object
       description: Ingredient of some recipe, with quantity.
@@ -376,18 +434,29 @@ components:
           schema:
             $ref: "#/components/schemas/SignupBody"
           example:
+            firstname: "Mario"
+            secondname: "Rossi"
+            email: "mario.rossi@gmail.com"
             username: "Mario"
             password: "mariuccio123"
             
   responses:
+    200OkHtml:
+      description: Html page
+    400BadRequest:
+      description: BadRequest
+      
+    401UnauthorizedErrorJWT:
+      description: Access token is missing or invalid
+    
+    401UnauthorizedErrorCredentials:
+      description: Invalid access credentials
+      
     404NotFound:
       description: Resource not found
-      content:
-        text/plain:
-          example: "404: Not found"
+    
+    404NotFoundHtml:
+      description: Request sender does not accept html
 
     500InternalServerError:
       description: Internal server error
-      content:
-        text/plain:
-          example: "500: Internal server error"

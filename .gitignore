@@ -2,6 +2,9 @@
 shell.nix
 .envrc
 
+#Plasma
+.directory
+
 # Node stuff
 node_modules/
 .DS_Store
@@ -11,3 +14,6 @@ build/
 *.sqlite3
 .vscode/
 .idea/
+
+#Transpiled javascript
+public/src/
