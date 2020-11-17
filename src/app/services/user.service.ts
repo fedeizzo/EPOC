@@ -48,9 +48,9 @@ export class UserService {
       try {
         await user.save();
         response.setValues(ServiceResponseCode.ok, "OK", user);
+        
       } catch (error) {
         response.setValues(ServiceResponseCode.duplicateKeyInDb, "Db error, probably duplicate key");
-        console.error(error.message);
       }
 
       await disconnect();

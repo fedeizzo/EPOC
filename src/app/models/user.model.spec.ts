@@ -1,8 +1,8 @@
 import { Config } from "@foal/core";
 import { strictEqual } from "assert";
 import { assert } from "console";
-import { connect, disconnect, Schema, FilterQuery } from "mongoose";
-import { UserService } from "../services";
+import { connect, disconnect, Schema, FilterQuery, connection } from "mongoose";
+import { ServiceResponseCode, UserService } from "../services";
 
 type ObjectId = Schema.Types.ObjectId;
 
@@ -16,9 +16,11 @@ describe("The user model", () => {
     });
   });
 
-  // afterEach(async () => {
-  //   await new User().collection.drop();
-  // });
+  afterEach(async () => {
+    await connect(Config.getOrThrow('mongodb.uri', 'string'), { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
+    await connection.db.dropCollection('userclasses');
+    await disconnect();
+  });
 
   after(async () => {
     await disconnect();
@@ -33,6 +35,6 @@ describe("The user model", () => {
     const password = "Mario123";
     const actualResponse = await user.insertUser(firstName, email, username, password, secondName);
 
-    strictEqual(actualResponse.code, 200);
+    strictEqual(actualResponse.code, ServiceResponseCode.ok);
   });
 });

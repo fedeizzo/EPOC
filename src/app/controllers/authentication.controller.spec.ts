@@ -2,6 +2,7 @@ import { ok, strictEqual } from 'assert';
 import { getHttpMethod, getPath, Context, createController, isHttpResponseOK, Config } from '@foal/core';
 import { AuthenticationController } from './authentication.controller';
 import { connection, connect, disconnect } from 'mongoose';
+import { ServiceResponseCode } from '../services';
 
 describe('The Authentication Controller', () => {
   const controller: AuthenticationController = createController(AuthenticationController);
@@ -37,8 +38,8 @@ describe('The Authentication Controller', () => {
   describe('login', () => {
     describe('When request accepts html', () => {
       it('returns the signup html page', async () => {
-        strictEqual(getHttpMethod(AuthenticationController, 'login'), 'GET');
-        strictEqual(getPath(AuthenticationController, 'login'), '/login')
+        strictEqual(getHttpMethod(AuthenticationController, 'loginPage'), 'GET');
+        strictEqual(getPath(AuthenticationController, 'loginPage'), '/login')
       });
     });
     describe('When request does not accept html', () => {
@@ -60,12 +61,11 @@ describe('The Authentication Controller', () => {
 
   describe('logout', () => {
     describe('When JWT is set', () => {
-      it('returns a redirect to home page with status code 302', async () => {
+      it('returns a redirect to home page with status code 200', async () => {
         const ctx = new Context({ user: 'ciao' });
         strictEqual(getHttpMethod(AuthenticationController, 'logout'), 'POST');
         strictEqual(getPath(AuthenticationController, 'logout'), '/logout');
-        strictEqual(getPath(AuthenticationController, 'logout'), '/logout');
-        strictEqual((await controller.logout(ctx)).statusCode, 302);
+        strictEqual((await controller.logout(ctx)).statusCode, 200);
       });
     });
     describe('When JWT is not set', () => {
