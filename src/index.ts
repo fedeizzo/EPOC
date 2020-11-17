@@ -5,7 +5,7 @@ import * as http from 'http';
 
 // 3p
 import { Config, createApp } from '@foal/core';
-import { connect } from 'mongoose';
+import { connect, connection } from 'mongoose';
 
 // App
 import { AppController } from './app/app.controller';
@@ -13,6 +13,8 @@ import { AppController } from './app/app.controller';
 async function main() {
   const uri = Config.getOrThrow('mongodb.uri', 'string');
   connect(uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
+  connection.on('connected', () => console.log("mi sono connesso"));
+  connection.on('disconnected', () => console.log("mi sono disconneso"));
 
   const app = createApp(AppController);
 
