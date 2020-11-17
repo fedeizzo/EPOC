@@ -1,3 +1,2 @@
-export { ApiController } from './api.controller';
-export { SearchController } from './search.controller';
-export { RecipeController } from './recipe.controller';
+export { ApiController } from "./api/api.controller";
+export { PagesController } from "./static/pages.controller";

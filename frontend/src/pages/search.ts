@@ -7,7 +7,7 @@ document.getElementById("searchBar")!.onkeydown = function (e) {
 async function search() {
   const element = <HTMLInputElement>document.getElementById("searchBar");
   const query = encodeURIComponent(element.value);
-  const response = await fetch(`/search/api?searchString=${query}`);
+  const response = await fetch(`/api/v1/search?searchString=${query}`);
   const j = await response.json();
   const recipes: Partial<Recipe>[] = j["recipes"];
   const elements = recipes.map((r) => recipeCard(r));
@@ -19,7 +19,6 @@ async function search() {
   document.getElementsByTagName("body")[0].appendChild(container);
 
   function recipeCard(r: Partial<Recipe>): HTMLElement {
-    console.log(r);
     const card = document.createElement("div");
     card.className = "recipe_card";
     const image = <HTMLImageElement>document.createElement("img");

@@ -3,22 +3,13 @@ import {
   Get,
   HttpResponseOK,
   HttpResponseBadRequest,
-  HttpResponseNotFound,
-  render,
+  ValidateQueryParam,
 } from "@foal/core";
-import { RecipeService, ServiceResponse } from "../services/index";
+import { RecipeService, ServiceResponse } from "../../services";
 
-export class SearchController {
+export class SearchApiController {
   @Get("/")
-  async serachPage(ctx: Context) {
-    if (!ctx.request.accepts("html")) {
-      return new HttpResponseNotFound();
-    }
-    const res = await render("./public/pages/search.html");
-    return res;
-  }
-
-  @Get("/api")
+  @ValidateQueryParam("searchString", { type: "string" }, { required: true })
   async globalSearch(ctx: Context) {
     return this.recipeSearch(ctx);
   }
@@ -27,7 +18,7 @@ export class SearchController {
   async recipeSearch(ctx: Context) {
     const searched = ctx.request.query.searchString;
     if (searched) {
-      let recipeService = await new RecipeService();
+      let recipeService = new RecipeService();
       let response: ServiceResponse = await recipeService.getPartialRecipeList(
         searched
       );

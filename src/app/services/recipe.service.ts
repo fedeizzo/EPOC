@@ -46,7 +46,6 @@ export class RecipeResponse implements ServiceResponse {
   };
 
   buildResponsePartialList = () => {
-    console.log(this.prop);
     return {
       code: this.code,
       text: this.text,

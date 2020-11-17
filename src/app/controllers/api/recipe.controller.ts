@@ -4,17 +4,11 @@ import {
   HttpResponseOK,
   HttpResponseInternalServerError,
   HttpResponseNotFound,
-  render,
 } from "@foal/core";
-import { RecipeService, ServiceResponse } from "../services/index";
+import { RecipeService, ServiceResponse } from "../../services/index";
 
-export class RecipeController {
+export class RecipeApiController {
   @Get("/:recipeId")
-  async getRecipePage(ctx: Context) {
-    return render("./public/pages/recipe.html");
-  }
-
-  @Get("/api/:recipeId")
   async getRecipeById(ctx: Context) {
     const recipeId = ctx.request.params.recipeId;
 
