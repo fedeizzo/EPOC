@@ -9,7 +9,8 @@ services:
   - docker
 script:
   - docker-compose -f docker-compose.yaml up --build -d
-  - "npm run test"
+  - "npm run build:test"
+  - "npm run start:test"
 
 # env:
 #   - DOCKER_COMPOSE_VERSION=1.26.2
