@@ -7,9 +7,9 @@ document.getElementById("searchBar")!.onkeydown = function (e) {
 async function search() {
   const element = <HTMLInputElement>document.getElementById("searchBar");
   const query = encodeURIComponent(element.value);
-  const response = await fetch(`/search/recipe?searchString=${query}`);
+  const response = await fetch(`/search/api?searchString=${query}`);
   const j = await response.json();
-  const recipes: Partial<Recipe>[] = j;
+  const recipes: Partial<Recipe>[] = j["recipes"];
   const elements = recipes.map((r) => recipeCard(r));
   const container = document.createElement("div");
   container.className = "recipeContainer";
@@ -22,19 +22,15 @@ async function search() {
     console.log(r);
     const card = document.createElement("div");
     card.className = "recipe_card";
-    const image = <HTMLImageElement>document.createElement("image");
+    const image = <HTMLImageElement>document.createElement("img");
     image.src = r.image ?? "https://via.placeholder.com/250";
-    image.height = 200;
-    image.width = 200;
     image.setAttribute("src", r.image ?? "https://via.placeholder.com/250");
-    image.style.height = "200px";
-    image.style.width = "200px";
     const central = document.createElement("div");
     central.innerHTML = `<h1>${r.name ?? ""}</h1><p>${r.description ?? ""}</p>`;
     card.appendChild(image);
     card.appendChild(central);
     card.onclick = () => {
-      window.location.href = `/recipe/${(r as any)._id}`;
+      window.location.href = `/recipe/${(r as any).id}`;
     };
 
     return card;

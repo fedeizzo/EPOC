@@ -1,49 +1,9 @@
-const nutritionalInfos = {
-  calories: 100,
-  carbohydrate: 100,
-  cholesterol: 100,
-  fat: 100,
-  fiber: 100,
-  saturedFat: 100,
-  sodium: 100,
-  sugar: 100,
-};
-
-const ingredient1 = {
-  name: "tunafish",
-  quantity: 100,
-  unitOfMeasure: "grams",
-};
-const ingredient2 = {
-  name: "pasta",
-  quantity: 220,
-  unitOfMeasure: "grams",
-};
-
-const _recipe = {
-  name: "Tuna Pasta",
-  dateModified: new Date(2020, 11, 10),
-  estimatedCost: "low",
-  image: "https://images.unsplash.com/photo-1499028344343-cd173ffc68a9",
-  categories: ["cheap", "fish dishes"],
-  description: "Classic, easy and cheap recipe",
-  prepTime: 10,
-  cookTime: 15,
-  totalTime: 25,
-  conservationTime: 9,
-  peopleFor: 2,
-  ingredients: [ingredient1, ingredient2],
-  keywords: ["test", "test2"],
-  lables: ["first dish"],
-  averageRating: 3.6,
-  nutritionalInfos: nutritionalInfos,
-  numberOfRatings: 400,
-  requiredTools: [],
-};
-
 async function getRecipeAndPopulate(): Promise<void> {
-  //const response = await fetch("endpoint");
-  const recipe: Recipe = _recipe; //TODO: await response.json();
+  const fragments = window.location.toString().split("/");
+  const recipeId = fragments[fragments.length - 1];
+  const res = await fetch(`/recipe/api/${recipeId}`);
+  const json = await res.json();
+  const recipe: Recipe = json["recipe"];
 
   const leftmost = _getLeftmostDiv(recipe);
   const centralDiv = _getCentralDiv(recipe);
