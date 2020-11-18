@@ -18,12 +18,12 @@ function getCookie(name: string) {
 }
 
 async function fetchSignUp() {
-  const url: string = 'http://localhost:3001/signup'
+  const url: string = '/api/v1/signup';
   const headers = {
     'Content-type': 'application/json'
   };
 
-  const data: SignupData = { 
+  const data: SignupData = {
     firstName: (<HTMLInputElement>document.getElementById('firstName')).value,
     secondName: (<HTMLInputElement>document.getElementById('secondName')).value,
     email: (<HTMLInputElement>document.getElementById('email')).value,
@@ -48,12 +48,12 @@ async function fetchSignUp() {
 }
 
 async function fetchLogin() {
-  const url: string = 'http://localhost:3001/login'
+  const url: string = '/api/v1/login'
   const headers = {
     'Content-type': 'application/json'
   };
 
-  const data: LoginData = { 
+  const data: LoginData = {
     username: (<HTMLInputElement>document.getElementById('username')).value,
     password: (<HTMLInputElement>document.getElementById('password')).value
   };
@@ -79,7 +79,7 @@ async function fetchLogin() {
 }
 
 async function fetchLogout() {
-  const url: string = 'http://localhost:3001/logout'
+  const url: string = '/api/v1/logout'
   const headers = {
     'Content-type': 'application/json'
   };
@@ -105,7 +105,7 @@ async function fetchLogout() {
 }
 
 async function fetchDelete() {
-  const url: string = 'http://localhost:3001/deleteUser'
+  const url: string = '/api/v1/deleteUser'
   const headers = {
     'Content-type': 'application/json'
   };
@@ -116,7 +116,7 @@ async function fetchDelete() {
     headers['Authorization'] = 'Bearer ' + token;
   }
 
-  const data: LoginData = { 
+  const data: LoginData = {
     username: (<HTMLInputElement>document.getElementById('username')).value,
     password: (<HTMLInputElement>document.getElementById('password')).value
   };

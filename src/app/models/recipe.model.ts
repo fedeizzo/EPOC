@@ -14,7 +14,7 @@ export enum UnitsOfMeasure {
 }
 
 export class IngredientInRecipe {
-  @prop({ type: String, required: true, unique: true })
+  @prop({ type: String, required: true })
   public name: String;
   @prop({ enum: UnitsOfMeasure })
   public unitOfMeasure?: UnitsOfMeasure;
@@ -77,7 +77,7 @@ export class RecipeClass {
   @prop({ type: [String], required: true })
   public requiredTools: string[];
 
-  public getShortInfo(){
+  public getShortInfo() {
     return {
       name: this.name,
       image: this.image,
@@ -86,7 +86,7 @@ export class RecipeClass {
     }
   }
 
-  public getCompleteInfo(){
+  public getCompleteInfo() {
     return {
       name: this.name,
       dateModified: this.dateModified,
