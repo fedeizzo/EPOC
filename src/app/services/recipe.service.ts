@@ -3,7 +3,7 @@ import { Config } from "@foal/core";
 import { DocumentType } from "@typegoose/typegoose";
 
 // App
-import { ServiceResponse } from ".";
+import { ServiceResponse, ServiceResponseCode } from ".";
 import { Recipe, RecipeClass } from "../models/recipe.model";
 
 function getShortInfo(docRecipe) {
@@ -22,12 +22,12 @@ enum RecipeResponseType {
 }
 
 export class RecipeResponse implements ServiceResponse {
-  public code: number;
+  public code: ServiceResponseCode;
   public text: string;
   public type: RecipeResponseType;
   public prop?: RecipeClass | DocumentType<RecipeClass>[];
 
-  setValuesComplete = (code: number, text: string, prop?: RecipeClass) => {
+  setValuesComplete = (code: ServiceResponseCode, text: string, prop?: RecipeClass) => {
     this.code = code;
     this.text = text;
     prop ? (this.prop = prop) : (this.prop = {} as RecipeClass);
@@ -35,7 +35,7 @@ export class RecipeResponse implements ServiceResponse {
   };
 
   setValuesList = (
-    code: number,
+    code: ServiceResponseCode,
     text: string,
     prop?: DocumentType<RecipeClass>[]
   ) => {
@@ -97,9 +97,9 @@ export class RecipeService {
       result = result.concat(moreResults);
     }
     if (result instanceof ErrorWrapper) {
-      response.setValuesList(500, result.error);
+      response.setValuesList(ServiceResponseCode.internalServerErrorQueryingRecipes, "Error while queryiung the db for a list of recipes:\n"+result.error);
     } else {
-      response.setValuesList(200, "All ok", result);
+      response.setValuesList(ServiceResponseCode.ok, "All ok", result);
     }
     return response;
   }
@@ -134,13 +134,13 @@ export class RecipeService {
       .exec()
       .then((result) => {
         if (result == null) {
-          response.setValuesComplete(404, "Recipe not found");
+          response.setValuesComplete(ServiceResponseCode.recipeIdNotFound, "Recipe not found");
         } else {
-          response.setValuesComplete(200, "All ok", result as RecipeClass);
+          response.setValuesComplete(ServiceResponseCode.ok, "All ok", result as RecipeClass);
         }
       })
       .catch((error) => {
-        response.setValuesComplete(500, error);
+        response.setValuesComplete(ServiceResponseCode.internalServerErrorQueryingRecipes, "Error while looing for recipe in db:\n"+error);
       });
     return response;
   }

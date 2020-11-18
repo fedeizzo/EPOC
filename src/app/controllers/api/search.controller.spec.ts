@@ -9,7 +9,7 @@ import {
 } from "@foal/core";
 import { deepEqual, strictEqual } from "assert";
 import { SearchApiController } from "./search.controller";
-import { RecipeService } from "../../services";
+import { RecipeService, ServiceResponseCode } from "../../services";
 import { RecipeResponse } from "../../services/recipe.service";
 import { Recipe } from "../../models";
 
@@ -99,7 +99,7 @@ describe("search controller", () => {
       });
       it("if everything went well", async () => {
         const recipeResponse = {
-          code: 200,
+          code: ServiceResponseCode.ok,
           text: "everything is fine",
           recipes: "",
         };

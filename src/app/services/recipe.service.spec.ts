@@ -1,6 +1,6 @@
 import { Config, createService } from "@foal/core";
 import { strictEqual } from "assert";
-import { RecipeService } from "./recipe.service";
+import { RecipeService, ServiceResponseCode } from ".";
 import { connection, connect, disconnect } from "mongoose";
 import { DocumentType } from "@typegoose/typegoose";
 import {
@@ -41,14 +41,14 @@ describe("The Recipe Service", () => {
   describe("Get Complete Recipe", () => {
     describe("When we use an existing id", () => {
       it("Returns the recipe json with code 200", async () => {
-        const expectedCode = 200;
+        const expectedCode = ServiceResponseCode.ok;
         const actualCode = await recipeService.getCompleteRecipe(mockRecipeId);
         strictEqual(actualCode.code, expectedCode);
       });
     });
     describe("When we use a non-existing id", () => {
       it("returns a Not Found response with error code 404", async () => {
-        const expectedErrorCode = 404;
+        const expectedErrorCode = ServiceResponseCode.recipeIdNotFound;
         const nonExistingId = "5fb37d79cbbec48c3b111111";
         const actualErrorCode = await recipeService.getCompleteRecipe(
           nonExistingId
@@ -58,7 +58,7 @@ describe("The Recipe Service", () => {
     });
     describe("When we use a wrong id", () => {
       it("returns a Server Internal Error with error code 500", async () => {
-        const expectedErrorCode = 500;
+        const expectedErrorCode = ServiceResponseCode.internalServerErrorQueryingRecipes;
         const wrongId = "this is not a correct id!!!";
         const actualErrorCode = await recipeService.getCompleteRecipe(wrongId);
         strictEqual(actualErrorCode.code, expectedErrorCode);
@@ -69,7 +69,7 @@ describe("The Recipe Service", () => {
   describe("Get Partial Recipe List", () => {
     describe("When we use a normal searchstring", () => {
       it("Returns a json with matching recipes and 200 code", async () => {
-        const expectedCode = 200;
+        const expectedCode = ServiceResponseCode.ok;
         const searchString = "pasta";
         const actualCode = await recipeService.getPartialRecipeList(
           searchString
@@ -79,7 +79,7 @@ describe("The Recipe Service", () => {
     });
     describe("When we give a null search-string", () => {
       it("Returns a json with matching recipes and 200 code", async () => {
-        const expectedCode = 200;
+        const expectedCode = ServiceResponseCode.ok;
         const searchString = "pasta";
         const actualCode = await recipeService.getPartialRecipeList(
           searchString

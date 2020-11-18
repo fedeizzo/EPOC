@@ -2,11 +2,12 @@ import {
   Context,
   Get,
   HttpResponseOK,
-  HttpResponseBadRequest,
+  HttpResponseInternalServerError,
   ValidateQueryParam,
   dependency,
+  HttpResponse,
 } from "@foal/core";
-import { RecipeService, ServiceResponse } from "../../services";
+import { RecipeService, ServiceResponse, ServiceResponseCode } from "../../services";
 
 export class SearchApiController {
   @dependency
@@ -25,10 +26,19 @@ export class SearchApiController {
     let response: ServiceResponse = await this.recipeService.getPartialRecipeList(
       searched
     );
-    if (response.code === 200) {
-      return new HttpResponseOK(response.buildResponse());
-    } else {
-      return new HttpResponseBadRequest(response.buildResponse());
+
+    let httpResponse: HttpResponse;
+    switch (response.code) {
+      case ServiceResponseCode.ok:
+        httpResponse = new HttpResponseOK(response.buildResponse());
+        break;
+      case ServiceResponseCode.internalServerErrorQueryingRecipes:
+        httpResponse = new HttpResponseInternalServerError(response.buildResponse());
+        break;
+      default:
+        httpResponse = new HttpResponseInternalServerError();
+        break;
     }
+    return httpResponse;
   }
 }

@@ -4,8 +4,9 @@ import {
   HttpResponseOK,
   HttpResponseInternalServerError,
   HttpResponseNotFound,
+  HttpResponse
 } from "@foal/core";
-import { RecipeService, ServiceResponse } from "../../services/index";
+import { RecipeService, ServiceResponse, ServiceResponseCode } from "../../services/index";
 
 export class RecipeApiController {
   @Get("/:recipeId")
@@ -16,14 +17,23 @@ export class RecipeApiController {
     const response: ServiceResponse = await recipeService.getCompleteRecipe(
       recipeId
     );
-    response.buildResponse();
 
-    if (response.code === 200) {
-      return new HttpResponseOK(response.buildResponse());
-    } else if (response.code === 404) {
-      return new HttpResponseNotFound(response.buildResponse());
-    } else {
-      return new HttpResponseInternalServerError(response.buildResponse());
+    let httpResponse: HttpResponse;
+    switch (response.code) {
+      case ServiceResponseCode.ok:
+        httpResponse = new HttpResponseOK(response.buildResponse());
+        break;
+      case ServiceResponseCode.recipeIdNotFound:
+        httpResponse = new HttpResponseNotFound(response.buildResponse());
+        break;
+      case ServiceResponseCode.internalServerErrorQueryingRecipes:
+        httpResponse = new HttpResponseInternalServerError(response.buildResponse());
+        break;
+      default:
+        httpResponse = new HttpResponseInternalServerError();
+        break;
     }
+
+    return httpResponse;
   }
 }

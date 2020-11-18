@@ -10,11 +10,11 @@ import {
 } from "@foal/core";
 import { deepEqual, strictEqual } from "assert";
 import { RecipeApiController } from "./recipe.controller";
-import { RecipeService } from "../../services";
+import { RecipeService, ServiceResponseCode } from "../../services";
 import { RecipeResponse } from "../../services/recipe.service";
 import { Recipe } from "../../models";
 
-describe("recipe controller", () => {
+describe("The Recipe Controller", () => {
   
   describe("getRecipeById", () => {
     it("should handle requests at GET ", () => {
@@ -33,7 +33,7 @@ describe("recipe controller", () => {
       describe("if everything went well", () => {
         it("should return a recipe with code 200", async () => {
           const recipeResponse = {
-            code: 200,
+            code: ServiceResponseCode.ok,
             text: "All ok",
             recipes: "",
           };
@@ -49,7 +49,7 @@ describe("recipe controller", () => {
       describe("if the id does not exist", () => {
         it("should return an Error Not Found response with code 404", async () => {
           const recipeResponse = {
-            code: 404,
+            code: ServiceResponseCode.recipeIdNotFound,
             text: "Recipe not found",
             recipes: "",
           };
@@ -65,7 +65,7 @@ describe("recipe controller", () => {
       describe("if the id is syntactically wrong", () => {
         it("should return Internal Server Error, with error code 500", async () => {
           const recipeResponse = {
-            code: 500,
+            code: ServiceResponseCode.internalServerErrorQueryingRecipes,
             text: "Id is wrong",
             recipes: "",
           };
