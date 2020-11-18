@@ -9,6 +9,7 @@ import { JWTRequired } from '@foal/jwt';
 // App
 import { UserService, ServiceResponse, ServiceResponseCode } from '../../services';
 import { RefreshJWT } from '../../hooks';
+import { Preferences } from '../../models';
 
 const signupSchema = {
   properites: {
@@ -38,13 +39,19 @@ export class AuthenticationController {
   @Post('/signup')
   @ValidateBody(signupSchema)
   async signupCheck(ctx: Context) {
-    const firstName = ctx.request.body.firstName;
-    const secondName = ctx.request.body.secondName;
-    const email = ctx.request.body.email;
-    const username = ctx.request.body.username;
-    const password = ctx.request.body.password;
+    const firstName:string = ctx.request.body.firstName;
+    const secondName:string = ctx.request.body.secondName;
+    const email:string = ctx.request.body.email;
+    const username:string = ctx.request.body.username;
+    const password:string = ctx.request.body.password;
+    const emptyPrefs = new Preferences();
     const serviceResponse: ServiceResponse = await this.userService.insertUser(
-      firstName, email, username, password, secondName
+      firstName,
+      email,
+      username,
+      password,
+      emptyPrefs,
+      secondName,
     );
 
     let httpResponse: HttpResponse;
@@ -69,8 +76,8 @@ export class AuthenticationController {
   @Post('/login')
   @ValidateBody(loginSchema)
   async loginCheck(ctx: Context) {
-    const username = ctx.request.body.username;
-    const password = ctx.request.body.password;
+    const username: string = ctx.request.body.username;
+    const password: string = ctx.request.body.password;
     const serviceResponse: ServiceResponse = await this.userService.areValidCredentials(
       username, password
     );

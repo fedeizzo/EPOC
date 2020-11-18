@@ -1,10 +1,13 @@
 import { Config } from "@foal/core";
 import { strictEqual } from "assert";
-import { assert } from "console";
-import { connect, disconnect, Schema, FilterQuery, connection } from "mongoose";
+import { connect, disconnect, connection } from "mongoose";
 import { ServiceResponseCode, UserService } from "../services";
-
-type ObjectId = Schema.Types.ObjectId;
+import {
+  NegativePreferences,
+  PositivePreferences,
+  Preferences,
+} from "./preferences.model";
+import { CostLevels } from "./recipe.model";
 
 describe("The user model", () => {
   before(async () => {
@@ -17,8 +20,12 @@ describe("The user model", () => {
   });
 
   afterEach(async () => {
-    await connect(Config.getOrThrow('mongodb.uri', 'string'), { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
-    await connection.db.dropCollection('userclasses');
+    await connect(Config.getOrThrow("mongodb.uri", "string"), {
+      useNewUrlParser: true,
+      useCreateIndex: true,
+      useUnifiedTopology: true,
+    });
+    await connection.db.dropCollection("userclasses");
     await disconnect();
   });
 
@@ -33,7 +40,18 @@ describe("The user model", () => {
     const email = "mario.rossi@rossi.com";
     const username = "MarioRossi";
     const password = "Mario123";
-    const actualResponse = await user.insertUser(firstName, email, username, password, secondName);
+    const prefs = new Preferences();
+    prefs.positive = new PositivePreferences();
+    prefs.positive.priceRange = CostLevels.high;
+    prefs.negative = new NegativePreferences();
+    const actualResponse = await user.insertUser(
+      firstName,
+      email,
+      username,
+      password,
+      prefs,
+      secondName
+    );
 
     strictEqual(actualResponse.code, ServiceResponseCode.ok);
   });

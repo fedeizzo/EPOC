@@ -2,34 +2,34 @@ import { getModelForClass, prop } from "@typegoose/typegoose";
 import { CostLevels } from "./recipe.model";
 
 abstract class CommonPreferences {
-  @prop({ type: [String], required: true, unique: true })
+  @prop({ type: [String], unique: true })
   public recipes: String[];
 
-  @prop({ type: [String], required: true, unique: true })
+  @prop({ type: [String], unique: true })
   public ingredients: String[];
 }
 
 class PositivePreferencesClass extends CommonPreferences {
-  @prop({ enum: CostLevels, required: true })
+  @prop({ enum: CostLevels })
   public priceRange: CostLevels;
 }
 
 class NegativePreferencesClass extends CommonPreferences {
-  @prop({ type: [String], required: true, unique: true })
+  @prop({ type: [String], unique: true })
   public categories: String[];
 
-  @prop({ type: [String], required: true, unique: true })
+  @prop({ type: [String], unique: true })
   public plans: String[];
 
-  @prop({ type: [String], required: true, unique: true })
+  @prop({ type: [String], unique: true })
   public labels: String[];
 }
 
 export class PreferencesClass {
-  @prop({ type: [PositivePreferencesClass], required: true })
+  @prop({ type: [PositivePreferencesClass] })
   public positive: PositivePreferencesClass;
 
-  @prop({ type: [NegativePreferencesClass], required: true })
+  @prop({ type: [NegativePreferencesClass] })
   public negative: NegativePreferencesClass;
 }
 
