@@ -2,7 +2,7 @@ import { ok, strictEqual } from 'assert';
 import { getHttpMethod, getPath, Context, createController, isHttpResponseOK, Config } from '@foal/core';
 import { AuthenticationController } from './authentication.controller';
 import { connection, connect, disconnect } from 'mongoose';
-import { ServiceResponseCode } from '../services';
+import { ServiceResponseCode } from '../../services';
 
 describe('The Authentication Controller', () => {
   const controller: AuthenticationController = createController(AuthenticationController);
@@ -13,33 +13,9 @@ describe('The Authentication Controller', () => {
   //   await disconnect();
   // });
 
-  describe('signup', () => {
-    describe('When request accepts html', () => {
-      it('returns the signup html page', async () => {
-      });
-    });
-    describe('When request does not accept html', () => {
-      it('returns not found error', async () => {
-      });
-    });
-  });
-
   describe('signupCheck', () => {
     describe('When request accepts html', () => {
       it('returns the signup html page', async () => {
-      });
-    });
-    describe('When request does not accept html', () => {
-      it('returns not found error', async () => {
-      });
-    });
-  });
-
-  describe('login', () => {
-    describe('When request accepts html', () => {
-      it('returns the signup html page', async () => {
-        strictEqual(getHttpMethod(AuthenticationController, 'loginPage'), 'GET');
-        strictEqual(getPath(AuthenticationController, 'loginPage'), '/login')
       });
     });
     describe('When request does not accept html', () => {

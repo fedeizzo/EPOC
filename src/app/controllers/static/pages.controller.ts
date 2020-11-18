@@ -16,4 +16,31 @@ export class PagesController {
     }
     return render("./public/pages/search.html");
   }
+
+  @Get('/signup')
+  async signupPage(ctx: Context) {
+    if (!ctx.request.accepts('html')) {
+      return new HttpResponseNotFound();
+    }
+
+    return await render('./public/signup.html');
+  }
+
+  @Get('/login')
+  async loginPage(ctx: Context) {
+    if (!ctx.request.accepts('html')) {
+      return new HttpResponseNotFound();
+    }
+
+    return await render('./public/login.html');
+  }
+
+  @Get('/deleteUser')
+  async deleteUserPage(ctx: Context) {
+    if (!ctx.request.accepts('html')) {
+      return new HttpResponseNotFound();
+    }
+
+    return await render('./public/deleteUser.html');
+  }
 }

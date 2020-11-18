@@ -1,12 +1,18 @@
-document.getElementById("searchBar")!.onkeydown = function (e) {
+document.getElementById("searchBar")!.onkeydown = function(e) {
   if (e.code === "Enter") {
-    search();
+    const element = <HTMLInputElement>document.getElementById("searchBar");
+    const query = encodeURIComponent(element.value);
+    search(query);
   }
 };
 
-async function search() {
-  const element = <HTMLInputElement>document.getElementById("searchBar");
-  const query = encodeURIComponent(element.value);
+const queryFromHome = window.location.href.split("searchString=")[1];
+if (queryFromHome !== undefined) {
+  window.history.pushState("", "", '/search');
+  search(queryFromHome);
+}
+
+async function search(query: string) {
   const response = await fetch(`/api/v1/search?searchString=${query}`);
   const j = await response.json();
   const recipes: Partial<Recipe>[] = j["recipes"];
@@ -15,6 +21,10 @@ async function search() {
   container.className = "recipeContainer";
   for (const e of elements) {
     container.appendChild(e);
+  }
+  const a = document.getElementsByClassName('recipeContainer');
+  for (let i = 0; i < a.length; i++) {
+    a[i].remove();
   }
   document.getElementsByTagName("body")[0].appendChild(container);
 

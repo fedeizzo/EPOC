@@ -7,8 +7,8 @@ import { sign } from 'jsonwebtoken';
 import { JWTRequired } from '@foal/jwt';
 
 // App
-import { UserService, ServiceResponse, ServiceResponseCode } from '../services';
-import { RefreshJWT } from '../hooks';
+import { UserService, ServiceResponse, ServiceResponseCode } from '../../services';
+import { RefreshJWT } from '../../hooks';
 
 const signupSchema = {
   properites: {
@@ -33,34 +33,6 @@ const loginSchema = {
 
 export class AuthenticationController {
   private userService: UserService = new UserService();
-
-  // === Static pages ===
-  @Get('/signup')
-  async signupPage(ctx: Context) {
-    if (!ctx.request.accepts('html')) {
-      return new HttpResponseNotFound();
-    }
-
-    return await render('./public/signup.html');
-  }
-
-  @Get('/login')
-  async loginPage(ctx: Context) {
-    if (!ctx.request.accepts('html')) {
-      return new HttpResponseNotFound();
-    }
-
-    return await render('./public/login.html');
-  }
-
-  @Get('/deleteUser')
-  async deleteUserPage(ctx: Context) {
-    if (!ctx.request.accepts('html')) {
-      return new HttpResponseNotFound();
-    }
-
-    return await render('./public/deleteUser.html');
-  }
 
   // === Rest API ===
   @Post('/signup')

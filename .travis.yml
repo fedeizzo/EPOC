@@ -8,9 +8,10 @@ branches:
 services:
   - docker
 script:
-  - docker-compose -f docker-compose.yaml up --build -d
+  - docker-compose -f docker-compose.dev.yaml up --build -d
   - "npm run build:test"
   - "npm run start:test"
+  - docker-compose -f docker-compose.dev.yaml down
 
 # env:
 #   - DOCKER_COMPOSE_VERSION=1.26.2
