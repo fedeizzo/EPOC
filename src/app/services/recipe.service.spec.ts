@@ -48,7 +48,7 @@ describe("The Recipe Service", () => {
     });
     describe("When we use a non-existing id", () => {
       it("returns a Not Found response with error code 404", async () => {
-        const expectedErrorCode = ServiceResponseCode.recipeIdNotFound;
+        const expectedErrorCode = ServiceResponseCode.elementNotFound;
         const nonExistingId = "5fb37d79cbbec48c3b111111";
         const actualErrorCode = await recipeService.getCompleteRecipe(
           nonExistingId

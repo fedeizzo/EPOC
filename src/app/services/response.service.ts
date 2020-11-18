@@ -3,7 +3,7 @@ export interface ServiceResponse {
   text: string;
   prop?: any;
 
-  buildResponse: () => (object);
+  buildResponse(): object;
 }
 
 export enum ServiceResponseCode {
@@ -12,6 +12,5 @@ export enum ServiceResponseCode {
   wrongCredentials,
   elementNotFound,
   duplicateKeyInDb,
-  internalServerErrorQueryingRecipes, // 500
-  recipeIdNotFound, // 404
+  internalServerErrorQueryingRecipes,
 }

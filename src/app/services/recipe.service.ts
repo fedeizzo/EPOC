@@ -49,7 +49,7 @@ export class RecipeResponse implements ServiceResponse {
     this.type = RecipeResponseType.shortList;
   };
 
-  buildResponsePartialList = () => {
+  buildResponsePartialList() {
     return {
       code: this.code,
       text: this.text,
@@ -59,21 +59,21 @@ export class RecipeResponse implements ServiceResponse {
           )
         : "",
     };
-  };
+  }
 
-  buildResponseComplete = () => {
+  buildResponseComplete() {
     return {
       code: this.code,
       text: this.text,
       recipe: this.prop ? (this.prop as RecipeClass).getCompleteInfo() : "",
     };
-  };
+  }
 
-  buildResponse = () => {
+  buildResponse() {
     return this.type == RecipeResponseType.shortList
       ? this.buildResponsePartialList()
       : this.buildResponseComplete();
-  };
+  }
 }
 
 class ErrorWrapper {
@@ -142,7 +142,7 @@ export class RecipeService {
       .then((result) => {
         if (result == null) {
           response.setValuesComplete(
-            ServiceResponseCode.recipeIdNotFound,
+            ServiceResponseCode.elementNotFound,
             "Recipe not found"
           );
         } else {

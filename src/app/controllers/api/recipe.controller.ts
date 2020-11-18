@@ -5,6 +5,7 @@ import {
   HttpResponseInternalServerError,
   HttpResponseNotFound,
   HttpResponse,
+  dependency,
 } from "@foal/core";
 import {
   RecipeService,
@@ -13,12 +14,14 @@ import {
 } from "../../services/index";
 
 export class RecipeApiController {
+  @dependency
+  recipeService: RecipeService;
+
   @Get("/:recipeId")
   async getRecipeById(ctx: Context) {
     const recipeId = ctx.request.params.recipeId;
 
-    const recipeService = await new RecipeService();
-    const response: ServiceResponse = await recipeService.getCompleteRecipe(
+    const response: ServiceResponse = await this.recipeService.getCompleteRecipe(
       recipeId
     );
 
@@ -27,7 +30,7 @@ export class RecipeApiController {
       case ServiceResponseCode.ok:
         httpResponse = new HttpResponseOK(response.buildResponse());
         break;
-      case ServiceResponseCode.recipeIdNotFound:
+      case ServiceResponseCode.elementNotFound:
         httpResponse = new HttpResponseNotFound(response.buildResponse());
         break;
       case ServiceResponseCode.internalServerErrorQueryingRecipes:

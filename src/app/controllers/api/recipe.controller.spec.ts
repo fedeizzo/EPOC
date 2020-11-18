@@ -1,4 +1,4 @@
-import { when, anything, spy } from "ts-mockito";
+import { instance, when, anything, mock } from "ts-mockito";
 import {
   createController,
   getHttpMethod,
@@ -6,10 +6,13 @@ import {
   Context,
   HttpResponseOK,
   HttpResponseNotFound,
+  HttpResponseInternalServerError,
 } from "@foal/core";
 import { deepEqual, strictEqual } from "assert";
 import { RecipeApiController } from "./recipe.controller";
-import { ServiceResponseCode } from "../../services";
+import { RecipeService } from "../../services";
+import { ServiceResponseCode } from "../../services/response.service";
+import { RecipeResponse } from "../../services/recipe.service";
 
 describe("The Recipe Controller", () => {
   describe("getRecipeById", () => {
@@ -20,57 +23,93 @@ describe("The Recipe Controller", () => {
       strictEqual(getPath(RecipeApiController, "getRecipeById"), "/:recipeId");
     });
 
-    describe("should include the result if the id search in the response", () => {
-      const controller: RecipeApiController = createController(
-        RecipeApiController
-      );
-      const spiedController = spy(controller);
-
-      describe("if everything went well", () => {
-        it("should return a recipe with code 200", async () => {
-          const recipeResponse = {
-            code: ServiceResponseCode.ok,
-            text: "All ok",
-            recipes: "",
-          };
-          const expectedResponse = new HttpResponseOK(recipeResponse);
-          when(spiedController.getRecipeById(anything())).thenResolve(
-            expectedResponse
-          );
-          const res = await controller.getRecipeById({} as Context);
-          deepEqual(res, expectedResponse);
+    describe("Should include the result of the getRecipeById search in the response", () => {
+      let mockRecipeService: RecipeService;
+      let controller: RecipeApiController;
+      beforeEach(() => {
+        mockRecipeService = mock(RecipeService);
+        controller = createController(RecipeApiController, {
+          recipeService: instance(mockRecipeService),
         });
       });
+      describe("if everything went well", () => {
+        it("should return a recipe with code 200", async () => {
+          const mockServiceResponse = mock(RecipeResponse);
+          const mockResponseBody = {
+            code: ServiceResponseCode.ok,
+            text: "text",
+            recipes: "ndsaioad8",
+          };
+          when(mockServiceResponse.buildResponse()).thenReturn(
+            mockResponseBody
+          );
+          when(mockServiceResponse.code).thenReturn(ServiceResponseCode.ok);
+          when(mockRecipeService.getCompleteRecipe(anything())).thenResolve(
+            instance(mockServiceResponse)
+          );
 
+          const mockContext = mock(Context);
+          const mockReq: any = mock();
+          when(mockContext.request).thenReturn(instance(mockReq));
+          when(mockReq.params).thenReturn({ recipeId: "anything" });
+
+          const res = await controller.getRecipeById(instance(mockContext));
+          deepEqual(res, new HttpResponseOK(mockResponseBody));
+        });
+      });
       describe("if the id does not exist", () => {
         it("should return an Error Not Found response with code 404", async () => {
-          const recipeResponse = {
-            code: ServiceResponseCode.recipeIdNotFound,
+          const mockServiceResponse = mock(RecipeResponse);
+          const mockResponseBody = {
+            code: 404,
             text: "Recipe not found",
             recipes: "",
           };
-          const expectedResponse = new HttpResponseNotFound(recipeResponse);
-          when(spiedController.getRecipeById(anything())).thenResolve(
-            expectedResponse
+          when(mockServiceResponse.buildResponse()).thenReturn(
+            mockResponseBody
           );
-          const res = await controller.getRecipeById({} as Context);
-          deepEqual(res, expectedResponse);
+          when(mockServiceResponse.code).thenReturn(
+            ServiceResponseCode.elementNotFound
+          );
+          when(mockRecipeService.getCompleteRecipe(anything())).thenResolve(
+            instance(mockServiceResponse)
+          );
+
+          const mockContext = mock(Context);
+          const mockReq: any = mock();
+          when(mockContext.request).thenReturn(instance(mockReq));
+          when(mockReq.params).thenReturn({ recipeId: "anything" });
+
+          const res = await controller.getRecipeById(instance(mockContext));
+          deepEqual(res, new HttpResponseNotFound(mockResponseBody));
         });
       });
 
       describe("if the id is syntactically wrong", () => {
         it("should return Internal Server Error, with error code 500", async () => {
-          const recipeResponse = {
-            code: ServiceResponseCode.internalServerErrorQueryingRecipes,
+          const mockServiceResponse = mock(RecipeResponse);
+          const mockResponseBody = {
+            code: 500,
             text: "Id is wrong",
             recipes: "",
           };
-          const expectedResponse = new HttpResponseNotFound(recipeResponse);
-          when(spiedController.getRecipeById(anything())).thenResolve(
-            expectedResponse
+          when(mockServiceResponse.buildResponse()).thenReturn(
+            mockResponseBody
           );
-          const res = await controller.getRecipeById({} as Context);
-          strictEqual(res.statusCode, expectedResponse.statusCode);
+          when(mockServiceResponse.code).thenReturn(
+            ServiceResponseCode.internalServerErrorQueryingRecipes
+          );
+          when(mockRecipeService.getCompleteRecipe(anything())).thenResolve(
+            instance(mockServiceResponse)
+          );
+
+          const mockContext = mock(Context);
+          const mockReq: any = mock();
+          when(mockContext.request).thenReturn(instance(mockReq));
+          when(mockReq.params).thenReturn({ recipeId: "anything" });
+
+          const res = await controller.getRecipeById(instance(mockContext));
+          deepEqual(res, new HttpResponseInternalServerError(mockResponseBody));
         });
       });
     });
