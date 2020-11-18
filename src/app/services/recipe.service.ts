@@ -27,7 +27,11 @@ export class RecipeResponse implements ServiceResponse {
   public type: RecipeResponseType;
   public prop?: RecipeClass | DocumentType<RecipeClass>[];
 
-  setValuesComplete = (code: ServiceResponseCode, text: string, prop?: RecipeClass) => {
+  setValuesComplete = (
+    code: ServiceResponseCode,
+    text: string,
+    prop?: RecipeClass
+  ) => {
     this.code = code;
     this.text = text;
     prop ? (this.prop = prop) : (this.prop = {} as RecipeClass);
@@ -97,7 +101,10 @@ export class RecipeService {
       result = result.concat(moreResults);
     }
     if (result instanceof ErrorWrapper) {
-      response.setValuesList(ServiceResponseCode.internalServerErrorQueryingRecipes, "Error while queryiung the db for a list of recipes:\n"+result.error);
+      response.setValuesList(
+        ServiceResponseCode.internalServerErrorQueryingRecipes,
+        "Error while queryiung the db for a list of recipes:\n" + result.error
+      );
     } else {
       response.setValuesList(ServiceResponseCode.ok, "All ok", result);
     }
@@ -134,13 +141,23 @@ export class RecipeService {
       .exec()
       .then((result) => {
         if (result == null) {
-          response.setValuesComplete(ServiceResponseCode.recipeIdNotFound, "Recipe not found");
+          response.setValuesComplete(
+            ServiceResponseCode.recipeIdNotFound,
+            "Recipe not found"
+          );
         } else {
-          response.setValuesComplete(ServiceResponseCode.ok, "All ok", result as RecipeClass);
+          response.setValuesComplete(
+            ServiceResponseCode.ok,
+            "All ok",
+            result as RecipeClass
+          );
         }
       })
       .catch((error) => {
-        response.setValuesComplete(ServiceResponseCode.internalServerErrorQueryingRecipes, "Error while looing for recipe in db:\n"+error);
+        response.setValuesComplete(
+          ServiceResponseCode.internalServerErrorQueryingRecipes,
+          "Error while looing for recipe in db:\n" + error
+        );
       });
     return response;
   }

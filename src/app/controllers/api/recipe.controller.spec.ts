@@ -4,18 +4,14 @@ import {
   getHttpMethod,
   getPath,
   Context,
-  HttpResponseBadRequest,
   HttpResponseOK,
   HttpResponseNotFound,
 } from "@foal/core";
 import { deepEqual, strictEqual } from "assert";
 import { RecipeApiController } from "./recipe.controller";
-import { RecipeService, ServiceResponseCode } from "../../services";
-import { RecipeResponse } from "../../services/recipe.service";
-import { Recipe } from "../../models";
+import { ServiceResponseCode } from "../../services";
 
 describe("The Recipe Controller", () => {
-  
   describe("getRecipeById", () => {
     it("should handle requests at GET ", () => {
       strictEqual(getHttpMethod(RecipeApiController, "getRecipeById"), "GET");

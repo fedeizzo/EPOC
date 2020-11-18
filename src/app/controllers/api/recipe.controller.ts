@@ -4,9 +4,13 @@ import {
   HttpResponseOK,
   HttpResponseInternalServerError,
   HttpResponseNotFound,
-  HttpResponse
+  HttpResponse,
 } from "@foal/core";
-import { RecipeService, ServiceResponse, ServiceResponseCode } from "../../services/index";
+import {
+  RecipeService,
+  ServiceResponse,
+  ServiceResponseCode,
+} from "../../services/index";
 
 export class RecipeApiController {
   @Get("/:recipeId")
@@ -27,7 +31,9 @@ export class RecipeApiController {
         httpResponse = new HttpResponseNotFound(response.buildResponse());
         break;
       case ServiceResponseCode.internalServerErrorQueryingRecipes:
-        httpResponse = new HttpResponseInternalServerError(response.buildResponse());
+        httpResponse = new HttpResponseInternalServerError(
+          response.buildResponse()
+        );
         break;
       default:
         httpResponse = new HttpResponseInternalServerError();

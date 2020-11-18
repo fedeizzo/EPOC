@@ -7,7 +7,11 @@ import {
   dependency,
   HttpResponse,
 } from "@foal/core";
-import { RecipeService, ServiceResponse, ServiceResponseCode } from "../../services";
+import {
+  RecipeService,
+  ServiceResponse,
+  ServiceResponseCode,
+} from "../../services";
 
 export class SearchApiController {
   @dependency
@@ -33,7 +37,9 @@ export class SearchApiController {
         httpResponse = new HttpResponseOK(response.buildResponse());
         break;
       case ServiceResponseCode.internalServerErrorQueryingRecipes:
-        httpResponse = new HttpResponseInternalServerError(response.buildResponse());
+        httpResponse = new HttpResponseInternalServerError(
+          response.buildResponse()
+        );
         break;
       default:
         httpResponse = new HttpResponseInternalServerError();
