@@ -11,5 +11,7 @@ export enum ServiceResponseCode {
   passwordTooCommon,
   wrongCredentials,
   elementNotFound,
-  duplicateKeyInDb
+  duplicateKeyInDb,
+  internalServerErrorQueryingRecipes, // 500
+  recipeIdNotFound, // 404
 }

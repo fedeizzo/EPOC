@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research</title>
+    <script src='../src/pages/search.js' defer></script>
+    <style>
+        .recipe_card{
+            display: flex;
+            margin: 10px;
+        }
+        .recipe_card>img{
+            height: 200px;
+        }
+        .recipeContainer{
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <input id="searchBar" type="text" onsubmit="()=>search()"></input>
+</body>
+</html>
