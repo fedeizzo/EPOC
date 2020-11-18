@@ -55,8 +55,8 @@ export class RecipeResponse implements ServiceResponse {
       text: this.text,
       recipes: this.prop
         ? (this.prop as DocumentType<RecipeClass>[]).map((rec) =>
-            getShortInfo(rec)
-          )
+          getShortInfo(rec)
+        )
         : "",
     };
   }
@@ -160,5 +160,13 @@ export class RecipeService {
         );
       });
     return response;
+  }
+
+  public async findExactMatches(queryFields: object) {
+    return await Recipe.find(queryFields)
+      .select(RecipeService.fieldsToSelect)
+      .sort({numberOfRatings: -1})
+      .exec()
+      .catch((e) => new ErrorWrapper(e));
   }
 }
