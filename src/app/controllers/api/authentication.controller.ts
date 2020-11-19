@@ -1,5 +1,5 @@
 import {
-  Config, Context, Get, Post, ValidateBody, HttpResponseNotFound, render,
+  Config, Context, Post, ValidateBody, HttpResponseNotFound,
   HttpResponseOK, Delete, HttpResponseUnauthorized, HttpResponseInternalServerError,
   HttpResponse, HttpResponseForbidden, HttpResponseConflict
 } from '@foal/core';
@@ -8,7 +8,6 @@ import { JWTRequired } from '@foal/jwt';
 
 // App
 import { UserService, ServiceResponse, ServiceResponseCode } from '../../services';
-import { RefreshJWT } from '../../hooks';
 
 const signupSchema = {
   properites: {
@@ -34,7 +33,6 @@ const loginSchema = {
 export class AuthenticationController {
   private userService: UserService = new UserService();
 
-  // === Rest API ===
   @Post('/signup')
   @ValidateBody(signupSchema)
   async signupCheck(ctx: Context) {
@@ -107,8 +105,8 @@ export class AuthenticationController {
     return httpResponse;
   }
 
-  @JWTRequired()
   @Post('/logout')
+  @JWTRequired()
   async logout(ctx: Context) {
     const res = new HttpResponseOK();
     res.setCookie('JWT', '');
