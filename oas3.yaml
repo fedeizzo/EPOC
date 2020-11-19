@@ -176,6 +176,206 @@ paths:
         "500":
           $ref: "#/components/responses/500InternalServerError"
 
+  /preferences/positive:
+    x-summary: Endpoint to manage the user preferences
+    get:
+      description: "Returns a json with the list of preferences of the user.
+        It is possible to specify the types of preference you want to retrieve"
+      summary: Retrieves user positive preferences
+      security:
+        - jwtAuth: []
+      parameters:
+        - name: types
+          in: query
+          description: Types of preferences to fetch
+          required: true
+          schema:
+            type: array
+            items: 
+              enum:
+                - recipe
+                - ingredient
+                - priceRange
+          example: types=[recipe, priceRange]
+            
+          explode: true
+      responses:
+        "200":
+          description: "Array of preferences"
+          content:
+            application/json:
+              schema:
+                properties:
+                  recipes:
+                    type: array
+                    items:
+                      type: string
+                  ingredients:
+                    type: array
+                    items:
+                      type: string
+                  priceRange:
+                    type: string
+              example:
+                recipes: ['pollo alla cantonese','pasta alla carbonara']      
+                ingredients: ['prezzemolo','aglio']      
+                priceRange: 'high'      
+            
+        "400":
+          $ref: "#/components/responses/400BadRequest"
+        "401":
+          $ref: "#/components/responses/401UnauthorizedErrorJWT"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+    post:
+      security:
+        - jwtAuth: []
+      summary: Creates new positive preference
+      description: Creates new positive preference by adding the value specified in the body to the ones associated with the user
+      requestBody:
+        $ref: "#/components/requestBodies/PreferencePositivePost"
+      responses:
+        "200":
+          description: "Correctly added preference"
+        "400":
+          $ref: "#/components/responses/400BadRequest"
+        "401":
+          $ref: "#/components/responses/401UnauthorizedErrorJWT"
+        "409":
+          description: "Conflict: the preference you tried to add was inside negative preferences"
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: "Preference ingredient basilico is in negative preferences,
+              so we can not add it here"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+    delete:
+      security:
+        - jwtAuth: []
+      description: 'Deletes the given (positive) preference from the user profile'
+      requestBody:
+        $ref: "#/components/requestBodies/PreferencePositivePost"
+      responses:
+        "200":
+          description: "Correctly removed preference"
+        "400":
+          $ref: "#/components/responses/400BadRequest"
+        "401":
+          $ref: "#/components/responses/401UnauthorizedErrorJWT"
+        "404":
+          description: "Preference x was not found in the user's profile"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+
+  /preferences/negative:
+    x-summary: Endpoint to manage the user negative preferences
+    get:
+      description: "Returns a json with the list of negative preferences of the user.
+        It is possible to specify the types of preference you want to retrieve"
+      summary: Retrieves user negative preferences
+      security:
+        - jwtAuth: []
+      parameters:
+        - name: types
+          in: query
+          description: Types of negative preferences to fetch
+          required: true
+          schema:
+            type: array
+            items: 
+              enum:
+                - recipe
+                - ingredient
+                - categories
+                - plans
+                - labels
+          example: types=[recipe, labels, plans]
+          explode: true
+      responses:
+        "200":
+          description: "Array of (negative) preferences"
+          content:
+            application/json:
+              schema:
+                properties:
+                  recipes:
+                    description: ids of the recipes the user dislikes
+                    type: array
+                    items:
+                      type: string
+                  ingredients:
+                    type: array
+                    items:
+                      type: string
+                  categories:
+                    type: array
+                    items:
+                      type: string
+                  plans:
+                    description: ids of the plans the user dislikes
+                    type: array
+                    items:
+                      type: string
+                  labels:
+                    type: array
+                    items:
+                      type: string
+              example:
+                recipes: ['gnocchi al pesto','ravioli con sedano']      
+                ingredients: ['peperoncino','cardamomo']      
+                categories: ['pasti veloci']      
+                plans: []      
+                labels: []      
+        "400":
+          $ref: "#/components/responses/400BadRequest"
+        "401":
+          $ref: "#/components/responses/401UnauthorizedErrorJWT"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+    post:
+      security:
+        - jwtAuth: []
+      summary: Creates new negative preference
+      description: Creates new negative preference by adding the value specified in the body to the ones associated with the user
+      requestBody:
+        $ref: "#/components/requestBodies/PreferenceNegativePost"
+      responses:
+        "200":
+          description: "Correctly added preference"
+        "400":
+          $ref: "#/components/responses/400BadRequest"
+        "401":
+          $ref: "#/components/responses/401UnauthorizedErrorJWT"
+        "409":
+          description: "Conflict: the preference you tried to add was inside positive preferences"
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: "Preference ingredient arancia is in positive preferences,
+              so we can not add it here"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+    delete:
+      security:
+        - jwtAuth: []
+      description: 'Deletes the given (negative) preference from the user profile'
+      requestBody:
+        $ref: "#/components/requestBodies/PreferenceNegativePost"
+      responses:
+        "200":
+          description: "Correctly removed preference"
+        "400":
+          $ref: "#/components/responses/400BadRequest"
+        "401":
+          $ref: "#/components/responses/401UnauthorizedErrorJWT"
+        "404":
+          description: "Preference x was not found in the user's profile"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+
 components:
   # https://swagger.io/docs/specification/authentication/bearer-authentication/
   securitySchemes:
@@ -416,6 +616,24 @@ components:
           sodium: 1.3
           sugar: 1.2
 
+    PositivePreference:
+      type: object
+      properties:
+        "type":
+          type: string
+          enum: [recipes, ingredients, priceRange]
+        value:
+          type: string
+
+    NegativePreference:
+      type: object
+      properties:
+        "type":
+          type: string
+          enum: [recipe,ingredient,categories,plans,labels]
+        value:
+          type: string
+        
   requestBodies:
     LoginRequest:
       description: "Login Request"
@@ -439,10 +657,29 @@ components:
             email: "mario.rossi@gmail.com"
             username: "Mario"
             password: "mariuccio123"
+    
+    PreferencePositivePost:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/PositivePreference"
+          example:
+            "type": recipe
+            "value": mousse al cioccolato con scorzette d'arancia
+            
+    PreferenceNegativePost:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/NegativePreference"
+          example:
+            "type": ingredient
+            "value": broccoli
             
   responses:
     200OkHtml:
       description: Html page
+      
     400BadRequest:
       description: BadRequest
       
