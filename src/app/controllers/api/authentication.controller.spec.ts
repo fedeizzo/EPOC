@@ -1,10 +1,11 @@
 import { spy, anything, when } from 'ts-mockito';
 import { deepEqual } from 'assert';
-import { Context, createController, Config } from '@foal/core';
+import { Context, createController, Config, HttpResponse, HttpResponseNotFound, HttpResponseUnauthorized } from '@foal/core';
 import { AuthenticationController } from './authentication.controller';
 import { connection, connect, disconnect } from 'mongoose';
 import { HttpResponseOK, HttpResponseForbidden, HttpResponseConflict, HttpResponseBadRequest } from '@foal/core';
 import { User } from '../../models';
+import { UserService } from '../../services';
 
 describe('The Authentication Controller', () => {
   const controller: AuthenticationController = createController(AuthenticationController);
@@ -98,12 +99,95 @@ describe('The Authentication Controller', () => {
   });
 
   describe('loginCheck', () => {
-    describe('When request accepts html', () => {
-      it('returns the signup html page', async () => {
+    describe('When passed data is ok', () => {
+      before(async () => {
+        const firstName = "test";
+        const secondName = "test";
+        const email = "test@test.com";
+        const username = "test";
+        const password = "lkjdslvfsd";
+        const userService: UserService = new UserService();
+        await userService.insertUser(
+          firstName,
+          email,
+          username,
+          password,
+          secondName);
+      });
+      it('returns OK response', async () => {
+        const ctx = new Context({});
+        ctx.request.body = {
+          username: "test",
+          password: "lkjdslvfsd"
+        };
+        const authResponse = {
+          text: "User found, right credentials",
+          userInfo: {
+            firstName: "test",
+            secondName: "test",
+            email: "test@test.com",
+            username: "test"
+          }
+        };
+
+        const expectedResponse = new HttpResponseOK(authResponse);
+        const actualResponse: HttpResponse = await controller.loginCheck(ctx);
+
+        // use actual JWT cookie for expexted response
+        const cookie = actualResponse.getCookie('JWT');
+        expectedResponse.setCookie('JWT', cookie.value == undefined ? "" : cookie.value, cookie.options);
+
+        deepEqual(actualResponse, expectedResponse);
       });
     });
-    describe('When request does not accept html', () => {
-      it('returns not found error', async () => {
+    describe('When user password is wrong', () => {
+      before(async () => {
+        const firstName = "test";
+        const secondName = "test";
+        const email = "test@test.com";
+        const username = "test";
+        const password = "lkjdslvfsd";
+        const userService: UserService = new UserService();
+        await userService.insertUser(
+          firstName,
+          email,
+          username,
+          password,
+          secondName);
+      });
+      it('returns 401 unauthorized response', async () => {
+        const ctx = new Context({});
+        ctx.request.body = {
+          username: "test",
+          password: "lkjdslvfsgf34d"
+        };
+        const authResponse = {
+          text: "User found, wrong credentials",
+          userInfo: ""
+        };
+
+        const expectedResponse = new HttpResponseUnauthorized(authResponse);
+        const actualResponse: HttpResponse = await controller.loginCheck(ctx);
+
+        deepEqual(actualResponse, expectedResponse);
+      });
+    });
+    describe('When user does not exists', () => {
+      it('returns 404 element not found response', async () => {
+        const ctx = new Context({});
+        ctx.request.body = {
+          username: "test2",
+          password: "lkjdslvfsd"
+        };
+        const authResponse = {
+          text: "User not found, probably",
+          userInfo: ""
+        };
+
+        const expectedResponse = new HttpResponseNotFound(authResponse);
+        const actualResponse: HttpResponse = await controller.loginCheck(ctx);
+
+        deepEqual(actualResponse, expectedResponse);
       });
     });
   });
@@ -111,7 +195,8 @@ describe('The Authentication Controller', () => {
   describe('logout', () => {
     describe('When JWT is set', () => {
       it('returns ok response', async () => {
-        const ctx = new Context({ user: 'ciao' });
+        const ctx = new Context({});
+        ctx.user = { username: 'ciao' };
         const expectedResponse = new HttpResponseOK();
         expectedResponse.setCookie('JWT', '');
         const actualResponse = await controller.logout(ctx);
@@ -126,6 +211,112 @@ describe('The Authentication Controller', () => {
         // when(spiedController.logout(anything())).thenResolve(
         //   expectedResponse
         // );
+      });
+    });
+  });
+
+  describe('deleteUser', () => {
+    describe('When JWT is set', () => {
+      before(async () => {
+        const firstName = "test";
+        const secondName = "test";
+        const email = "test@test.com";
+        const username = "test";
+        const password = "lkjdslvfsd";
+        const userService: UserService = new UserService();
+        await userService.insertUser(
+          firstName,
+          email,
+          username,
+          password,
+          secondName);
+      });
+      it('returns ok response', async () => {
+        const ctx = new Context({});
+        ctx.user = { username: 'test' };
+        ctx.request.body = {
+          username: "test",
+          password: "lkjdslvfsd"
+        };
+        const authResponse = {
+          text: "User deleted definitively",
+          userInfo: {
+            firstName: "test",
+            secondName: "test",
+            email: "test@test.com",
+            username: "test"
+          }
+        };
+        const expectedResponse = new HttpResponseOK(authResponse);
+        const actualResponse = await controller.deleteUser(ctx);
+        expectedResponse.setCookie('JWT', '');
+
+        deepEqual(actualResponse, expectedResponse);
+      });
+    });
+    describe('When JWT does not match with user credentials', () => {
+      before(async () => {
+        const firstName = "test";
+        const secondName = "test";
+        const email = "test@test.com";
+        const username = "test";
+        const password = "lkjdslvfsd";
+        const userService: UserService = new UserService();
+        await userService.insertUser(
+          firstName,
+          email,
+          username,
+          password,
+          secondName);
+      });
+      it('returns 401 unauthorized response', async () => {
+        const ctx = new Context({});
+        ctx.user = { username: "test2" };
+        ctx.request.body = {
+          username: "test",
+          password: "lkjdslvfsd"
+        };
+        const authResponse = {
+          text: "User credentials do not match with your JWT",
+          userInfo: ""
+        };
+
+        const expectedResponse = new HttpResponseUnauthorized(authResponse);
+        const actualResponse = await controller.deleteUser(ctx);
+        deepEqual(actualResponse, expectedResponse);
+      });
+    });
+    describe('When password is not correct', () => {
+      before(async () => {
+        const firstName = "test";
+        const secondName = "test";
+        const email = "test@test.com";
+        const username = "test";
+        const password = "lkjdslvfsd";
+        const userService: UserService = new UserService();
+        await userService.insertUser(
+          firstName,
+          email,
+          username,
+          password,
+          secondName);
+      });
+      it('returns 401 unauthorized response', async () => {
+        const ctx = new Context({});
+        ctx.user = { username: "test" };
+        ctx.request.body = {
+          username: "test",
+          password: "lkjdsdsalvfsd"
+        };
+
+        const authResponse = {
+          text: "User found, wrong credentials",
+          userInfo: ""
+        };
+
+        const expectedResponse = new HttpResponseUnauthorized(authResponse);
+        const actualResponse = await controller.deleteUser(ctx);
+        deepEqual(actualResponse, expectedResponse);
       });
     });
   });
