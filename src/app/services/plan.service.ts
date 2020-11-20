@@ -5,6 +5,7 @@ import { RecipeService } from '../services';
 import { DocumentType } from '@typegoose/typegoose';
 import { CostLevels } from '../models/recipe.model';
 import { normal } from 'random';
+import { Plan, PlanClass } from '../models/plan.model';
 
 export class PlanService {
   private alpha: number = 1.5; // multiplicative factor for normal std
@@ -18,8 +19,8 @@ export class PlanService {
   }
 
   // TODO when preferences will be implemented change this line
-  async getPlan(numberOfRecipes: number, budget?: CostLevels, preferences?: any, user?: DocumentType<UserClass>)
-    : Promise<DocumentType<RecipeClass>[]> {
+  async getPlan(name: string, numberOfRecipes: number, budget?: CostLevels, preferences?: any, user?: DocumentType<UserClass>)
+    : Promise<DocumentType<PlanClass>> {
     const queryParams = {};
     if (budget !== undefined) {
       queryParams['estimatedCost'] = budget;
@@ -34,10 +35,16 @@ export class PlanService {
       setRandomIndexes.add(this.getRandomArbitrary(0, (recipes as DocumentType<RecipeClass>[]).length - 1));
     }
 
+    let plan = new Plan();
+    plan.name = name;
+    plan.user = user;
+    plan.numRecipies = numberOfRecipes;
+    plan.estimatedCost = budget;
+
     for (let i of setRandomIndexes) {
-      selectedRecipes.push(recipes[i]);
+      plan.recipes.push(recipes[i]);
     }
 
-    return selectedRecipes;
+    return await plan.save();
   }
 }
