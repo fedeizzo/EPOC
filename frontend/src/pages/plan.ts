@@ -1,31 +1,15 @@
-const fakePlan = {
-  name: "Sample Plan #1",
-  author: "Flinn",
-  recipes: [
-    "5fb2e3b95875a9951a44c2af",
-    "5fb2e3b95875a9951a44c2b1",
-    "5fb2e3b95875a9951a44c2b2",
-    "5fb2e3b95875a9951a44c2b3",
-    "5fb2e3b95875a9951a44c2b4",
-    "5fb2e3b95875a9951a44c2b5",
-    "5fb2e3b95875a9951a44c2b6",
-    "5fb2e3b95875a9951a44c2b7",
-    "5fb2e3b95875a9951a44c2b8",
-  ],
-};
-
 async function loadAndShow() {
   const fragments = window.location.toString().split("/");
   const planId = fragments[fragments.length - 1];
-  //TODO: add type once we have a model
-  const plan = fakePlan; //? (await fetch(`api/v1/plans/${planId}`));
+  const response = await fetch(`/api/v1/plan/get?planId=${planId}`);
+  const plan = await response.json();
   const div = document.createElement("div");
   div.className = "planContainer";
   const name = document.createElement("h3");
   name.innerText = plan.name;
   div.appendChild(name);
   const authorDiv = document.createElement("p");
-  authorDiv.innerText = `Author: ${plan.author ?? 'user deleted'}`;
+  authorDiv.innerText = `Author: ${plan.author ?? "user deleted"}`;
   div.appendChild(authorDiv);
   const recipesText = document.createElement("p");
   recipesText.innerText = "Recipes";

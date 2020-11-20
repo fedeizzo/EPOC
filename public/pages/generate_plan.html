@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Generate Plan</title>
+    <style>
+      
+    </style>
+    <script src="../src/pages/generate_plan.js" defer></script>
+  </head>
+  <body>
+    <input id='name' placeholder='Plan name' ></input>
+    <input type="number" id="number" placeholder="How many meals?"></input>
+    <select name="cost level" id="costLevel"> 
+        <option value="veryLow">veryLow</option>
+        <option value="low">low</option>
+        <option value="medium">medium</option>
+        <option value="high">high</option>
+        <option value="veryHigh">veryHigh</option>
+    </select> 
+    <select name="use preferences" id="usePreferences" value='medium'> 
+        <option value="false">false</option>
+        <option value="true">true</option>
+    </select> 
+    <button id="submitButton">generate</button>
+  </body>
+</html>

@@ -19,7 +19,7 @@ export class PlanService {
   }
 
   // TODO when preferences will be implemented change this line
-  async getPlan(name: string, numberOfRecipes: number, budget?: CostLevels, preferences?: any, user?: DocumentType<UserClass>)
+  async generateAndSavePlan(name: string, numberOfRecipes: number, budget?: CostLevels, preferences?: any, user?: DocumentType<UserClass>)
     : Promise<DocumentType<PlanClass>> {
     const queryParams = {};
     if (budget !== undefined) {
@@ -29,10 +29,12 @@ export class PlanService {
 
     const selectedRecipes: DocumentType<RecipeClass>[] = [];
     var setRandomIndexes: Set<number> = new Set<number>();
+    let iteration = 0;
 
     // avoid repeated random generated numbers
-    while (setRandomIndexes.size < numberOfRecipes) {
+    while (setRandomIndexes.size < numberOfRecipes && iteration < 1000) {
       setRandomIndexes.add(this.getRandomArbitrary(0, (recipes as DocumentType<RecipeClass>[]).length - 1));
+      iteration++;
     }
 
     let plan = new Plan();
@@ -46,5 +48,14 @@ export class PlanService {
     }
 
     return await plan.save();
+  }
+
+  async getPlan(planId: string) {
+    try {
+      const plan = await Plan.findById(planId);
+      return plan;
+    } catch (_) {
+      return null;
+    }
   }
 }

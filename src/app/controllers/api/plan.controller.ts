@@ -1,47 +1,73 @@
-import { Context, Get, Post, HttpResponseOK, dependency, ValidateBody } from "@foal/core";
-import { DocumentType } from "@typegoose/typegoose";
+import {
+  Context,
+  Get,
+  Post,
+  HttpResponseOK,
+  dependency,
+  HttpResponseNotFound,
+  ValidateQueryParam,
+} from "@foal/core";
 import { JWTOptional } from "@foal/jwt";
 import { PlanService } from "../../services";
-import { CostLevels, RecipeClass } from "../../models/recipe.model";
-import { PlanClass } from "../../models/plan.model";
+import { CostLevels } from "../../models/recipe.model";
+import { User } from "../../models";
 
 const generatePlanSchema = {
   properites: {
-    name: { type: 'name' },
-    numberOfMeals: { type: 'number' },
-    usingPreferences: { type: 'boolean' },
-    preferences: { type: 'object' },
+    name: { type: "string" },
+    numberOfMeals: { type: "number" },
+    usingPreferences: { type: "boolean" },
+    preferences: { type: "object" },
     budget: { type: CostLevels },
   },
-  required: ['numberOfMeals', 'usingPreferences'],
-  type: 'object'
-}
-
+  required: ["numberOfMeals", "usingPreferences"],
+  type: "object",
+};
 
 export class PlanController {
   @dependency
   planService: PlanService;
 
-  @Post("/")
-  @ValidateBody(generatePlanSchema)
+  @Post("/generate")
+  //@ValidateBody(generatePlanSchema)
   @JWTOptional()
   async generatePlan(ctx: Context) {
-    let name = ctx.request.body.name;
+    const json = JSON.parse(ctx.request.body);
+    let name = json.name;
     let user = ctx.user;
-    // user? console.log(user) : console.log("Utente generico");
-    let numberOfMeals: number = ctx.request.body.numberOfMeals;
-    let budget : CostLevels = ctx.request.body.budget;
-    let usingPreferences: boolean = ctx.request.body.usingPreferences;
-    let preferences: any = usingPreferences? ctx.request.body.preference : undefined;
+    //TODO: put inside userservice
+    const userObj = await User.find({ username: user.username });
+    let numberOfMeals: number = json.numberOfMeals;
+    let budget: CostLevels = json.budget;
+    let usingPreferences: boolean = json.usingPreferences;
+    let preferences: any = usingPreferences ? json.preference : undefined;
 
-    let response = await this.planService.getPlan(
+    let response = await this.planService.generateAndSavePlan(
       name,
       numberOfMeals,
       budget,
       preferences,
-      user
+      userObj[0]
     );
 
     return new HttpResponseOK(response);
+  }
+
+  @Get("/get")
+  @ValidateQueryParam("planId", { type: "string" }, { required: true })
+  async getRecipeById(ctx: Context) {
+    const planId = ctx.request.query.planId;
+    const plan = await this.planService.getPlan(planId);
+    if (plan === null) {
+      return new HttpResponseNotFound();
+    } else {
+      const user = await User.findById(plan.user);
+      return new HttpResponseOK({
+        name: plan.name,
+        recipes: plan.recipes,
+        //TODO: filter before sending!
+        author: user?.username,
+      });
+    }
   }
 }

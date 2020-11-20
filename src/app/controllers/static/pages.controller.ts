@@ -17,6 +17,14 @@ export class PagesController {
     return render("./public/pages/plan.html");
   }
 
+  @Get("generate/")
+  async getGeneratePlanPage(ctx: Context) {
+    if (!ctx.request.accepts("html")) {
+      return new HttpResponseNotFound();
+    }
+    return render("./public/pages/generate_plan.html");
+  }
+
   @Get("search")
   async serachPage(ctx: Context) {
     if (!ctx.request.accepts("html")) {

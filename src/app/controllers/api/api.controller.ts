@@ -8,7 +8,7 @@ export class ApiController {
   subControllers = [
     controller("/recipe", RecipeApiController),
     controller("/search", SearchApiController),
-    controller("/generatePlan", PlanController),
+    controller("/plan", PlanController),
     controller("/", AuthenticationController),
   ];
 }
