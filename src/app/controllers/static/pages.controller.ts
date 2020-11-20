@@ -9,6 +9,14 @@ export class PagesController {
     return render("./public/pages/recipe.html");
   }
 
+  @Get("plan/:planId")
+  async getPlanPage(ctx: Context) {
+    if (!ctx.request.accepts("html")) {
+      return new HttpResponseNotFound();
+    }
+    return render("./public/pages/plan.html");
+  }
+
   @Get("search")
   async serachPage(ctx: Context) {
     if (!ctx.request.accepts("html")) {
