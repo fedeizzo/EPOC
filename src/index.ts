@@ -12,6 +12,7 @@ import { AppController } from './app/app.controller';
 
 async function main() {
   const uri = Config.getOrThrow('mongodb.uri', 'string');
+  console.log("uri: ", uri)
   connect(uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
   connection.on('connected', () => console.log("mi sono connesso"));
   connection.on('disconnected', () => console.log("mi sono disconneso"));
@@ -19,7 +20,7 @@ async function main() {
   const app = createApp(AppController);
 
   const httpServer = http.createServer(app);
-  const port = Config.get2('port', 'number', 3001);
+  const port = process.env.PORT || 3001;
   httpServer.listen(port, () => {
     console.log(`Listening on port ${port}...`);
   });

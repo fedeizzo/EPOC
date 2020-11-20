@@ -7,17 +7,21 @@ branches:
     - staging
 services:
   - docker
+before_deploy:
+  - curl https://cli-assets.heroku.com/install.sh | sh
+  - docker login --username=$HEROKU_LOGIN --password=$HEROKU_API_KEY registry.heroku.com
 script:
   - docker-compose -f docker-compose.dev.yaml up --build -d
   - "npm run build:test"
   - "npm run start:test"
   - docker-compose -f docker-compose.dev.yaml down
-
-# env:
-#   - DOCKER_COMPOSE_VERSION=1.26.2
-# before_install:
-#   - sudo rm /usr/local/bin/docker-compose
-#   - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-uname -m > docker-compose
-#   - chmod +x docker-compose
-#   - sudo mv docker-compose /usr/local/bin
-#   - docker-compose -f docker-compose.yaml up --build -d
+deploy:
+  provider: script
+  script:
+      docker build -f Dockerfile.production -t epoc/epoc:latest .;
+      docker tag epoc/epoc:latest registry.heroku.com/$HEROKU_APP/web;
+      docker push epoc/epoc:latest;
+      docker push registry.heroku.com/$HEROKU_APP/web;
+      heroku container:release web --app $HEROKU_APP
+  on:
+    branch: master
