@@ -162,7 +162,7 @@ paths:
           name: recipeId
           required: true
           schema:
-            type: integer
+            type: string
           description: The id of the recipe
       responses:
         "200":
@@ -375,6 +375,51 @@ paths:
           description: "Preference x was not found in the user's profile"
         "500":
           $ref: "#/components/responses/500InternalServerError"
+
+  /plan/generate:
+    x-summary: Generate an eating plan for the user
+    post:
+      description: Generates an eating palan for the user basing on the parameters the user specified in the request
+      summary: Plan generation
+      requestBody:
+        $ref: "#/components/requestBodies/PlanRequest"
+      responses:
+        "200":
+          description: Plan generated for the user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Plan"        
+        "400":
+          $ref: "#/components/responses/400BadRequest"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+  
+  /plan/get:
+    x-summary: Search a plan for id
+    get:
+      description: Retrieves a plan given its id
+      summary: Retrieving plan
+      parameters:
+      - in: query
+        name: planId
+        required: true
+        schema:
+          type: string
+        description: The id of the plan
+      responses:
+        "200":
+          description: All the infos of the plan.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Plan"
+        "404":
+          $ref: "#/components/responses/404NotFound"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+
+
 
 components:
   # https://swagger.io/docs/specification/authentication/bearer-authentication/
@@ -633,7 +678,146 @@ components:
           enum: [recipe,ingredient,categories,plans,labels]
         value:
           type: string
-        
+
+    Plan:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the plan
+        user:
+          $ref: "#/components/schemas/User"
+        numRecipes:
+          type: number
+          description: Number of recipes in the plan
+        estimatedCost:
+          type: string
+          enum: ["none","veryLow","low","medium","high","veryHigh"]
+          description: Estimated cost of the plan
+        recipes:
+          type: array
+          items:
+            $ref: "#/components/schemas/CompleteRecipe"
+          description: List of the recipes in the plan
+      required:
+        - name
+        - numRecipes
+        - estimatedCost
+        - recipes
+      example:
+        name: "Il Piano Vegano"
+        numRecipes: 1
+        user:
+          firstName: "Mario"
+          secondName: "Rossi"
+          email: "mario@nintendo.bros"
+          username: "Itsamee"
+          password: "princessPeach"
+          estimatedCost: "low"
+        recipes:
+        - name: "Carbonara"
+          dateModified: "20-09-2013-8:34:25"
+          estimatedCost: "medium"
+          image: "https://dpv87w1mllzh1.cloudfront.net/alitalia_discover/attachments/data/000/000/334/original/roma-how-to-carbonara-1920x1080.jpg?1519055920"
+          categories:
+            - "primi piatti"
+            - "classici"
+          description: "La pasta più buona di tutte"
+          prepTime: 5
+          cookTime: 20
+          totalTime: 20
+          conservationTime: 2
+          peopleFor: 4
+          ingredients:
+            - name: "uova"
+              quantity: 2
+            - name: "spaghetti"
+              quantity: 500
+              unitOfMeasure: "grams"
+            - name: "all the other"
+              quantity: 100
+          keywords:
+            - "buona"
+            - "carbonara"
+            - "pancetta"
+            - "uova"
+          labels:
+            - "primo piatto"
+            - "tradizionale"
+          averageRating: 5
+          numberOfRatings: 1246
+          requiredTools:
+            - "pentole"
+            - "fornello"
+          nutritionalInfos:
+            calories: 74
+            carbohydrate: 1.5
+            cholesterol: 0.3
+            fat: 2.5
+            fiber: 2.1
+            saturedFat: 0.2
+            sodium: 1.3
+            sugar: 1.2
+
+    User:
+      type: object
+      description: User of the system
+      properties:
+        firstName:
+          type: string
+          description: Name of the user
+        secondName:
+          type: string
+          description: The second name of the user
+        email:
+          type: string
+          description: The email of the user
+        username:
+          type: string
+          description: The username of the user
+        password:
+          type: string
+          description: The password of the user
+      required:
+        - firstName
+        - email
+        - username
+        - password
+      example:
+        firstName: "Mario"
+        secondName: "Rossi"
+        email: "mario@nintendo.bros"
+        username: "Itsamee"
+        password: "princessPeach"
+
+    PlanRequestSchema:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the plan
+        numberOfMeals:
+          type: number
+          description: Number of meals in the plan
+        budget:
+          type: string 
+          enum: ["none","veryLow","low","medium","high","veryHigh"]
+          description: Budget of the plan
+        usingPreferences:
+          type: boolean
+          description: Specifies if the generation of the plan has preferences set
+        preferences:
+          type: string
+          description: Preferenze per la richiesta non ancora implementate
+      required:
+        - numberOfMeals
+        - usingPreferences
+      example:
+        name: "Piano per la prossima settimana"
+        budget: "none"
+        numberOfMeals: 5
+        usingPreferences: false
+
   requestBodies:
     LoginRequest:
       description: "Login Request"
@@ -675,7 +859,19 @@ components:
           example:
             "type": ingredient
             "value": broccoli
-            
+
+    PlanRequest:
+      description: "Plan Request"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/PlanRequestSchema"
+          example:
+            name: "Piano per la prossima settimana"
+            budget: "none"
+            numberOfMeals: 5
+            usingPreferences: false
+
   responses:
     200OkHtml:
       description: Html page
