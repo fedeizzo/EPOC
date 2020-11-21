@@ -6,6 +6,7 @@ import {
   dependency,
   HttpResponseNotFound,
   ValidateQueryParam,
+  ValidateBody,
 } from "@foal/core";
 import { JWTOptional } from "@foal/jwt";
 import { PlanService } from "../../services";
@@ -18,10 +19,9 @@ const generatePlanSchema = {
     numberOfMeals: { type: "number" },
     usingPreferences: { type: "boolean" },
     preferences: { type: "object" },
-    budget: { type: CostLevels },
+    budget: { type: typeof(CostLevels) },
   },
   required: ["numberOfMeals", "usingPreferences"],
-  type: "object",
 };
 
 export class PlanController {
@@ -29,25 +29,29 @@ export class PlanController {
   planService: PlanService;
 
   @Post("/generate")
-  //@ValidateBody(generatePlanSchema)
+  @ValidateBody(generatePlanSchema)
   @JWTOptional()
   async generatePlan(ctx: Context) {
     const json = JSON.parse(ctx.request.body);
     let name = json.name;
-    let user = ctx.user;
-    //TODO: put inside userservice
-    const userObj = await User.find({ username: user.username });
     let numberOfMeals: number = json.numberOfMeals;
     let budget: CostLevels = json.budget;
     let usingPreferences: boolean = json.usingPreferences;
     let preferences: any = usingPreferences ? json.preference : undefined;
+    
+    let user = ctx.user;
+    //TODO: put inside userservice.
+    let userObj : any = undefined;
+    if(user !== undefined){
+      userObj = await User.find({ username: user.username })[0];
+    }
 
     let response = await this.planService.generateAndSavePlan(
       name,
       numberOfMeals,
       budget,
       preferences,
-      userObj[0]
+      userObj
     );
 
     return new HttpResponseOK(response);

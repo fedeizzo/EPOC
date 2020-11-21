@@ -22,7 +22,7 @@ export class PlanService {
   async generateAndSavePlan(name: string, numberOfRecipes: number, budget?: CostLevels, preferences?: any, user?: DocumentType<UserClass>)
     : Promise<DocumentType<PlanClass>> {
     const queryParams = {};
-    if (budget !== undefined) {
+    if (budget !== undefined && budget!=="None") {
       queryParams['estimatedCost'] = budget;
     }
     const recipes = await this.recipeService.findExactMatches(queryParams);
