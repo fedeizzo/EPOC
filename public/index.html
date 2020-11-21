@@ -3,67 +3,78 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Welcome to the future!</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+  <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+  <title>EPOC</title>
   <link rel="shortcut icon" href="logo.png">
+  <script type="text/javascript" src="./src/authentication.js" defer></script>
+  <script type="text/javascript" src="./src/index.js" defer></script>
   <style>
-    html, body {
-      height: 100%
+    .demo-layout-transparent {
+      background: url('./images/back.jpg') center / cover;
     }
-    body {
-      margin: 0;
-      text-align: center;
-      font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+    .demo-layout-transparent .mdl-layout__header,
+    .demo-layout-transparent .mdl-layout__drawer-button {
+      color: black;
     }
-    .wrapper {
-      height: 80%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      position: relative;
+    .mdl-navigation__link {
+        color: black !important;
     }
-    h1 {
-      color: white;
-      font-weight: bold;
-      margin-bottom: 40px
+    .sprint1 {
+        margin: 16px;
     }
-    a {
-      box-shadow: 0 2px 5px 0 rgba(0,0,0,.26);
-      color: rgb(22, 110, 219);
-      background-color: white;
-      border-color: white;
-      border-radius: 30px;
-      padding: 0.75rem 2.25rem;
-      text-decoration: none;
-      font-weight: bold;
-      margin: 0px 10px;
+    .buttonsHolder {
+        text-align: center;
     }
-    img{
-      width: 260px;
-    }
-    .background {
-      background: linear-gradient(to bottom right, #0169e0, #92c5ff);
-      position: absolute;
-      top: -200px;
-      width: 100%;
-      height: 800px;
-      transform: skewY(-10deg);
-    }
-  </style>
+    </style>
 </head>
 <body>
-  <div class="background">
-
-  </div>
-  <div class="wrapper">
-    <div class="img-container">
-      <img src="logo.png" alt="FoalTS logo">
+    <div class="demo-layout-transparent mdl-layout mdl-js-layout">
+  <header class="mdl-layout__header mdl-layout__header--transparent">
+    <div class="mdl-layout__header-row">
+      <span class="mdl-layout-title">EPOC</span>
+      <span class="mdl-layout-subtitle">Eating Planner for Organized Creatures</span>
+      <div class="mdl-layout-spacer"></div>
+      <nav class="mdl-navigation">
+        <a class="mdl-navigation__link" href="">About Us</a>
+        <a class="mdl-navigation__link" href="">Create Plan</a>
+        <a class="mdl-navigation__link" href="">FAQs</a>
+      </nav>
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable
+                  mdl-textfield--floating-label mdl-textfield--align-right">
+        <label class="mdl-button mdl-js-button mdl-button--icon"
+               for="fixed-header-drawer-exp">
+          <i class="material-icons">search</i>
+        </label>
+        <div class="mdl-textfield__expandable-holder">
+          <input class="mdl-textfield__input" type="text" name="sample"
+                 id="fixed-header-drawer-exp">
+        </div>
     </div>
-    <h1>Welcome to the future ✨</h1>
-    <div>
-      <a href="https://twitter.com/FoalTs">TWITTER</a>
-      <a href="https://foalts.gitbook.io/docs/">DOCUMENTATION</a>
-      <a href="https://foalts.org/">WEBSITE</a>
+  </header>
+  <main class="mdl-layout__content">
+      <div class="buttonsHolder">
+        <form method="GET" action="/login">
+            <button class="sprint1 mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+              Login
+            </button>
+        </form>
+        <form method="GET" action="/signup">
+            <button class="sprint1 mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+              SignUp
+            </button>
+        </form>
+        <button class="sprint1 mdl-button mdl-js-button mdl-button--raised mdl-button--colored" onclick="fetchLogout()">
+          Logout
+        </button>
+        <form method="DELETE" action="/deleteUser">
+            <button class="sprint1 mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+              Delete User
+            </button>
+        </form>
     </div>
-  </div>
+  </main>
+</div>
 </body>
 </html>

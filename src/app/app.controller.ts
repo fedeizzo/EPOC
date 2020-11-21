@@ -1,9 +1,9 @@
 import { controller } from '@foal/core';
-
-import { ApiController } from './controllers';
+import { ApiController, PagesController } from "./controllers";
 
 export class AppController {
   subControllers = [
-    controller('/api', ApiController),
+    controller("/api/v1", ApiController),
+    controller("/", PagesController),
   ];
 }

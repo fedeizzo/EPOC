@@ -1,15 +1,14 @@
 {
-  "name": "EPOC",
+  "name": "epoc",
   "version": "0.0.0",
   "description": "description of the application",
-  "license": "MIT",
+  "license": "ISC",
   "repository": {},
   "scripts": {
     "build:app": "foal rmdir build/app && copy-cli \"src/**/*.html\" build && tsc -p tsconfig.app.json",
     "build:app:w": "tsc -p tsconfig.app.json -w",
     "start": "node ./build/index.js",
     "start:w": "supervisor -w ./build --no-restart-on error ./build/index.js",
-    "develop": "npm run build:app && concurrently \"npm run build:app:w\" \"npm run start:w\"",
     "build:test": "foal rmdir build && copy-cli \"src/**/*.html\" build && tsc -p tsconfig.test.json",
     "build:test:w": "tsc -p tsconfig.test.json -w",
     "start:test": "mocha --file \"./build/test.js\" \"./build/**/*.spec.js\"",
@@ -23,28 +22,40 @@
     "build:scripts": "foal rmdir build/scripts && tsc -p tsconfig.scripts.json",
     "build:scripts:w": "tsc -p tsconfig.scripts.json -w",
     "lint": "eslint --ext ts src",
-    "lint:fix": "eslint --ext ts --fix src"
+    "lint:fix": "eslint --ext ts --fix src",
+    "build:frontend": "foal rmdir public/src; tsc --project frontend --outDir public/src",
+    "build:frontend:w": "foal rmdir public/src; tsc --project frontend --watch --outDir public/src",
+    "build:both": "concurrently \"npm run build:app\" \"npm run build:frontend\"",
+    "start:both": "concurrently \"npm run build:app:w\" \"npm run build:frontend:w\" \"npm run start:w\" ",
+    "develop": "npm run build:both && npm run start:both"
   },
   "engines": {
     "node": ">=8"
   },
   "dependencies": {
-    "@foal/core": "^1.0.0",
-    "@foal/mongoose": "^1.0.0",
-    "mongoose": "^5.4.9",
+    "@foal/cli": "^1.11.1",
+    "@foal/core": "^1.11.2",
+    "@foal/jwt": "^1.11.1",
+    "@foal/mongoose": "^1.11.2",
+    "@foal/password": "^1.11.1",
+    "@typegoose/typegoose": "^7.4.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.10.13",
     "source-map-support": "^0.5.1"
   },
   "devDependencies": {
     "@types/mocha": "^5.2.1",
+    "@types/mongoose": "^5.7.37",
     "@types/node": "^8.0.47",
+    "@typescript-eslint/eslint-plugin": "~2.7.0",
+    "@typescript-eslint/parser": "~2.7.0",
     "concurrently": "^3.5.1",
     "copy": "^0.3.2",
+    "eslint": "^6.7.0",
     "mocha": "^5.2.0",
     "supertest": "^3.3.0",
     "supervisor": "^0.12.0",
-    "eslint": "^6.7.0",
-    "@typescript-eslint/eslint-plugin": "~2.7.0",
-    "@typescript-eslint/parser": "~2.7.0",
-    "typescript": "~3.5.3"
+    "ts-mockito": "^2.6.1",
+    "typescript": "~3.9.7"
   }
 }
