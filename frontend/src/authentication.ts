@@ -1,3 +1,10 @@
+const isCookieSet = (getCookie('JWT') === undefined || getCookie('JWT') === '') ? false : true;
+if (isCookieSet) {
+  document.getElementById('logoutButton').hidden = false;
+  document.getElementById('deleteButton').hidden = false;
+}
+
+
 interface SignupData {
   firstName: string;
   secondName: string;

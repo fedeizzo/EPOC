@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/fedeizzo/EPOC.svg?branch=master)](https://travis-ci.org/fedeizzo/EPOC)
 # EPOC
 ## Table of contents
 <!--ts-->
@@ -5,6 +6,7 @@
    * [Run](#run)
        * [Develop](#develop)
        * [Production](#production)
+       * [Tips](#tips)
    * [Helpful commands](#helpful-commands)
        * [Migrations](#migrations)
        * [Foal](#foal)
