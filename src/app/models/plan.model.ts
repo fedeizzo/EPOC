@@ -10,7 +10,7 @@ export class PlanClass {
   public user?: Ref<UserClass>;
 
   @prop({ required: true })
-  public numRecipies: number;
+  public numRecipes: number;
 
   @prop({ enum: CostLevels, required: true })
   public estimatedCost?: CostLevels;

@@ -40,7 +40,7 @@ export class PlanService {
     let plan = new Plan();
     plan.name = name;
     plan.user = user;
-    plan.numRecipies = numberOfRecipes;
+    plan.numRecipes = numberOfRecipes;
     plan.estimatedCost = budget;
 
     for (let i of setRandomIndexes) {

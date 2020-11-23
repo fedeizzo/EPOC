@@ -9,21 +9,48 @@
     </style>
     <script src="../src/pages/generate_plan.js" defer></script>
   </head>
-  <body>
-    <input id='name' placeholder='Plan name' ></input>
-    <input type="number" id="number" placeholder="How many meals?"></input>
-    <select name="cost level" id="costLevel">
-        <option value="None">None</option> 
-        <option value="veryLow">veryLow</option>
-        <option value="low">low</option>
-        <option value="medium">medium</option>
-        <option value="high">high</option>
-        <option value="veryHigh">veryHigh</option>
-    </select> 
-    <select name="use preferences" id="usePreferences" value='medium'> 
-        <option value="false">false</option>
-        <option value="true">true</option>
-    </select> 
-    <button id="submitButton">generate</button>
+  <body style="background-image: url(../images/generate_plan_bg.jpg); background-repeat: no-repeat; background-size: 100%;">
+  
+    <div name="body_content" style="background-color: white; max-width: 50%; position: relative; left: 25%; padding: 1%; border-radius: 2em;">
+      <div name="generate_plan_options" style="position: relative; text-align: center;" >
+        <div>
+          <h3 style="font-weight:normal">How do you want to call your plan?</h3>
+          <input id='name' placeholder='Plan name' ></input>
+        </div>
+    
+        <div>
+           <h3 style="font-weight:normal">How many meals will it contain?</h3>
+          <input type="number" id="number" placeholder="How many meals?"></input>
+        </div>
+        
+        <div>
+           <h3 style="font-weight:normal">Select the prize level</h3>
+          <select name="cost level" id="costLevel">
+              <option value="None">None</option> 
+              <option value="veryLow">veryLow</option>
+              <option value="low">low</option>
+              <option value="medium">medium</option>
+              <option value="high">high</option>
+              <option value="veryHigh">veryHigh</option>
+          </select> 
+        </div>
+    
+        <div>
+           <h3 style="font-weight:normal">Do you want to use your preferences?</h3>
+          <p>(feature not implemented yet)</p>
+          <select name="use preferences" id="usePreferences" value='medium'> 
+              <option value="false">false</option>
+              <!-- <option value="true">true</option> -->
+          </select> 
+        </div>
+      </div>
+
+      <div style="margin-top: 2em; text-align: center;">
+        <button id="submitButton">Generate my eating plan</button>
+      </div>
+  
+    </div>
+
+
   </body>
 </html>
