@@ -56,13 +56,15 @@ async function generatePlanAndRedirect() {
     const json = await response.json();
     const id = json.content._id;
     window.location.href = `/plan/${id}`;
-  } else {
+  } else if(response.status === 400){
     var notification : any = document.querySelector('.mdl-js-snackbar');
     notification!.MaterialSnackbar.showSnackbar(
       {
         message: 'Error: this name is yet used by another plan'
       }
     );
+  } else {
+    console.log("Internal Server Error");
   }
 }
 
