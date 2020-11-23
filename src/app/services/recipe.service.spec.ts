@@ -59,7 +59,7 @@ describe("The Recipe Service", () => {
     describe("When we use a wrong id", () => {
       it("returns a Server Internal Error with error code 500", async () => {
         const expectedErrorCode =
-          ServiceResponseCode.internalServerErrorQueryingRecipes;
+          ServiceResponseCode.internalServerError;
         const wrongId = "this is not a correct id!!!";
         const actualErrorCode = await recipeService.getCompleteRecipe(wrongId);
         strictEqual(actualErrorCode.code, expectedErrorCode);

@@ -7,11 +7,14 @@ import {
   HttpResponseNotFound,
   ValidateQueryParam,
   ValidateBody,
+  HttpResponseBadRequest,
+  HttpResponseInternalServerError
 } from "@foal/core";
 import { JWTOptional } from "@foal/jwt";
-import { PlanService } from "../../services";
+import { PlanService, ServiceResponse, ServiceResponseCode } from "../../services";
 import { CostLevels } from "../../models/recipe.model";
 import { User } from "../../models";
+
 
 const generatePlanSchema = {
   properites: {
@@ -46,7 +49,7 @@ export class PlanController {
       userObj = await User.find({ username: user.username })[0];
     }
 
-    let response = await this.planService.generateAndSavePlan(
+    let response : ServiceResponse = await this.planService.generateAndSavePlan(
       name,
       numberOfMeals,
       budget,
@@ -54,7 +57,14 @@ export class PlanController {
       userObj
     );
 
-    return new HttpResponseOK(response);
+    switch (response.code) {
+      case ServiceResponseCode.ok:
+        return new HttpResponseOK(response.buildResponse());
+      case ServiceResponseCode.duplicateKeyInDb:
+        return new HttpResponseBadRequest("Duplicate name for Plan");
+      default:
+        return new HttpResponseInternalServerError();
+    }
   }
 
   @Get("/get")

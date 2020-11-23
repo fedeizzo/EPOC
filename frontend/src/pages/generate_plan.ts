@@ -54,8 +54,15 @@ async function generatePlanAndRedirect() {
   });
   if (response.ok) {
     const json = await response.json();
-    const id = json._id;
+    const id = json.content._id;
     window.location.href = `/plan/${id}`;
+  } else {
+    var notification : any = document.querySelector('.mdl-js-snackbar');
+    notification!.MaterialSnackbar.showSnackbar(
+      {
+        message: 'Error: this name is yet used by another plan'
+      }
+    );
   }
 }
 
