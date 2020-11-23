@@ -19,41 +19,30 @@ docker-compose -f docker-compose.dev.yaml build
 
 Production setup:
 ```bash=
-docker-compose -f docker-compose.yaml build
+docker build -f Dockerfile.production -t epoc/epoc:latest .
 ```
 
 ## Run
-You can run _EPOC_ either in development or production mode, refer to the sections below for the one you want.
+You can run _EPOC_ either in development or production mode, refer to the sections below for the one you want. If you want to run this project on your machine follow develop section below.
 
 ### Develop
-In order to run _EPOC_ in development mode:
+In order to run _EPOC_ in development mode some steps are required:
 
-```bash=
-docker-compose -f docker-compose.dev.yaml -d up
-nmp run develop
-```
+1. set _SETTINGS_JWT_SECRET_OR_PUBLIC_KEY_ inside .env file
+2. run `docker-compose -f docker-compose.dev.yaml -d up`
+3. run `npm run develop`
 
 ### Production
-In order to run _EPOC_ in production mode:
-```bash=
-docker-compose -f docker-compose.yaml -d up
-```
+In order to run _EPOC_ in production mode some steps are required:
+
+1. set _SETTINGS_JWT_SECRET_OR_PUBLIC_KEY_ inside .env file
+2. set _MONGODB_URI_ inside .env file
+3. run `docker run --name epoc -d --rm epoc:latest`
+
+### Tips
+* There is a .env.sample for easy setup. Inside it is written the command that can be used in order to generate _SETTINGS_JWT_SECRET_OR_PUBLIC_KEY_
 
 ## Helpful commands
-
-### Migrations
-
-When you modify the representation of entities in the database you should generate a new migration with
-```bash=
-npm run migration:generate
-```
-
-The latest migrations should be automatically applied when you docker compose up. To ensure they are you can run
-
-```bash=
-npm run migration:run
-```
-
 
 ### Foal
 
@@ -62,7 +51,7 @@ foal generate controller
 ```
 
 ```bash=
-foal generate entity
+foal generate model
 ```
 
 ```bash=
