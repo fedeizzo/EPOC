@@ -63,7 +63,7 @@ export class PlanController {
       case ServiceResponseCode.ok:
         return new HttpResponseOK(response.buildResponse());
       case ServiceResponseCode.duplicateKeyInDb:
-        return new HttpResponseBadRequest({ text: "Duplicate name for Plan" });
+        return new HttpResponseBadRequest(response.buildResponse());
       default:
         return new HttpResponseInternalServerError();
     }
