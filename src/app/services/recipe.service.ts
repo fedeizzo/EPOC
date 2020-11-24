@@ -51,7 +51,6 @@ export class RecipeResponse implements ServiceResponse {
 
   buildResponsePartialList() {
     return {
-      code: this.code,
       text: this.text,
       recipes: this.prop
         ? (this.prop as DocumentType<RecipeClass>[]).map((rec) =>
@@ -63,7 +62,6 @@ export class RecipeResponse implements ServiceResponse {
 
   buildResponseComplete() {
     return {
-      code: this.code,
       text: this.text,
       recipe: this.prop ? (this.prop as RecipeClass).getCompleteInfo() : "",
     };
