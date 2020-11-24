@@ -8,7 +8,6 @@
        * [Production](#production)
        * [Tips](#tips)
    * [Helpful commands](#helpful-commands)
-       * [Migrations](#migrations)
        * [Foal](#foal)
 <!--te-->
 ## Initialize
