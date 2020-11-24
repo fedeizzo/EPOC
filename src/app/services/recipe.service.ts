@@ -55,8 +55,8 @@ export class RecipeResponse implements ServiceResponse {
       text: this.text,
       recipes: this.prop
         ? (this.prop as DocumentType<RecipeClass>[]).map((rec) =>
-            getShortInfo(rec)
-          )
+          getShortInfo(rec)
+        )
         : "",
     };
   }
@@ -102,7 +102,7 @@ export class RecipeService {
     }
     if (result instanceof ErrorWrapper) {
       response.setValuesList(
-        ServiceResponseCode.internalServerErrorQueryingRecipes,
+        ServiceResponseCode.internalServerError,
         "Error while queryiung the db for a list of recipes:\n" + result.error
       );
     } else {
@@ -155,10 +155,18 @@ export class RecipeService {
       })
       .catch((error) => {
         response.setValuesComplete(
-          ServiceResponseCode.internalServerErrorQueryingRecipes,
-          "Error while looing for recipe in db:\n" + error
+          ServiceResponseCode.internalServerError,
+          "Error while looking for recipe in db:\n" + error
         );
       });
     return response;
+  }
+
+  public async findExactMatches(queryFields: object) {
+    return await Recipe.find(queryFields)
+      .select(RecipeService.fieldsToSelect)
+      .sort({numberOfRatings: -1})
+      .exec()
+      .catch((e) => new ErrorWrapper(e));
   }
 }
