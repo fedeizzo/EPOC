@@ -8,7 +8,8 @@ import {
   ValidateQueryParam,
   ValidateBody,
   HttpResponseBadRequest,
-  HttpResponseInternalServerError
+  HttpResponseInternalServerError,
+  HttpResponseConflict
 } from "@foal/core";
 import { JWTOptional } from "@foal/jwt";
 import {
@@ -63,7 +64,7 @@ export class PlanController {
       case ServiceResponseCode.ok:
         return new HttpResponseOK(response.buildResponse());
       case ServiceResponseCode.duplicateKeyInDb:
-        return new HttpResponseBadRequest(response.buildResponse());
+        return new HttpResponseConflict(response.buildResponse());
       default:
         return new HttpResponseInternalServerError();
     }
