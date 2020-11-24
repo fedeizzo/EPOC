@@ -40,10 +40,17 @@ async function fetchSignUp() {
     headers,
     body: JSON.stringify(data)
   });
-  if (response.status == 200) {
+
+  if (response.ok) {
     window.location.replace("/");
   } else {
-    console.log(await response.json()["text"]);
+    let content = (await response.json())["text"];
+    var notification : any = document.querySelector('.mdl-js-snackbar');
+    notification!.MaterialSnackbar.showSnackbar(
+      {
+        message: content
+      }
+    );
   }
 }
 
