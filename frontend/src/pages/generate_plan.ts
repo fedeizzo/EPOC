@@ -54,17 +54,17 @@ async function generatePlanAndRedirect() {
   });
   if (response.ok) {
     const json = await response.json();
-    const id = json.content._id;
+    const id = json.plan._id;
     window.location.href = `/plan/${id}`;
-  } else if (response.status === 400) {
+  } else {
+    const json = await response.json();
+    const text = json.text;
     var notification: any = document.querySelector('.mdl-js-snackbar');
     notification!.MaterialSnackbar.showSnackbar(
       {
-        message: 'Error: this name is yet used by another plan'
+        message: text
       }
     );
-  } else {
-    console.log("Internal Server Error");
   }
 }
 

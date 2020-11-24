@@ -51,19 +51,17 @@ export class RecipeResponse implements ServiceResponse {
 
   buildResponsePartialList() {
     return {
-      code: this.code,
       text: this.text,
       recipes: this.prop
         ? (this.prop as DocumentType<RecipeClass>[]).map((rec) =>
-          getShortInfo(rec)
-        )
+            getShortInfo(rec)
+          )
         : "",
     };
   }
 
   buildResponseComplete() {
     return {
-      code: this.code,
       text: this.text,
       recipe: this.prop ? (this.prop as RecipeClass).getCompleteInfo() : "",
     };
@@ -137,7 +135,7 @@ export class RecipeService {
   async getCompleteRecipe(recipeId): Promise<RecipeResponse> {
     let response: RecipeResponse = new RecipeResponse();
 
-    const query = await Recipe.findById(recipeId)
+    await Recipe.findById(recipeId)
       .exec()
       .then((result) => {
         if (result == null) {
@@ -154,10 +152,18 @@ export class RecipeService {
         }
       })
       .catch((error) => {
-        response.setValuesComplete(
-          ServiceResponseCode.internalServerError,
-          "Error while looking for recipe in db:\n" + error
-        );
+        const message: String = error.message;
+        if (message.startsWith("Cast to ObjectId failed for value")) {
+          response.setValuesComplete(
+            ServiceResponseCode.elementNotFound,
+            "Recipe not found"
+          );
+        } else {
+          response.setValuesComplete(
+            ServiceResponseCode.internalServerError,
+            "Error while looking for recipe in db:\n" + error
+          );
+        }
       });
     return response;
   }
@@ -165,7 +171,7 @@ export class RecipeService {
   public async findExactMatches(queryFields: object) {
     return await Recipe.find(queryFields)
       .select(RecipeService.fieldsToSelect)
-      .sort({numberOfRatings: -1})
+      .sort({ numberOfRatings: -1 })
       .exec()
       .catch((e) => new ErrorWrapper(e));
   }

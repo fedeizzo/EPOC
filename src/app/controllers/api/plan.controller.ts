@@ -8,7 +8,8 @@ import {
   ValidateQueryParam,
   ValidateBody,
   HttpResponseBadRequest,
-  HttpResponseInternalServerError
+  HttpResponseInternalServerError,
+  HttpResponseConflict
 } from "@foal/core";
 import { JWTOptional } from "@foal/jwt";
 import {
@@ -63,7 +64,7 @@ export class PlanController {
       case ServiceResponseCode.ok:
         return new HttpResponseOK(response.buildResponse());
       case ServiceResponseCode.duplicateKeyInDb:
-        return new HttpResponseBadRequest({ text: "Duplicate name for Plan" });
+        return new HttpResponseConflict(response.buildResponse());
       default:
         return new HttpResponseInternalServerError();
     }
@@ -79,6 +80,7 @@ export class PlanController {
     } else {
       const user = await User.findById(plan.user);
       return new HttpResponseOK({
+        text: "Plan found, all good so far",
         name: plan.name,
         recipes: plan.recipes,
         //TODO: filter before sending!

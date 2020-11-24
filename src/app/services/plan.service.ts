@@ -20,7 +20,8 @@ class PlanServiceResponse implements ServiceResponse {
 
   buildResponse = () => {
     return {
-      content: this.prop
+      text: this.text,
+      plan: this.prop? this.prop : "No plan"
     }
   }
 }
@@ -72,7 +73,7 @@ export class PlanService {
       response.setValues(ServiceResponseCode.ok, "All ok", content)
     } catch (e) {
       if ((e.toString()).indexOf('duplicate key error') > 0) {
-        response.setValues(ServiceResponseCode.duplicateKeyInDb, "Duplicate key Plan Name");
+        response.setValues(ServiceResponseCode.duplicateKeyInDb, "Error: duplicate plan name");
       } else {
         response.setValues(ServiceResponseCode.internalServerError, "Internal Server Error");
       }
