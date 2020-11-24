@@ -58,6 +58,7 @@ export class AuthenticationController {
       case ServiceResponseCode.duplicateKeyInDb:
         httpResponse = new HttpResponseConflict(serviceResponse.buildResponse());
         break;
+      case ServiceResponseCode.internalServerError:
       default:
         httpResponse = new HttpResponseInternalServerError();
         break;

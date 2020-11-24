@@ -11,10 +11,10 @@ import { connect, connection } from 'mongoose';
 import { AppController } from './app/app.controller';
 
 async function main() {
-  const uri = Config.getOrThrow('mongodb.uri', 'string');
-  connect(uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
   connection.on('connected', () => console.log("mi sono connesso"));
   connection.on('disconnected', () => console.log("mi sono disconneso"));
+  const uri = Config.getOrThrow('mongodb.uri', 'string');
+  await connect(uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
 
   const app = createApp(AppController);
 

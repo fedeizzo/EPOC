@@ -8,17 +8,18 @@ import { User } from '../models';
 describe("The User Service", () => {
   const userService: UserService = createService(UserService);
 
-  beforeEach(async () =>  {
+  beforeEach(async () => {
     await connect(Config.getOrThrow('mongodb.uri', 'string'), { useNewUrlParser: true, useCreateIndex: false, useUnifiedTopology: true });
     await User.syncIndexes();
-    await disconnect();
+    // await disconnect();
   });
 
   afterEach(async () => {
-    await connect(Config.getOrThrow('mongodb.uri', 'string'), { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
+    // await connect(Config.getOrThrow('mongodb.uri', 'string'), { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
     await connection.db.dropCollection('userclasses');
     await disconnect();
   });
+
 
   describe('insertUser', () => {
     describe('When the password is to common', () => {
@@ -47,6 +48,7 @@ describe("The User Service", () => {
     });
     describe('When username already exists', () => {
       before(async () => {
+        await connect(Config.getOrThrow('mongodb.uri', 'string'), { useNewUrlParser: true, useCreateIndex: false, useUnifiedTopology: true });
         const firstName = "test";
         const secondName = "test";
         const email = "test";
@@ -67,6 +69,7 @@ describe("The User Service", () => {
     });
     describe('When email already exists', () => {
       before(async () => {
+        await connect(Config.getOrThrow('mongodb.uri', 'string'), { useNewUrlParser: true, useCreateIndex: false, useUnifiedTopology: true });
         const firstName = "test";
         const secondName = "test";
         const email = "test";
@@ -89,6 +92,7 @@ describe("The User Service", () => {
 
   describe('areValidCredentials', () => {
     beforeEach(async () => {
+      await connect(Config.getOrThrow('mongodb.uri', 'string'), { useNewUrlParser: true, useCreateIndex: false, useUnifiedTopology: true });
       const firstName = "test";
       const secondName = "test";
       const email = "test";
@@ -107,7 +111,7 @@ describe("The User Service", () => {
     });
     describe('When password is wrong', () => {
       it('returns a bad response with code 302', async () => {
-        const expectedErrorCode : ServiceResponseCode = ServiceResponseCode.wrongCredentials;
+        const expectedErrorCode: ServiceResponseCode = ServiceResponseCode.wrongCredentials;
         const username = "test";
         const password = "ciao";
         const actualErrorCode = await userService.areValidCredentials(username, password);
@@ -116,7 +120,7 @@ describe("The User Service", () => {
     });
     describe('When username is wrong', () => {
       it('returns a bad response with code 303', async () => {
-        const expectedErrorCode : ServiceResponseCode = ServiceResponseCode.elementNotFound;
+        const expectedErrorCode: ServiceResponseCode = ServiceResponseCode.elementNotFound;
         const username = "ciao";
         const password = "qqweupodfsksjfd232@";
         const actualErrorCode = await userService.areValidCredentials(username, password);

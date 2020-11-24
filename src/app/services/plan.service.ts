@@ -1,7 +1,7 @@
 import { User } from '../models';
 import { UserClass } from '../models/user.model';
 import { RecipeClass } from '../models/recipe.model';
-import { RecipeService, ServiceResponse, ServiceResponseCode  } from '../services';
+import { RecipeService, ServiceResponse, ServiceResponseCode } from '../services';
 import { DocumentType } from '@typegoose/typegoose';
 import { CostLevels } from '../models/recipe.model';
 import { normal } from 'random';
@@ -42,7 +42,7 @@ export class PlanService {
   async generateAndSavePlan(name: string, numberOfRecipes: number, budget?: CostLevels, preferences?: any, user?: DocumentType<UserClass>)
     : Promise<ServiceResponse> {
     const queryParams = {};
-    if (budget !== undefined && budget!=="None") {
+    if (budget !== undefined && budget !== "None") {
       queryParams['estimatedCost'] = budget;
     }
     const recipes = await this.recipeService.findExactMatches(queryParams);
@@ -66,14 +66,14 @@ export class PlanService {
     for (let i of setRandomIndexes) {
       plan.recipes.push(recipes[i]);
     }
-    
+
     let content;
-    let response : PlanServiceResponse = new PlanServiceResponse();
-    try{
+    let response: PlanServiceResponse = new PlanServiceResponse();
+    try {
       content = await plan.save();
       response.setValues(ServiceResponseCode.ok, "All ok", content)
-    } catch(e) {
-      if( (e.toString()).indexOf('duplicate key error') > 0 ){
+    } catch (e) {
+      if ((e.toString()).indexOf('duplicate key error') > 0) {
         response.setValues(ServiceResponseCode.duplicateKeyInDb, "Duplicate key Plan Name");
       } else {
         response.setValues(ServiceResponseCode.internalServerError, "Internal Server Error");
