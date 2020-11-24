@@ -13,11 +13,11 @@ describe('The Authentication Controller', () => {
   beforeEach(async () => {
     await connect(Config.getOrThrow('mongodb.uri', 'string'), { useNewUrlParser: true, useCreateIndex: false, useUnifiedTopology: true });
     await User.syncIndexes();
-    await disconnect();
+    // await disconnect();
   });
 
   afterEach(async () => {
-    await connect(Config.getOrThrow('mongodb.uri', 'string'), { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
+    // await connect(Config.getOrThrow('mongodb.uri', 'string'), { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
     await connection.db.dropCollection('userclasses');
     await disconnect();
   });
@@ -68,6 +68,7 @@ describe('The Authentication Controller', () => {
     });
     describe('When username or email are already used', () => {
       before(async () => {
+        await connect(Config.getOrThrow('mongodb.uri', 'string'), { useNewUrlParser: true, useCreateIndex: false, useUnifiedTopology: true });
         const ctx = new Context({});
         ctx.request.body = {
           firstName: "test",
@@ -101,6 +102,7 @@ describe('The Authentication Controller', () => {
   describe('loginCheck', () => {
     describe('When passed data is ok', () => {
       before(async () => {
+        await connect(Config.getOrThrow('mongodb.uri', 'string'), { useNewUrlParser: true, useCreateIndex: false, useUnifiedTopology: true });
         const firstName = "test";
         const secondName = "test";
         const email = "test@test.com";
@@ -142,6 +144,7 @@ describe('The Authentication Controller', () => {
     });
     describe('When user password is wrong', () => {
       before(async () => {
+        await connect(Config.getOrThrow('mongodb.uri', 'string'), { useNewUrlParser: true, useCreateIndex: false, useUnifiedTopology: true });
         const firstName = "test";
         const secondName = "test";
         const email = "test@test.com";
@@ -218,6 +221,7 @@ describe('The Authentication Controller', () => {
   describe('deleteUser', () => {
     describe('When JWT is set', () => {
       before(async () => {
+        await connect(Config.getOrThrow('mongodb.uri', 'string'), { useNewUrlParser: true, useCreateIndex: false, useUnifiedTopology: true });
         const firstName = "test";
         const secondName = "test";
         const email = "test@test.com";
@@ -256,6 +260,7 @@ describe('The Authentication Controller', () => {
     });
     describe('When JWT does not match with user credentials', () => {
       before(async () => {
+        await connect(Config.getOrThrow('mongodb.uri', 'string'), { useNewUrlParser: true, useCreateIndex: false, useUnifiedTopology: true });
         const firstName = "test";
         const secondName = "test";
         const email = "test@test.com";
@@ -277,8 +282,7 @@ describe('The Authentication Controller', () => {
           password: "lkjdslvfsd"
         };
         const authResponse = {
-          text: "User credentials do not match with your JWT",
-          userInfo: ""
+          text: "User credentials do not match with your JWT"
         };
 
         const expectedResponse = new HttpResponseUnauthorized(authResponse);
@@ -288,6 +292,7 @@ describe('The Authentication Controller', () => {
     });
     describe('When password is not correct', () => {
       before(async () => {
+        await connect(Config.getOrThrow('mongodb.uri', 'string'), { useNewUrlParser: true, useCreateIndex: false, useUnifiedTopology: true });
         const firstName = "test";
         const secondName = "test";
         const email = "test@test.com";
