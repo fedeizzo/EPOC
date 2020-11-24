@@ -7,8 +7,10 @@ info:
     name: MIT
     url: https://github.com/apiaryio/polls-api/blob/master/LICENSE
 servers:
-  - url: http://localhost:3001/
+  - url: http://localhost:3001/api/v1
     description: Localhost
+  - url: https://epoc-planner.herokuapp.com/api/v1
+    description: Heroku server
 
 paths:
   /signup:
@@ -377,8 +379,8 @@ paths:
       responses:
         "200":
           $ref: "#/components/responses/200OkPlanGenerate"        
-        "400":
-          $ref: "#/components/responses/400BadRequestService"
+        "409":
+          $ref: "#/components/responses/409ConflictService"
         "500":
           $ref: "#/components/responses/500InternalServerError"
   
