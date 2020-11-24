@@ -7,8 +7,6 @@ import { CostLevels } from '../models/recipe.model';
 import { normal } from 'random';
 import { Plan, PlanClass } from '../models/plan.model';
 
-
-
 class PlanServiceResponse implements ServiceResponse {
   code: ServiceResponseCode;
   text: string;
@@ -28,6 +26,7 @@ class PlanServiceResponse implements ServiceResponse {
 }
 
 export class PlanService {
+  private MAX_ITERATIONS: number = 1000;
   private alpha: number = 1.5; // multiplicative factor for normal std
   private recipeService: RecipeService = new RecipeService();
 
@@ -52,7 +51,7 @@ export class PlanService {
     let iteration = 0;
 
     // avoid repeated random generated numbers
-    while (setRandomIndexes.size < numberOfRecipes && iteration < 1000) {
+    while (setRandomIndexes.size < numberOfRecipes && iteration < this.MAX_ITERATIONS) {
       setRandomIndexes.add(this.getRandomArbitrary(0, (recipes as DocumentType<RecipeClass>[]).length - 1));
       iteration++;
     }
@@ -67,10 +66,9 @@ export class PlanService {
       plan.recipes.push(recipes[i]);
     }
 
-    let content;
     let response: PlanServiceResponse = new PlanServiceResponse();
     try {
-      content = await plan.save();
+      const content = await plan.save();
       response.setValues(ServiceResponseCode.ok, "All ok", content)
     } catch (e) {
       if ((e.toString()).indexOf('duplicate key error') > 0) {

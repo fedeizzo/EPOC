@@ -148,6 +148,8 @@ export class AuthenticationController {
       return httpResponse;
     }
 
-    return new HttpResponseUnauthorized("User credentials do not match with your JWT");
+    return new HttpResponseUnauthorized({
+      text: "User credentials do not match with your JWT"
+    });
   }
 }
