@@ -1,0 +1,1044 @@
+openapi: "3.0.0"
+info:
+  version: "1.0"
+  title: "EPOC"
+  description: EPOC gives you simple apis to get a well-built eating plan, and much much more.
+  license:
+    name: MIT
+    url: https://github.com/apiaryio/polls-api/blob/master/LICENSE
+servers:
+  - url: http://localhost:3001/api/v1
+    description: Localhost
+  - url: https://epoc-planner.herokuapp.com/api/v1
+    description: Heroku server
+
+paths:
+  /signup:
+    x-summary: Signup to the service
+    get:
+      description: Get html page for signup
+      summary: Signup html page
+      responses:
+        "200":
+          $ref: "#/components/responses/200OkHtml"
+        "404":
+          $ref: "#/components/responses/404NotAcceptigHtml"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+    post:
+      description: Signup to the service
+      summary: Signup
+      requestBody:
+        $ref: "#/components/requestBodies/SignupRequest"
+      responses:
+        "200":
+          description: "Correctly signed up"
+          $ref: "#/components/responses/200OkUserService"
+        "400":
+          $ref: "#/components/responses/400BadRequestService"
+        "403":
+          description: "Invalid password: too common"
+          $ref: "#/components/responses/403ForbiddenService"
+        "409":
+          description: "Username already used"
+          $ref: "#/components/responses/409ConflictService"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+  
+  /login:
+    x-summary: Login to the service
+    get:
+      description: Get html page for signup
+      summary: Login html page
+      responses:
+        "200":
+          $ref: "#/components/responses/200OkHtml"
+        "404":
+          $ref: "#/components/responses/404NotAcceptigHtml"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+    post:
+      description: Login to the service providing your credentials.
+      summary: Login
+      requestBody:
+        $ref: "#/components/requestBodies/LoginRequest"
+      responses:
+        "200":
+          description: "Correctly logged in"
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: JWT=dijubnewuycfgwec6wec76w598uighc
+        "400":
+          $ref: "#/components/responses/400BadRequestService"
+        "401":
+          $ref: "#/components/responses/401UnauthorizedErrorCredentialsService"
+        "404":
+          $ref: "#/components/responses/404NotFoundService"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+          
+  /logout:
+    x-summary: Logout from the service
+    get:
+      security:
+        - jwtAuth: []
+      description: Logout from the service
+      summary: Logout
+      responses:
+        "200":
+          description: "Correctly logged out"
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: JWT=
+        "401":
+          $ref: "#/components/responses/401UnauthorizedErrorJWT"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+  
+  /deleteUser:
+    x-summary: Delete user account from the service
+    get:
+      description: Get html page for deleting user
+      summary: Delete user html page
+      responses:
+        "200":
+          $ref: "#/components/responses/200OkHtml"
+        "404":
+          $ref: "#/components/responses/404NotAcceptigHtml"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+    delete:
+      security:
+        - jwtAuth: []
+      description: Delete user account from the service
+      summary: Delete user account
+      requestBody:
+        $ref: "#/components/requestBodies/LoginRequest"
+      responses:
+        "200":
+          description: "Correctly deleted user account"
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: JWT=
+        "401":
+          $ref: "#/components/responses/401UnauthorizedErrorJWT"
+        "404":
+          $ref: "#/components/responses/404NotFoundService"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+          
+  /search/recipe:
+    x-summary: Search targeted only to recipes
+    get:
+      description: >-
+        Search a recipe using a string as parameter
+      summary: Simple recipe search, returns basic recipe infos of the recipes that match the searchString.
+      parameters:
+        - $ref: "#/components/parameters/searchString"
+      responses:
+        "200":
+          $ref: "#/components/responses/200OkRecipeServiceShortList"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+        
+        # No 404 response: an empty list should do
+
+  /recipes/{recipeId}:
+    get:
+      description: >-
+        Search a recipe using its id as parameter.
+      summary: Get a recipe by its id.
+      parameters:
+        - in: path
+          name: recipeId
+          required: true
+          schema:
+            type: string
+          description: The id of the recipe
+      responses:
+        "200":
+          $ref: "#/components/responses/200OkRecipeServiceCompleteRecipe"
+        "404":
+          $ref: "#/components/responses/404NotFoundResource"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+
+  /preferences/positive:
+    x-summary: Endpoint to manage the user preferences
+    get:
+      description: "Returns a json with the list of preferences of the user.
+        It is possible to specify the types of preference you want to retrieve"
+      summary: Retrieves user positive preferences
+      security:
+        - jwtAuth: []
+      parameters:
+        - name: types
+          in: query
+          description: Types of preferences to fetch
+          required: true
+          schema:
+            type: array
+            items: 
+              enum:
+                - recipe
+                - ingredient
+                - priceRange
+          example: types=[recipe, priceRange]
+            
+          explode: true
+      responses:
+        "200":
+          description: "Array of preferences"
+          content:
+            application/json:
+              schema:
+                properties:
+                  recipes:
+                    type: array
+                    items:
+                      type: string
+                  ingredients:
+                    type: array
+                    items:
+                      type: string
+                  priceRange:
+                    type: string
+              example:
+                recipes: ['pollo alla cantonese','pasta alla carbonara']      
+                ingredients: ['prezzemolo','aglio']      
+                priceRange: 'high'      
+            
+        "400":
+          $ref: "#/components/responses/400BadRequestHtml"
+        "401":
+          $ref: "#/components/responses/401UnauthorizedErrorJWT"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+    post:
+      security:
+        - jwtAuth: []
+      summary: Creates new positive preference
+      description: Creates new positive preference by adding the value specified in the body to the ones associated with the user
+      requestBody:
+        $ref: "#/components/requestBodies/PreferencePositivePost"
+      responses:
+        "200":
+          description: "Correctly added preference"
+        "400":
+          $ref: "#/components/responses/400BadRequestHtml"
+        "401":
+          $ref: "#/components/responses/401UnauthorizedErrorJWT"
+        "409":
+          description: "Conflict: the preference you tried to add was inside negative preferences"
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: "Preference ingredient basilico is in negative preferences,
+              so we can not add it here"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+    delete:
+      security:
+        - jwtAuth: []
+      description: 'Deletes the given (positive) preference from the user profile'
+      requestBody:
+        $ref: "#/components/requestBodies/PreferencePositivePost"
+      responses:
+        "200":
+          description: "Correctly removed preference"
+        "400":
+          $ref: "#/components/responses/400BadRequestHtml"
+        "401":
+          $ref: "#/components/responses/401UnauthorizedErrorJWT"
+        "404":
+          description: "Preference x was not found in the user's profile"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+
+  /preferences/negative:
+    x-summary: Endpoint to manage the user negative preferences
+    get:
+      description: "Returns a json with the list of negative preferences of the user.
+        It is possible to specify the types of preference you want to retrieve"
+      summary: Retrieves user negative preferences
+      security:
+        - jwtAuth: []
+      parameters:
+        - name: types
+          in: query
+          description: Types of negative preferences to fetch
+          required: true
+          schema:
+            type: array
+            items: 
+              enum:
+                - recipe
+                - ingredient
+                - categories
+                - plans
+                - labels
+          example: types=[recipe, labels, plans]
+          explode: true
+      responses:
+        "200":
+          description: "Array of (negative) preferences"
+          content:
+            application/json:
+              schema:
+                properties:
+                  recipes:
+                    description: ids of the recipes the user dislikes
+                    type: array
+                    items:
+                      type: string
+                  ingredients:
+                    type: array
+                    items:
+                      type: string
+                  categories:
+                    type: array
+                    items:
+                      type: string
+                  plans:
+                    description: ids of the plans the user dislikes
+                    type: array
+                    items:
+                      type: string
+                  labels:
+                    type: array
+                    items:
+                      type: string
+              example:
+                recipes: ['gnocchi al pesto','ravioli con sedano']      
+                ingredients: ['peperoncino','cardamomo']      
+                categories: ['pasti veloci']      
+                plans: []      
+                labels: []      
+        "400":
+          $ref: "#/components/responses/400BadRequestHtml"
+        "401":
+          $ref: "#/components/responses/401UnauthorizedErrorJWT"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+    post:
+      security:
+        - jwtAuth: []
+      summary: Creates new negative preference
+      description: Creates new negative preference by adding the value specified in the body to the ones associated with the user
+      requestBody:
+        $ref: "#/components/requestBodies/PreferenceNegativePost"
+      responses:
+        "200":
+          description: "Correctly added preference"
+        "400":
+          $ref: "#/components/responses/400BadRequestHtml"
+        "401":
+          $ref: "#/components/responses/401UnauthorizedErrorJWT"
+        "409":
+          description: "Conflict: the preference you tried to add was inside positive preferences"
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: "Preference ingredient arancia is in positive preferences,
+              so we can not add it here"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+    delete:
+      security:
+        - jwtAuth: []
+      description: 'Deletes the given (negative) preference from the user profile'
+      requestBody:
+        $ref: "#/components/requestBodies/PreferenceNegativePost"
+      responses:
+        "200":
+          description: "Correctly removed preference"
+        "400":
+          $ref: "#/components/responses/400BadRequestHtml"
+        "401":
+          $ref: "#/components/responses/401UnauthorizedErrorJWT"
+        "404":
+          description: "Preference x was not found in the user's profile"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+
+  /plan/generate:
+    x-summary: Generate an eating plan for the user
+    post:
+      description: Generates an eating palan for the user basing on the parameters the user specified in the request
+      summary: Plan generation
+      requestBody:
+        $ref: "#/components/requestBodies/PlanRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/200OkPlanGenerate"        
+        "409":
+          $ref: "#/components/responses/409ConflictService"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+  
+  /plan/get:
+    x-summary: Search a plan for id
+    get:
+      description: Retrieves a plan given its id
+      summary: Retrieving plan
+      parameters:
+      - in: query
+        name: planId
+        required: true
+        schema:
+          type: string
+        description: The id of the plan
+      responses:
+        "200":
+          $ref: "#/components/responses/200OkPlanGet"
+        "404":
+          $ref: "#/components/responses/404NotFoundResource"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+
+
+
+components:
+  # https://swagger.io/docs/specification/authentication/bearer-authentication/
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      
+  parameters:
+    searchString:
+      name: searchString
+      in: query
+      description: The string to be searched
+      schema:
+        type: string
+      required: true
+      example:
+        "Primi piatti"
+
+  schemas:
+    LoginBody:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - username
+        - password
+      example:
+        username: mario
+        password: rossi
+        
+    SignupBody:
+      type: object
+      properties:
+        firstName:
+          type: string
+        secondName:
+          type: string
+        email:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - firstName
+        - email
+        - username
+        - password
+      example:
+        firstName: mario
+        secondName: rossi
+        emaiL: mario.rossi@mrossi.com
+        username: marioRossi
+        password: mario123
+        
+    Ingredient:
+      type: object
+      description: Ingredient of some recipe, with quantity.
+      properties:
+        name:
+          type: string
+          description: Name of the ingredient
+        unitOfMeasure:
+          type: integer
+        quantity:
+          type: number
+      required:
+        - name
+        - quantity
+      example:
+        name: Broccoli
+        unitOfMeasure: Kilograms
+        quantity: 100000
+
+    NutritionalInfo:
+      type: object
+      description: nutritional info of a recipe
+      properties:
+        calories:
+          type: number
+        carbohydrate:
+          type: number
+        cholesterol:
+          type: number
+        fat:
+          type: number
+        fiber:
+          type: number
+        saturedFat:
+          type: number
+        sodium:
+          type: number
+        sugar:
+          type: number
+      example:
+        calories: 74
+        carbohydrate: 1.5
+        cholesterol: 0.3
+        fat: 2.5
+        fiber: 2.1
+        saturedFat: 0.2
+        sodium: 1.3
+        sugar: 1.2
+
+    ShortRecipe:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the recipe.
+        image:
+          type: string
+          description: url to the image of the recipe
+        description:
+          type: string
+          description: description of the recipe
+        averageRating:
+          type: number
+          description: average rating of the recipe
+      example:
+        name: Carbonara
+        image: "https://dpv87w1mllzh1.cloudfront.net/alitalia_discover/attachments/data/000/000/334/original/roma-how-to-carbonara-1920x1080.jpg?1519055920"
+        description: "La pasta più buona di tutte"
+        averageRating: 5
+
+    CompleteRecipe:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the recipe
+        dateModified:
+          type: string
+          description: Date of last modification
+        estimatedCost:
+          type: integer
+          description: estimated cost class
+        image:
+          type: string
+          description: url to the image of the recipe
+        categories:
+          type: array
+          items:
+            type: string
+          description: list of the cathegories of a recipe
+        description:
+          type: string
+          description: description of the recipe
+        prepTime:
+          type: number
+          description: time for preparation
+        cookTime:
+          type: number
+          description: time for cooking
+        totalTime:
+          type: number
+          description: total estimated time
+        conservationTime:
+          type: number
+          description: estimated conservation time
+        peopleFor:
+          type: number
+          description: number of portions
+        ingredients:
+          type: array
+          items:
+            $ref: "#/components/schemas/Ingredient"
+          description: ingredients of the recipe
+        keywords:
+          type: array
+          items:
+            type: string
+          description: keywords to identify the recipe
+        lables:
+          type: array
+          items:
+            type: string
+          description: labels of the recipe
+        averageRating:
+          type: number
+          description: average rating of the recipe
+        numberOfRatings:
+          type: number
+          description: number of ratings for the recipe
+        requiredTools:
+          type: array
+          items:
+            type: string
+          description: list of tools needed for this recipe
+        nutritionalInfos:
+          $ref: "#/components/schemas/NutritionalInfo"
+      example:
+        name: "Carbonara"
+        dateModified: "20-09-2013-8:34:25"
+        estimatedCost: "medium"
+        image: "https://dpv87w1mllzh1.cloudfront.net/alitalia_discover/attachments/data/000/000/334/original/roma-how-to-carbonara-1920x1080.jpg?1519055920"
+        categories:
+          - "primi piatti"
+          - "classici"
+        description: "La pasta più buona di tutte"
+        prepTime: 5
+        cookTime: 20
+        totalTime: 20
+        conservationTime: 2
+        peopleFor: 4
+        ingredients:
+          - name: "uova"
+            quantity: 2
+          - name: "spaghetti"
+            quantity: 500
+            unitOfMeasure: "grams"
+          - name: "all the other"
+            quantity: 100
+        keywords:
+          - "buona"
+          - "carbonara"
+          - "pancetta"
+          - "uova"
+        labels:
+          - "primo piatto"
+          - "tradizionale"
+        averageRating: 5
+        numberOfRatings: 1246
+        requiredTools:
+          - "pentole"
+          - "fornello"
+        nutritionalInfos:
+          calories: 74
+          carbohydrate: 1.5
+          cholesterol: 0.3
+          fat: 2.5
+          fiber: 2.1
+          saturedFat: 0.2
+          sodium: 1.3
+          sugar: 1.2
+
+    PositivePreference:
+      type: object
+      properties:
+        "type":
+          type: string
+          enum: [recipes, ingredients, priceRange]
+        value:
+          type: string
+
+    NegativePreference:
+      type: object
+      properties:
+        "type":
+          type: string
+          enum: [recipe,ingredient,categories,plans,labels]
+        value:
+          type: string
+
+    Plan:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the plan
+        user:
+          $ref: "#/components/schemas/User"
+        numRecipes:
+          type: number
+          description: Number of recipes in the plan
+        estimatedCost:
+          type: string
+          enum: ["none","veryLow","low","medium","high","veryHigh"]
+          description: Estimated cost of the plan
+        recipes:
+          type: array
+          items:
+            $ref: "#/components/schemas/CompleteRecipe"
+          description: List of the recipes in the plan
+      required:
+        - name
+        - numRecipes
+        - estimatedCost
+        - recipes
+      example:
+        name: "Il Piano Vegano"
+        numRecipes: 1
+        user:
+          firstName: "Mario"
+          secondName: "Rossi"
+          email: "mario@nintendo.bros"
+          username: "Itsamee"
+          password: "princessPeach"
+          estimatedCost: "low"
+        recipes:
+        - name: "Carbonara"
+          dateModified: "20-09-2013-8:34:25"
+          estimatedCost: "medium"
+          image: "https://dpv87w1mllzh1.cloudfront.net/alitalia_discover/attachments/data/000/000/334/original/roma-how-to-carbonara-1920x1080.jpg?1519055920"
+          categories:
+            - "primi piatti"
+            - "classici"
+          description: "La pasta più buona di tutte"
+          prepTime: 5
+          cookTime: 20
+          totalTime: 20
+          conservationTime: 2
+          peopleFor: 4
+          ingredients:
+            - name: "uova"
+              quantity: 2
+            - name: "spaghetti"
+              quantity: 500
+              unitOfMeasure: "grams"
+            - name: "all the other"
+              quantity: 100
+          keywords:
+            - "buona"
+            - "carbonara"
+            - "pancetta"
+            - "uova"
+          labels:
+            - "primo piatto"
+            - "tradizionale"
+          averageRating: 5
+          numberOfRatings: 1246
+          requiredTools:
+            - "pentole"
+            - "fornello"
+          nutritionalInfos:
+            calories: 74
+            carbohydrate: 1.5
+            cholesterol: 0.3
+            fat: 2.5
+            fiber: 2.1
+            saturedFat: 0.2
+            sodium: 1.3
+            sugar: 1.2
+
+    User:
+      type: object
+      description: User of the system
+      properties:
+        firstName:
+          type: string
+          description: Name of the user
+        secondName:
+          type: string
+          description: The second name of the user
+        email:
+          type: string
+          description: The email of the user
+        username:
+          type: string
+          description: The username of the user
+        password:
+          type: string
+          description: The password of the user
+      required:
+        - firstName
+        - email
+        - username
+        - password
+      example:
+        firstName: "Mario"
+        secondName: "Rossi"
+        email: "mario@nintendo.bros"
+        username: "Itsamee"
+        password: "princessPeach"
+
+    PlanRequestSchema:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the plan
+        numberOfMeals:
+          type: number
+          description: Number of meals in the plan
+        budget:
+          type: string 
+          enum: ["none","veryLow","low","medium","high","veryHigh"]
+          description: Budget of the plan
+        usingPreferences:
+          type: boolean
+          description: Specifies if the generation of the plan has preferences set
+        preferences:
+          type: string
+          description: Preferenze per la richiesta non ancora implementate
+      required:
+        - numberOfMeals
+        - usingPreferences
+      example:
+        name: "Piano per la prossima settimana"
+        budget: "none"
+        numberOfMeals: 5
+        usingPreferences: false
+
+  requestBodies:
+    LoginRequest:
+      description: "Login Request"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/LoginBody"
+          example:
+            username: "Mario"
+            password: "mariuccio123"
+            
+    SignupRequest:
+      description: "Signup Request"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/SignupBody"
+          example:
+            firstname: "Mario"
+            secondname: "Rossi"
+            email: "mario.rossi@gmail.com"
+            username: "Mario"
+            password: "mariuccio123"
+    
+    PreferencePositivePost:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/PositivePreference"
+          example:
+            "type": recipe
+            "value": mousse al cioccolato con scorzette d'arancia
+            
+    PreferenceNegativePost:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/NegativePreference"
+          example:
+            "type": ingredient
+            "value": broccoli
+
+    PlanRequest:
+      description: "Plan Request"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/PlanRequestSchema"
+          example:
+            name: "Piano per la prossima settimana"
+            budget: "none"
+            numberOfMeals: 5
+            usingPreferences: false
+
+  responses:
+    200OkHtml:
+      description: Html page
+    
+    200OkUserService:
+      description: Ok response from User Service 
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              text:
+                type: string
+                description: Short text with the response
+              userInfo:
+                type: object
+                description: Information of the user
+            required:
+              - text
+              - userInfo
+            example:
+              text: "All ok"
+
+    200OkRecipeServiceShortList:
+      description: Ok response from recipe service for searching recipes by string-matching
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              text:
+                type: string
+                description: Short text with the response
+              recipes:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ShortRecipe"
+            required:
+              - text
+              - recipes
+    
+    200OkRecipeServiceCompleteRecipe:
+      description: Ok response from recipe service for searching a recipe by its id
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              text:
+                type: string
+                description: Short text with the response
+              recipe:
+                $ref: "#/components/schemas/CompleteRecipe"
+            required:
+              - text
+              - recipe
+
+    200OkPlanGenerate:
+      description: Ok response for plan generation
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              text: 
+                type: string
+                description: The response
+              plan:
+                $ref: "#/components/schemas/Plan"
+            required:
+              - text
+              - plan
+
+    200OkPlanGet:
+      description: Ok response for plan/get
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                description: name of the plan
+              text:
+                type: string
+                description: quick message for the response
+              recipes:
+                type: array
+                items: 
+                  $ref: "#/components/schemas/CompleteRecipe"
+                description: recipes for the plan
+              author:
+                type: string
+                description: name of the author
+            required:
+              - text
+              - name
+              - recipes
+              - author
+     
+    400BadRequestHtml:
+      description: BadRequest
+
+    400BadRequestService:
+      description: BadRequest
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              text:
+                type: string
+                description: Short text with the response
+            required:
+              - text
+            example:
+              text: "Service error: bad request"
+      
+    401UnauthorizedErrorJWT:
+      description: Access token is missing or invalid
+    
+    401UnauthorizedErrorCredentialsService:
+      description: Invalid access credentials
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              text:
+                type: string
+                description: Short text with the error
+            required:
+              - text
+            example:
+              text: "Service error: wrong credentials"
+
+    403ForbiddenService:
+      description: Forbidden request error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              text: 
+                type: string
+                description: Error text
+
+    404NotFoundResource:
+      description: Resource not found
+
+    404NotFoundService:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              text:
+                type: string
+                description: Short text with the error
+            required:
+              - text
+            example:
+              text: "Service error: resource not found"
+    
+    404NotAcceptigHtml:
+      description: Request sender does not accept html
+
+    409ConflictService:
+      description: Conflict error response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              text:
+                type: string
+                description: Short text with the error
+            required:
+              - text
+            example:
+              text: "Service error: conflict found"
+
+    500InternalServerError:
+      description: Internal server error
