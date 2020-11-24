@@ -79,6 +79,7 @@ export class PlanController {
     } else {
       const user = await User.findById(plan.user);
       return new HttpResponseOK({
+        text: "Plan found, all good so far",
         name: plan.name,
         recipes: plan.recipes,
         //TODO: filter before sending!
