@@ -92,11 +92,14 @@ export class RecipeService {
       !(result instanceof ErrorWrapper) &&
       result.length < RecipeService.queryLimit
     ) {
+      const set = new Set<DocumentType<RecipeClass>>();
+      result.forEach((i) => set.add(i));
       const moreResults = await this.searchRemainingWithRegex(
         searchString,
         RecipeService.queryLimit - result.length
       );
-      result = result.concat(moreResults);
+      moreResults.forEach((i) => set.add(i));
+      result = Array.from(set);
     }
     if (result instanceof ErrorWrapper) {
       response.setValuesList(
