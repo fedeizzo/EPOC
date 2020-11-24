@@ -8,9 +8,11 @@ async function loadAndShow() {
   const name = document.createElement("h3");
   name.innerText = plan.name;
   div.appendChild(name);
-  const authorDiv = document.createElement("p");
-  authorDiv.innerText = `Author: ${plan.author ?? "user deleted"}`;
-  div.appendChild(authorDiv);
+  if(plan.author != undefined){
+    const authorDiv = document.createElement("p");
+    authorDiv.innerText = `Author: ${plan.author}`;
+    div.appendChild(authorDiv);
+  }
   const recipesText = document.createElement("p");
   recipesText.innerText = "Recipes";
   div.appendChild(recipesText);
