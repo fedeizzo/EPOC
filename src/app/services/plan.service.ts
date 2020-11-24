@@ -20,7 +20,8 @@ class PlanServiceResponse implements ServiceResponse {
 
   buildResponse = () => {
     return {
-      content: this.prop
+      text: "Here's your beautifoul plan",
+      plan: this.prop
     }
   }
 }
