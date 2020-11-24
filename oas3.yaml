@@ -20,7 +20,7 @@ paths:
         "200":
           $ref: "#/components/responses/200OkHtml"
         "404":
-          $ref: "#/components/responses/404NotFoundHtml"
+          $ref: "#/components/responses/404NotAcceptigHtml"
         "500":
           $ref: "#/components/responses/500InternalServerError"
     post:
@@ -31,12 +31,15 @@ paths:
       responses:
         "200":
           description: "Correctly signed up"
+          $ref: "#/components/responses/200OkUserService"
         "400":
-          $ref: "#/components/responses/400BadRequest"
+          $ref: "#/components/responses/400BadRequestService"
         "403":
           description: "Invalid password: too common"
+          $ref: "#/components/responses/403ForbiddenService"
         "409":
           description: "Username already used"
+          $ref: "#/components/responses/409ConflictService"
         "500":
           $ref: "#/components/responses/500InternalServerError"
   
@@ -49,7 +52,7 @@ paths:
         "200":
           $ref: "#/components/responses/200OkHtml"
         "404":
-          $ref: "#/components/responses/404NotFoundHtml"
+          $ref: "#/components/responses/404NotAcceptigHtml"
         "500":
           $ref: "#/components/responses/500InternalServerError"
     post:
@@ -66,11 +69,11 @@ paths:
                 type: string
                 example: JWT=dijubnewuycfgwec6wec76w598uighc
         "400":
-          $ref: "#/components/responses/400BadRequest"
+          $ref: "#/components/responses/400BadRequestService"
         "401":
-          $ref: "#/components/responses/401UnauthorizedErrorCredentials"
+          $ref: "#/components/responses/401UnauthorizedErrorCredentialsService"
         "404":
-          $ref: "#/components/responses/404NotFound"
+          $ref: "#/components/responses/404NotFoundService"
         "500":
           $ref: "#/components/responses/500InternalServerError"
           
@@ -102,13 +105,11 @@ paths:
       responses:
         "200":
           $ref: "#/components/responses/200OkHtml"
-        "400":
-          $ref: "#/components/responses/400BadRequest"
         "404":
-          $ref: "#/components/responses/404NotFoundHtml"
+          $ref: "#/components/responses/404NotAcceptigHtml"
         "500":
           $ref: "#/components/responses/500InternalServerError"
-    post:
+    delete:
       security:
         - jwtAuth: []
       description: Delete user account from the service
@@ -126,7 +127,7 @@ paths:
         "401":
           $ref: "#/components/responses/401UnauthorizedErrorJWT"
         "404":
-          description: "No user found in the database with that credentials"
+          $ref: "#/components/responses/404NotFoundService"
         "500":
           $ref: "#/components/responses/500InternalServerError"
           
@@ -140,13 +141,7 @@ paths:
         - $ref: "#/components/parameters/searchString"
       responses:
         "200":
-          description: A list of recipes.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ShortRecipe"
+          $ref: "#/components/responses/200OkRecipeServiceShortList"
         "500":
           $ref: "#/components/responses/500InternalServerError"
         
@@ -166,13 +161,9 @@ paths:
           description: The id of the recipe
       responses:
         "200":
-          description: All the infos of the recipe.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CompleteRecipe"
+          $ref: "#/components/responses/200OkRecipeServiceCompleteRecipe"
         "404":
-          $ref: "#/components/responses/404NotFound"
+          $ref: "#/components/responses/404NotFoundResource"
         "500":
           $ref: "#/components/responses/500InternalServerError"
 
@@ -222,7 +213,7 @@ paths:
                 priceRange: 'high'      
             
         "400":
-          $ref: "#/components/responses/400BadRequest"
+          $ref: "#/components/responses/400BadRequestHtml"
         "401":
           $ref: "#/components/responses/401UnauthorizedErrorJWT"
         "500":
@@ -238,7 +229,7 @@ paths:
         "200":
           description: "Correctly added preference"
         "400":
-          $ref: "#/components/responses/400BadRequest"
+          $ref: "#/components/responses/400BadRequestHtml"
         "401":
           $ref: "#/components/responses/401UnauthorizedErrorJWT"
         "409":
@@ -261,7 +252,7 @@ paths:
         "200":
           description: "Correctly removed preference"
         "400":
-          $ref: "#/components/responses/400BadRequest"
+          $ref: "#/components/responses/400BadRequestHtml"
         "401":
           $ref: "#/components/responses/401UnauthorizedErrorJWT"
         "404":
@@ -329,7 +320,7 @@ paths:
                 plans: []      
                 labels: []      
         "400":
-          $ref: "#/components/responses/400BadRequest"
+          $ref: "#/components/responses/400BadRequestHtml"
         "401":
           $ref: "#/components/responses/401UnauthorizedErrorJWT"
         "500":
@@ -345,7 +336,7 @@ paths:
         "200":
           description: "Correctly added preference"
         "400":
-          $ref: "#/components/responses/400BadRequest"
+          $ref: "#/components/responses/400BadRequestHtml"
         "401":
           $ref: "#/components/responses/401UnauthorizedErrorJWT"
         "409":
@@ -368,7 +359,7 @@ paths:
         "200":
           description: "Correctly removed preference"
         "400":
-          $ref: "#/components/responses/400BadRequest"
+          $ref: "#/components/responses/400BadRequestHtml"
         "401":
           $ref: "#/components/responses/401UnauthorizedErrorJWT"
         "404":
@@ -385,13 +376,9 @@ paths:
         $ref: "#/components/requestBodies/PlanRequest"
       responses:
         "200":
-          description: Plan generated for the user
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Plan"        
+          $ref: "#/components/responses/200OkPlanGenerate"        
         "400":
-          $ref: "#/components/responses/400BadRequest"
+          $ref: "#/components/responses/400BadRequestService"
         "500":
           $ref: "#/components/responses/500InternalServerError"
   
@@ -409,13 +396,9 @@ paths:
         description: The id of the plan
       responses:
         "200":
-          description: All the infos of the plan.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Plan"
+          $ref: "#/components/responses/200OkPlanGet"
         "404":
-          $ref: "#/components/responses/404NotFound"
+          $ref: "#/components/responses/404NotFoundResource"
         "500":
           $ref: "#/components/responses/500InternalServerError"
 
@@ -875,21 +858,185 @@ components:
   responses:
     200OkHtml:
       description: Html page
-      
-    400BadRequest:
+    
+    200OkUserService:
+      description: Ok response from User Service 
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              text:
+                type: string
+                description: Short text with the response
+              userInfo:
+                type: object
+                description: Information of the user
+            required:
+              - text
+              - userInfo
+            example:
+              text: "All ok"
+
+    200OkRecipeServiceShortList:
+      description: Ok response from recipe service for searching recipes by string-matching
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              text:
+                type: string
+                description: Short text with the response
+              recipes:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ShortRecipe"
+            required:
+              - text
+              - recipes
+    
+    200OkRecipeServiceCompleteRecipe:
+      description: Ok response from recipe service for searching a recipe by its id
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              text:
+                type: string
+                description: Short text with the response
+              recipe:
+                $ref: "#/components/schemas/CompleteRecipe"
+            required:
+              - text
+              - recipe
+
+    200OkPlanGenerate:
+      description: Ok response for plan generation
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              text: 
+                type: string
+                description: The response
+              plan:
+                $ref: "#/components/schemas/Plan"
+            required:
+              - text
+              - plan
+
+    200OkPlanGet:
+      description: Ok response for plan/get
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                description: name of the plan
+              text:
+                type: string
+                description: quick message for the response
+              recipes:
+                type: array
+                items: 
+                  $ref: "#/components/schemas/CompleteRecipe"
+                description: recipes for the plan
+              author:
+                type: string
+                description: name of the author
+            required:
+              - text
+              - name
+              - recipes
+              - author
+     
+    400BadRequestHtml:
       description: BadRequest
+
+    400BadRequestService:
+      description: BadRequest
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              text:
+                type: string
+                description: Short text with the response
+            required:
+              - text
+            example:
+              text: "Service error: bad request"
       
     401UnauthorizedErrorJWT:
       description: Access token is missing or invalid
     
-    401UnauthorizedErrorCredentials:
+    401UnauthorizedErrorCredentialsService:
       description: Invalid access credentials
-      
-    404NotFound:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              text:
+                type: string
+                description: Short text with the error
+            required:
+              - text
+            example:
+              text: "Service error: wrong credentials"
+
+    403ForbiddenService:
+      description: Forbidden request error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              text: 
+                type: string
+                description: Error text
+
+    404NotFoundResource:
       description: Resource not found
+
+    404NotFoundService:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              text:
+                type: string
+                description: Short text with the error
+            required:
+              - text
+            example:
+              text: "Service error: resource not found"
     
-    404NotFoundHtml:
+    404NotAcceptigHtml:
       description: Request sender does not accept html
+
+    409ConflictService:
+      description: Conflict error response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              text:
+                type: string
+                description: Short text with the error
+            required:
+              - text
+            example:
+              text: "Service error: conflict found"
 
     500InternalServerError:
       description: Internal server error
