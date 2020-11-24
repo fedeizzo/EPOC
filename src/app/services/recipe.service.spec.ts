@@ -57,9 +57,8 @@ describe("The Recipe Service", () => {
       });
     });
     describe("When we use a wrong id", () => {
-      it("returns a Server Internal Error with error code 500", async () => {
-        const expectedErrorCode =
-          ServiceResponseCode.internalServerError;
+      it("returns a not found with error code 404", async () => {
+        const expectedErrorCode = ServiceResponseCode.elementNotFound;
         const wrongId = "this is not a correct id!!!";
         const actualErrorCode = await recipeService.getCompleteRecipe(wrongId);
         strictEqual(actualErrorCode.code, expectedErrorCode);
