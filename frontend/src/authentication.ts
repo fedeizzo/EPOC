@@ -1,3 +1,10 @@
+const isCookieSet = (getCookie('JWT') === undefined || getCookie('JWT') === '') ? false : true;
+if (isCookieSet) {
+  document.getElementById('logoutButton').hidden = false;
+  document.getElementById('deleteButton').hidden = false;
+}
+
+
 interface SignupData {
   firstName: string;
   secondName: string;
@@ -15,6 +22,16 @@ function getCookie(name: string) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
   return parts[1];
+}
+
+function showNotification(message: string) {
+  const content = message || "Invalid request";
+  var notification: any = document.querySelector('.mdl-js-snackbar');
+  notification!.MaterialSnackbar.showSnackbar(
+    {
+      message: content
+    }
+  );
 }
 
 async function fetchSignUp() {
@@ -40,10 +57,18 @@ async function fetchSignUp() {
     headers,
     body: JSON.stringify(data)
   });
-  if (response.status == 200) {
+
+  if (response.ok) {
     window.location.replace("/");
   } else {
-    console.log(await response.json()["text"]);
+    showNotification((await response.json())["text"]);
+    // let content = (await response.json())["text"];
+    // var notification: any = document.querySelector('.mdl-js-snackbar');
+    // notification!.MaterialSnackbar.showSnackbar(
+    //   {
+    //     message: content
+    //   }
+    // );
   }
 }
 
@@ -70,11 +95,16 @@ async function fetchLogin() {
   if (response.status == 200) {
     window.location.replace("/");
   } else {
-    const passwordField = (<HTMLInputElement>document.getElementById('password'));
-    passwordField.value = '';
-    passwordField.placeholder = 'Wrong password';
-
-    console.log(await response.json()["text"]);
+    showNotification((await response.json())["text"]);
+    // let content = (await response.json())["text"];
+    // var notification: any = document.querySelector('.mdl-js-snackbar');
+    // notification!.MaterialSnackbar.showSnackbar(
+    //   {
+    //     message: content
+    //   }
+    // );
+    (<HTMLInputElement>document.getElementById('password')).value = '';
+    // console.log((await response.json())["text"]);
   }
 }
 
@@ -133,6 +163,13 @@ async function fetchDelete() {
   if (response.status == 200) {
     window.location.replace("/");
   } else {
-    console.log(await response.json()["text"]);
+    // let content = (await response.json())["text"] || "Invalid request";
+    // var notification: any = document.querySelector('.mdl-js-snackbar');
+    // notification!.MaterialSnackbar.showSnackbar(
+    //   {
+    //     message: content
+    //   }
+    // );
+    showNotification((await response.json())["text"]);
   }
 }

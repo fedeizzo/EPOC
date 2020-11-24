@@ -36,7 +36,7 @@ export class SearchApiController {
       case ServiceResponseCode.ok:
         httpResponse = new HttpResponseOK(response.buildResponse());
         break;
-      case ServiceResponseCode.internalServerErrorQueryingRecipes:
+      case ServiceResponseCode.internalServerError:
         httpResponse = new HttpResponseInternalServerError(
           response.buildResponse()
         );

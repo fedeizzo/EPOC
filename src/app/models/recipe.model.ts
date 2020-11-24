@@ -2,9 +2,12 @@ import { prop, getModelForClass } from "@typegoose/typegoose";
 import { NutritionalInfo } from "./nutritional-info.model";
 
 export enum CostLevels {
-  low = "low",
-  medium = "medium",
-  high = "high",
+  none = "None",
+  veryLow = "molto basso",
+  low = "basso",
+  medium = "medio",
+  high = "elevato",
+  veryHigh = "molto elevata",
 }
 
 export enum UnitsOfMeasure {

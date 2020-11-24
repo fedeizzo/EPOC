@@ -28,7 +28,7 @@ class UserServiceResponse implements ServiceResponse {
 }
 
 export class UserService {
-  private uri: string = Config.getOrThrow('mongodb.uri', 'string');
+  // private uri: string = Config.getOrThrow('mongodb.uri', 'string');
 
   async insertUser(firstName: string, email: string, username: string, password: string, secondName?: string): Promise<UserServiceResponse> {
     let response: UserServiceResponse = new UserServiceResponse();
@@ -36,7 +36,7 @@ export class UserService {
     if (await isCommon(password)) {
       response.setValues(ServiceResponseCode.passwordTooCommon, "Password too common");
     } else {
-      await connect(this.uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
+      // await connect(this.uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
 
       const user = new User();
       user.firstName = firstName;
@@ -48,22 +48,30 @@ export class UserService {
       try {
         await user.save();
         response.setValues(ServiceResponseCode.ok, "OK", user);
-        
-      } catch (error) {
-        response.setValues(ServiceResponseCode.duplicateKeyInDb, "Db error, probably duplicate key");
-      }
 
-      await disconnect();
+      } catch (error) {
+        if ((error.toString()).indexOf('duplicate key error') > 0) {
+          response.setValues(
+            ServiceResponseCode.duplicateKeyInDb,
+            "Db error, probably duplicate key");
+        } else {
+          response.setValues(
+            ServiceResponseCode.internalServerError,
+            "Internal Server Error");
+        }
+      }
+      // await disconnect();
     }
+
     return response;
   }
 
   async areValidCredentials(username: string, password: string): Promise<UserServiceResponse> {
     let response: UserServiceResponse = new UserServiceResponse();
 
-    await connect(this.uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
+    // await connect(this.uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
     const doc = await User.findOne({ username: username });
-    await disconnect();
+    // await disconnect();
 
     if (doc != undefined) {
       let isValidPassword: boolean = await verifyPassword(password, doc.password);
@@ -84,9 +92,9 @@ export class UserService {
     let response: UserServiceResponse = await this.areValidCredentials(username, password);
 
     if (response.code === ServiceResponseCode.ok) {
-      await connect(this.uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
+      // await connect(this.uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
       const doc = await User.findOneAndDelete({ username: username });
-      await disconnect();
+      // await disconnect();
       if (doc != undefined) {
         response.setValues(ServiceResponseCode.ok, "User deleted definitively", doc ? doc : undefined);
       } else {
