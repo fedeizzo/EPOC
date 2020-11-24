@@ -12,5 +12,5 @@ export enum ServiceResponseCode {
   wrongCredentials,
   elementNotFound,
   duplicateKeyInDb,
-  internalServerErrorQueryingRecipes,
+  internalServerError,
 }

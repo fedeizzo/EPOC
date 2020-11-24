@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,10 +10,12 @@
     <script type="text/javascript" src="./src/authentication.js"></script>
     <title>Delete</title>
 </head>
+
 <body>
     <div class="mdl-card mdl-shadow--8dp">
         <div class="mdl-card__title">
-            <h1 class="mdl-card__title-text">Insert your credentials to delete everything related to you on our servers.</h1>
+            <h1 class="mdl-card__title-text">Insert your credentials to delete everything related to you on our servers.
+            </h1>
         </div>
         <div class="mdl-card__supporting-text">
             <div class="form">
@@ -24,12 +27,19 @@
                     <input type="password" name="password" id="password" class="mdl-textfield__input" required>
                     <label class="mdl-textfield__label" for="password">Password</label>
                 </div>
-                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" onclick="fetchDelete()" >Delete permanently</button>
+                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
+                    onclick="fetchDelete()">Delete permanently</button>
             </div>
         </div>
     </div>
-    
+
+    <div aria-live="assertive" aria-atomic="true" aria-relevant="text" class="mdl-snackbar mdl-js-snackbar">
+        <div class="mdl-snackbar__text"></div>
+        <button type="button" class="mdl-snackbar__action"></button>
+    </div>
+
 </body>
+
 </html>
 
 <style>
@@ -42,7 +52,7 @@
     .form {
         display: table;
         text-align: center;
-        margin: 0 auto; 
+        margin: 0 auto;
         width: 200px;
     }
 

@@ -97,7 +97,7 @@ describe("The Recipe Controller", () => {
             mockResponseBody
           );
           when(mockServiceResponse.code).thenReturn(
-            ServiceResponseCode.internalServerErrorQueryingRecipes
+            ServiceResponseCode.internalServerError
           );
           when(mockRecipeService.getCompleteRecipe(anything())).thenResolve(
             instance(mockServiceResponse)

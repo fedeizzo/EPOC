@@ -38,7 +38,7 @@
       <div class="mdl-layout-spacer"></div>
       <nav class="mdl-navigation">
         <a class="mdl-navigation__link" href="">About Us</a>
-        <a class="mdl-navigation__link" href="">Create Plan</a>
+        <a class="mdl-navigation__link" href="/generate">Create Plan</a>
         <a class="mdl-navigation__link" href="">FAQs</a>
       </nav>
       <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable
@@ -65,11 +65,11 @@
               SignUp
             </button>
         </form>
-        <button class="sprint1 mdl-button mdl-js-button mdl-button--raised mdl-button--colored" onclick="fetchLogout()">
+        <button id="logoutButton" class="sprint1 mdl-button mdl-js-button mdl-button--raised mdl-button--colored" onclick="fetchLogout()" hidden>
           Logout
         </button>
         <form method="DELETE" action="/deleteUser">
-            <button class="sprint1 mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+            <button id="deleteButton" class="sprint1 mdl-button mdl-js-button mdl-button--raised mdl-button--colored" hidden>
               Delete User
             </button>
         </form>

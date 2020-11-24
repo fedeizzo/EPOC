@@ -1,15 +1,22 @@
+const isCookieSet =
+  getCookie("JWT") === undefined || getCookie("JWT") === "" ? false : true;
+if (isCookieSet) {
+  document!.getElementById("logoutButton")!.hidden = false;
+  document!.getElementById("deleteButton")!.hidden = false;
+}
+
 interface SignupData {
   firstName: string;
   secondName: string;
   email: string;
   username: string;
   password: string;
-};
+}
 
 interface LoginData {
   username: string;
   password: string;
-};
+}
 
 function getCookie(name: string) {
   const value = `; ${document.cookie}`;
@@ -17,85 +24,106 @@ function getCookie(name: string) {
   return parts[1];
 }
 
+function showNotification(message: string) {
+  const content = message || "Invalid request";
+  var notification: any = document.querySelector(".mdl-js-snackbar");
+  notification!.MaterialSnackbar.showSnackbar({
+    message: content,
+  });
+}
+
 async function fetchSignUp() {
-  const url: string = '/api/v1/signup';
+  const url: string = "/api/v1/signup";
   const headers = {
-    'Content-type': 'application/json'
+    "Content-type": "application/json",
   };
 
   const data: SignupData = {
-    firstName: (<HTMLInputElement>document.getElementById('firstName')).value,
-    secondName: (<HTMLInputElement>document.getElementById('secondName')).value,
-    email: (<HTMLInputElement>document.getElementById('email')).value,
-    username: (<HTMLInputElement>document.getElementById('username')).value,
-    password: (<HTMLInputElement>document.getElementById('password')).value
+    firstName: (<HTMLInputElement>document.getElementById("firstName")).value,
+    secondName: (<HTMLInputElement>document.getElementById("secondName")).value,
+    email: (<HTMLInputElement>document.getElementById("email")).value,
+    username: (<HTMLInputElement>document.getElementById("username")).value,
+    password: (<HTMLInputElement>document.getElementById("password")).value,
   };
 
   const response = await fetch(url, {
-    method: 'POST',
-    mode: 'same-origin',
-    cache: 'no-cache',
-    redirect: 'follow',
-    credentials: 'same-origin',
+    method: "POST",
+    mode: "same-origin",
+    cache: "no-cache",
+    redirect: "follow",
+    credentials: "same-origin",
     headers,
-    body: JSON.stringify(data)
+    body: JSON.stringify(data),
   });
-  if (response.status == 200) {
+
+  if (response.ok) {
     window.location.replace("/");
   } else {
-    console.log(await response.json()["text"]);
+    showNotification((await response.json())["text"]);
+    // let content = (await response.json())["text"];
+    // var notification: any = document.querySelector('.mdl-js-snackbar');
+    // notification!.MaterialSnackbar.showSnackbar(
+    //   {
+    //     message: content
+    //   }
+    // );
   }
 }
 
 async function fetchLogin() {
-  const url: string = '/api/v1/login'
+  const url: string = "/api/v1/login";
   const headers = {
-    'Content-type': 'application/json'
+    "Content-type": "application/json",
   };
 
   const data: LoginData = {
-    username: (<HTMLInputElement>document.getElementById('username')).value,
-    password: (<HTMLInputElement>document.getElementById('password')).value
+    username: (<HTMLInputElement>document.getElementById("username")).value,
+    password: (<HTMLInputElement>document.getElementById("password")).value,
   };
 
   const response = await fetch(url, {
-    method: 'POST',
-    mode: 'same-origin',
-    cache: 'no-cache',
-    redirect: 'follow',
-    credentials: 'same-origin',
+    method: "POST",
+    mode: "same-origin",
+    cache: "no-cache",
+    redirect: "follow",
+    credentials: "same-origin",
     headers,
-    body: JSON.stringify(data)
+    body: JSON.stringify(data),
   });
   if (response.status == 200) {
     window.location.replace("/");
   } else {
-    const passwordField = (<HTMLInputElement>document.getElementById('password'));
-    passwordField.value = '';
-    passwordField.placeholder = 'Wrong password';
-
-    console.log(await response.json()["text"]);
+    showNotification((await response.json())["text"]);
+    // let content = (await response.json())["text"];
+    // var notification: any = document.querySelector('.mdl-js-snackbar');
+    // notification!.MaterialSnackbar.showSnackbar(
+    //   {
+    //     message: content
+    //   }
+    // );
+    (<HTMLInputElement>document.getElementById("password")).value = "";
+    // console.log((await response.json())["text"]);
   }
 }
 
 async function fetchLogout() {
-  const url: string = '/api/v1/logout'
+  const url: string = "/api/v1/logout";
   const headers = {
-    'Content-type': 'application/json'
+    "Content-type": "application/json",
   };
 
-  const token = getCookie('JWT');
+  const token = getCookie("JWT");
 
   if (token !== null && token !== undefined) {
-    headers['Authorization'] = 'Bearer ' + token;
+    headers["Authorization"] = "Bearer " + token;
   }
   const response = await fetch(url, {
-    method: 'POST',
-    mode: 'same-origin',
-    cache: 'no-cache',
-    redirect: 'follow',
-    credentials: 'same-origin',
-    headers
+    method: "POST",
+    mode: "same-origin",
+    cache: "no-cache",
+    redirect: "follow",
+    credentials: "same-origin",
+    headers,
   });
   if (response.status == 200) {
     window.location.replace("/");
@@ -105,34 +133,41 @@ async function fetchLogout() {
 }
 
 async function fetchDelete() {
-  const url: string = '/api/v1/deleteUser'
+  const url: string = "/api/v1/deleteUser";
   const headers = {
-    'Content-type': 'application/json'
+    "Content-type": "application/json",
   };
 
-  const token = getCookie('JWT');
+  const token = getCookie("JWT");
 
   if (token !== null && token !== undefined) {
-    headers['Authorization'] = 'Bearer ' + token;
+    headers["Authorization"] = "Bearer " + token;
   }
 
   const data: LoginData = {
-    username: (<HTMLInputElement>document.getElementById('username')).value,
-    password: (<HTMLInputElement>document.getElementById('password')).value
+    username: (<HTMLInputElement>document.getElementById("username")).value,
+    password: (<HTMLInputElement>document.getElementById("password")).value,
   };
 
   const response = await fetch(url, {
-    method: 'DELETE',
-    mode: 'same-origin',
-    cache: 'no-cache',
-    redirect: 'follow',
-    credentials: 'same-origin',
+    method: "DELETE",
+    mode: "same-origin",
+    cache: "no-cache",
+    redirect: "follow",
+    credentials: "same-origin",
     headers,
-    body: JSON.stringify(data)
+    body: JSON.stringify(data),
   });
   if (response.status == 200) {
     window.location.replace("/");
   } else {
-    console.log(await response.json()["text"]);
+    // let content = (await response.json())["text"] || "Invalid request";
+    // var notification: any = document.querySelector('.mdl-js-snackbar');
+    // notification!.MaterialSnackbar.showSnackbar(
+    //   {
+    //     message: content
+    //   }
+    // );
+    showNotification((await response.json())["text"]);
   }
 }

@@ -29,9 +29,9 @@ describe("The search controller", () => {
       );
       const spiedController = spy(controller);
       describe("if it's an error", async () => {
-        it("should return an error with code 304", async () => {
+        it("should return an error", async () => {
           const recipeResponse = {
-            code: 304,
+            code: 500,
             text: "error",
             recipes: "",
           };
