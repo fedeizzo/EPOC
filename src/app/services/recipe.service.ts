@@ -92,14 +92,14 @@ export class RecipeService {
       !(result instanceof ErrorWrapper) &&
       result.length < RecipeService.queryLimit
     ) {
-      const set = new Set<DocumentType<RecipeClass>>();
-      result.forEach((i) => set.add(i));
+      const map = new Map<String, DocumentType<RecipeClass>>();
+      result.forEach((i) => map.set(i.id, i));
       const moreResults = await this.searchRemainingWithRegex(
         searchString,
         RecipeService.queryLimit - result.length
       );
-      moreResults.forEach((i) => set.add(i));
-      result = Array.from(set);
+      moreResults.forEach((i) => map.set(i.id, i));
+      result = Array.from(map.values());
     }
     if (result instanceof ErrorWrapper) {
       response.setValuesList(
