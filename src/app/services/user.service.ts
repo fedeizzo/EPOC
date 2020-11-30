@@ -2,6 +2,7 @@
 import { Config, hashPassword, verifyPassword } from '@foal/core';
 import { isCommon } from '@foal/password'
 import { connect, disconnect } from 'mongoose';
+import { DocumentType } from '@typegoose/typegoose';
 
 // App
 import { User } from '../models'
@@ -105,4 +106,8 @@ export class UserService {
     return response;
   }
 
+  async getUserByUsername(username: string): Promise<DocumentType<UserClass> | undefined | null> {
+    const doc = await User.findOne({ username: username });
+    return doc;
+  }
 }

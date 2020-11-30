@@ -21,7 +21,7 @@ class PlanServiceResponse implements ServiceResponse {
   buildResponse = () => {
     return {
       text: this.text,
-      plan: this.prop? this.prop : "No plan"
+      plan: this.prop ? this.prop : "No plan"
     }
   }
 }
@@ -89,5 +89,9 @@ export class PlanService {
     } catch (_) {
       return null;
     }
+  }
+
+  async isPlanExist(planId: string) {
+    return await this.getPlan(planId) ? true : false;
   }
 }
