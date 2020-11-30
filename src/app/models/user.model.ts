@@ -1,4 +1,6 @@
-import { prop, DocumentType, getModelForClass } from '@typegoose/typegoose'
+import { prop, getModelForClass, Ref } from '@typegoose/typegoose';
+
+import { PlanClass } from './plan.model';
 
 export class UserClass {
   @prop({ type: String, required: true })
@@ -15,6 +17,9 @@ export class UserClass {
 
   @prop({ required: true })
   public password: string;
+
+  @prop({ ref: 'PlanClass' })
+  public favoritesPlan?: Ref<PlanClass>[];
 
   public getInfo() {
     return {
