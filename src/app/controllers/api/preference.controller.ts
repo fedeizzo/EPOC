@@ -31,7 +31,7 @@ import { User } from "../../models";
 const preferenceSchema = {
   properites: {
     category: { type: "string" },
-    content: { type: "strng" },
+    content: { type: "string" },
   },
   required: ["category", "content"],
   type: "object",

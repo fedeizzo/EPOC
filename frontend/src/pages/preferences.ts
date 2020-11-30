@@ -3,21 +3,27 @@ const token = getJwtCookie("JWT");
 //Retrieves user's preferences from the server
 async function getUserPreferences() {
   if (token != undefined) {
-    // const res = await fetch(`/api/v1/preferenes`); const prefs = (await res.json()).content;
-    const prefs = {
-      positive: {
-        recipes: ["9w9218w892", "uno", "due", "tre"],
-        ingredients: ["zucchine", "porri", "barbabietole"],
-        priceRange: CostLevels.medium,
+    const res = await fetch(`/api/v1/preferenes`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-type": "application/json",
       },
-      negative: {
-        recipes: ["9w9218w891"],
-        ingredients: ["zucche", "melanzane", "zenzero"],
-        categories: ["bio", "verdura", "easy"],
-        plans: ["Frutta di stagione", "settimana vegana"],
-        labels: ["pasta", "facile", "difficile", "medio"],
-      },
-    };
+    });
+    const prefs = (await res.json()).content;
+    // const prefs = {
+    //   positive: {
+    //     recipes: ["9w9218w892", "uno", "due", "tre"],
+    //     ingredients: ["zucchine", "porri", "barbabietole"],
+    //     priceRange: CostLevels.medium,
+    //   },
+    //   negative: {
+    //     recipes: ["9w9218w891"],
+    //     ingredients: ["zucche", "melanzane", "zenzero"],
+    //     categories: ["bio", "verdura", "easy"],
+    //     plans: ["Frutta di stagione", "settimana vegana"],
+    //     labels: ["pasta", "facile", "difficile", "medio"],
+    //   },
+    // };
     const mainDiv = document.createElement("div");
     mainDiv.classList.add("main_div", "card");
     const positiveDiv = document.createElement("div");
@@ -105,6 +111,7 @@ function listToDivs(
           body: JSON.stringify(body),
           headers: {
             Authorization: `Bearer ${token}`,
+            "Content-type": "application/json",
           },
         }
       );
@@ -164,6 +171,10 @@ async function deletePreference(
     {
       method: "DELETE",
       body: JSON.stringify(body),
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-type": "application/json",
+      },
     }
   );
   return res.status === 200;
