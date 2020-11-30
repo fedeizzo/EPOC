@@ -102,7 +102,7 @@ export class RecipeService {
     }
     if (result instanceof ErrorWrapper) {
       response.setValuesList(
-        ServiceResponseCode.internalServerErrorQueryingRecipes,
+        ServiceResponseCode.internalServerError,
         "Error while queryiung the db for a list of recipes:\n" + result.error
       );
     } else {
@@ -155,7 +155,7 @@ export class RecipeService {
       })
       .catch((error) => {
         response.setValuesComplete(
-          ServiceResponseCode.internalServerErrorQueryingRecipes,
+          ServiceResponseCode.internalServerError,
           "Error while looing for recipe in db:\n" + error
         );
       });

@@ -14,19 +14,29 @@ import { JWTRequired } from "@foal/jwt";
 import { PreferenceService, ServiceResponse, ServiceResponseCode } from "../../services";
 import { User } from "../../models";
 
-const singlePreference = {
+// const singlePreference = {
+//   properites: {
+//     category: { type: "string" },
+//     content: { type: "strng" },
+//   },
+//   required: ["category", "content"],
+//   type: "object",
+// };
+
+// const preferenceSchema = {
+//   type: "array",
+//   items: singlePreference,
+// };
+
+const preferenceSchema = {
   properites: {
     category: { type: "string" },
     content: { type: "strng" },
   },
   required: ["category", "content"],
   type: "object",
-};
+}
 
-const preferenceSchema = {
-  type: "array",
-  items: singlePreference,
-};
 
 export class PreferenceController {
   private preferenceService = new PreferenceService();
@@ -34,10 +44,8 @@ export class PreferenceController {
   @Get("/")
   @JWTRequired()
   async getAllPreferences(ctx: Context){
-    const username = ctx.user;
-    if(username === undefined){
-      console.log("username not found, should not arrive there");
-    }
+    const username = ctx.user.username;
+
     const response : ServiceResponse = await this.preferenceService.getAllPreference(username);
     switch(response.code){
       case ServiceResponseCode.ok:
@@ -52,9 +60,9 @@ export class PreferenceController {
   @ValidateBody(preferenceSchema)
   @JWTRequired()
   async addPositivePreference(ctx: Context) {
-    const username = ctx.user;
+    const username = ctx.user.username;
     const request = ctx.request.body;
-    
+
     const response: ServiceResponse = await this.preferenceService.addPositivePreference(username, request);
     switch(response.code){
       case ServiceResponseCode.ok:
@@ -70,7 +78,7 @@ export class PreferenceController {
   @ValidateBody(preferenceSchema)
   @JWTRequired()
   async deletePositivePreference(ctx: Context) {
-    const username = ctx.user;
+    const username = ctx.user.username;
     const request = ctx.request.body;
     
     const response: ServiceResponse = await this.preferenceService.deletePositivePreference(username, request);
@@ -88,7 +96,7 @@ export class PreferenceController {
   @ValidateBody(preferenceSchema)
   @JWTRequired()
   async addNegativePreference(ctx: Context) {
-    const username = ctx.user;
+    const username = ctx.user.username;
     const request = ctx.request.body;
     
     const response: ServiceResponse = await this.preferenceService.addNegativePreference(username, request);
@@ -106,7 +114,7 @@ export class PreferenceController {
   @ValidateBody(preferenceSchema)
   @JWTRequired()
   async deleteNegativePreference(ctx: Context) {
-    const username = ctx.user;
+    const username = ctx.user.username;
     const request = ctx.request.body;
     
     const response: ServiceResponse = await this.preferenceService.deleteNegativePreference(username, request);

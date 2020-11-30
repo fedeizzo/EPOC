@@ -33,7 +33,7 @@ export class RecipeApiController {
       case ServiceResponseCode.elementNotFound:
         httpResponse = new HttpResponseNotFound(response.buildResponse());
         break;
-      case ServiceResponseCode.internalServerErrorQueryingRecipes:
+      case ServiceResponseCode.internalServerError:
         httpResponse = new HttpResponseInternalServerError(
           response.buildResponse()
         );
