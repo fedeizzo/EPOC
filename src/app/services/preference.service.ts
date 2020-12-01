@@ -36,7 +36,7 @@ export class PreferenceService {
         "Error retrieving user"
       );
     } else {
-      if (user?.preferences.positive == null) {
+      if (user?.preferences == null) {
         await createPreferences(user!);
       }
       response.setValues(
@@ -50,7 +50,7 @@ export class PreferenceService {
 
   public async addPositivePreference(
     username: string,
-    request: singlePreference
+    request: SinglePreference
   ): Promise<ServiceResponse> {
     const user = await User.findOne({ username: username });
     let response: PreferenceResponse = new PreferenceResponse();
@@ -110,7 +110,7 @@ export class PreferenceService {
 
   public async deletePositivePreference(
     username: string,
-    request: singlePreference
+    request: SinglePreference
   ): Promise<PreferenceResponse> {
     const user = await User.findOne({ username: username });
     let response: PreferenceResponse = new PreferenceResponse();
@@ -152,7 +152,7 @@ export class PreferenceService {
 
   public async addNegativePreference(
     username: string,
-    request: singlePreference
+    request: SinglePreference
   ): Promise<PreferenceResponse> {
     const user = await User.findOne({ username: username });
     let response: PreferenceResponse = new PreferenceResponse();
@@ -213,7 +213,7 @@ export class PreferenceService {
 
   public async deleteNegativePreference(
     username: string,
-    request: singlePreference
+    request: SinglePreference
   ): Promise<PreferenceResponse> {
     const user = await User.findOne({ username: username });
     let response: PreferenceResponse = new PreferenceResponse();
@@ -255,7 +255,7 @@ export class PreferenceService {
 }
 
 
-async function createPreferences(user : DocumentType<UserClass>) : Promise<boolean> {
+export async function createPreferences(user : DocumentType<UserClass>) : Promise<boolean> {
   user.preferences = emptyPrefs();
   try{
     await user.save();
@@ -265,7 +265,7 @@ async function createPreferences(user : DocumentType<UserClass>) : Promise<boole
   }
 }
 
-class singlePreference {
-  public category: "string";
-  public content: "strng";
+export class SinglePreference {
+  public category: string;
+  public content: string;
 }
