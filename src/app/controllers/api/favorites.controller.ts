@@ -1,14 +1,26 @@
-import { Context, Put, HttpResponseOK, HttpResponseBadRequest, HttpResponseInternalServerError } from '@foal/core';
+import { Context, Post, HttpResponseOK, HttpResponseBadRequest, HttpResponseInternalServerError, dependency, ValidateBody } from '@foal/core';
 import { JWTRequired } from '@foal/jwt';
 import { UserService, FavoritesService } from '../../services';
 import { ServiceResponse, ServiceResponseCode } from '../../services';
 
+const addFavoritePlanSchema = {
+  properites: {
+    planId: { type: 'string' }
+  },
+  required: ['planId'],
+  type: 'object'
+}
+
 export class FavoritesController {
-  private userService: UserService = new UserService();
-  private favoritesService: FavoritesService = new FavoritesService();
+  @dependency
+  private userService: UserService;
+  @dependency
+  private favoritesService: FavoritesService;
+
 
   @JWTRequired()
-  @Put('/add')
+  @ValidateBody(addFavoritePlanSchema)
+  @Post('add')
   async addFavoritePlan(ctx: Context) {
     const username = ctx.user.username;
     const planId = ctx.request.body.planId;
@@ -28,5 +40,4 @@ export class FavoritesController {
       return new HttpResponseBadRequest();
     }
   }
-
 }
