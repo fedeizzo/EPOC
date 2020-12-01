@@ -83,10 +83,15 @@ export class PreferenceService {
           -1;
       } catch (_) {}
 
-      if (presentInBlacklist || presentInThisList) {
+      if (presentInBlacklist) {
         response.setValues(
           ServiceResponseCode.preferenceError,
           "You cannot insert a positive preference which is already in the blacklist"
+        );
+      } else if (presentInThisList) {
+        response.setValues(
+          ServiceResponseCode.preferenceError,
+          "You already have this preference"
         );
       } else {
         if (
@@ -181,10 +186,15 @@ export class PreferenceService {
           -1;
       } catch (_) {}
 
-      if (presentInWhiteList || presentInThisList) {
+      if (presentInWhiteList) {
         response.setValues(
           ServiceResponseCode.preferenceError,
           "You cannot insert a negative preference which is already in the whitelist"
+        );
+      } else if (presentInThisList) {
+        response.setValues(
+          ServiceResponseCode.preferenceError,
+          "You have already set this preference"
         );
       } else {
         if (
