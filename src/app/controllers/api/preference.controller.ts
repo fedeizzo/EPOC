@@ -4,15 +4,14 @@ import {
   Post,
   Delete,
   HttpResponseOK,
-  HttpResponse,
   ValidateBody,
-  Config,
   HttpResponseInternalServerError,
-  HttpResponseBadRequest,
+  HttpResponseConflict,
+  HttpResponseNotFound,
 } from "@foal/core";
 import { JWTRequired } from "@foal/jwt";
-import { PreferenceService, ServiceResponse, ServiceResponseCode } from "../../services";
-import { User } from "../../models";
+import { PreferenceService } from "../../services/preference.service";
+import { ServiceResponse, ServiceResponseCode } from "../../services/response.service";
 
 // const singlePreference = {
 //   properites: {
@@ -68,7 +67,7 @@ export class PreferenceController {
       case ServiceResponseCode.ok:
         return new HttpResponseOK(response.buildResponse());
       case ServiceResponseCode.preferenceError:
-        return new HttpResponseBadRequest(response.buildResponse());
+        return new HttpResponseConflict(response.buildResponse());
       default:
         return new HttpResponseInternalServerError(response.buildResponse());
     }
@@ -86,7 +85,7 @@ export class PreferenceController {
       case ServiceResponseCode.ok:
         return new HttpResponseOK(response.buildResponse());
       case ServiceResponseCode.preferenceError:
-        return new HttpResponseBadRequest(response.buildResponse());
+        return new HttpResponseNotFound(response.buildResponse());
       default:
         return new HttpResponseInternalServerError(response.buildResponse());
     }
@@ -104,7 +103,7 @@ export class PreferenceController {
       case ServiceResponseCode.ok:
         return new HttpResponseOK(response.buildResponse());
       case ServiceResponseCode.preferenceError:
-        return new HttpResponseBadRequest(response.buildResponse());
+        return new HttpResponseConflict(response.buildResponse());
       default:
         return new HttpResponseInternalServerError(response.buildResponse());
     }
@@ -122,7 +121,7 @@ export class PreferenceController {
       case ServiceResponseCode.ok:
         return new HttpResponseOK(response.buildResponse());
       case ServiceResponseCode.preferenceError:
-        return new HttpResponseBadRequest(response.buildResponse());
+        return new HttpResponseNotFound(response.buildResponse());
       default:
         return new HttpResponseInternalServerError(response.buildResponse());
     }
