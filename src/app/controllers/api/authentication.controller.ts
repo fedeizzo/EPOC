@@ -8,8 +8,7 @@ import { JWTRequired } from '@foal/jwt';
 
 // App
 import { UserService, ServiceResponse, ServiceResponseCode } from '../../services';
-import { RefreshJWT } from '../../hooks';
-import { Preferences } from '../../models';
+import { emptyPrefs } from '../../models/preferences.model';
 
 const signupSchema = {
   properites: {
@@ -44,13 +43,13 @@ export class AuthenticationController {
     const email:string = ctx.request.body.email;
     const username:string = ctx.request.body.username;
     const password:string = ctx.request.body.password;
-    const emptyPrefs = new Preferences();
+
     const serviceResponse: ServiceResponse = await this.userService.insertUser(
       firstName,
       email,
       username,
       password,
-      emptyPrefs,
+      emptyPrefs(),
       secondName,
     );
 

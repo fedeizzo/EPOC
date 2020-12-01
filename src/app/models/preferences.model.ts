@@ -33,6 +33,23 @@ export class PreferencesClass {
   public negative: NegativePreferencesClass;
 }
 
+/**Returns an empty preference object*/
+export function emptyPrefs() {
+  const emptyPrefs = new Preferences();
+  const positive = new PositivePreferences();
+  positive.ingredients = [];
+  positive.recipes = [];
+  const negative = new NegativePreferences();
+  negative.ingredients = [];
+  negative.recipes = [];
+  negative.categories = [];
+  negative.plans = [];
+  negative.labels = [];
+  emptyPrefs.positive = positive;
+  emptyPrefs.negative = negative;
+  return emptyPrefs;
+}
+
 export const NegativePreferences = getModelForClass(NegativePreferencesClass);
 export const PositivePreferences = getModelForClass(PositivePreferencesClass);
 export const Preferences = getModelForClass(PreferencesClass);

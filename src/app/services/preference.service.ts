@@ -1,8 +1,8 @@
 import { ServiceResponse, ServiceResponseCode } from ".";
-import { CostLevels, NegativePreferences, PositivePreferences, Preferences, PreferencesClass, User } from "../models";
+import { User } from "../models";
 import { UserClass } from "../models/user.model";
 import { DocumentType } from "@typegoose/typegoose";
-
+import { emptyPrefs } from "../models/preferences.model";
 
 export class PreferenceResponse implements ServiceResponse {
   code: ServiceResponseCode;
@@ -36,6 +36,9 @@ export class PreferenceService {
         "Error retrieving user"
       );
     } else {
+      if (user?.preferences.positive == null) {
+        await createPreferences(user!);
+      }
       response.setValues(
         ServiceResponseCode.ok,
         "Preferences found",
@@ -58,7 +61,7 @@ export class PreferenceService {
         "Error retrieving user"
       );
     } else {
-      if(user!.preferences == null || user!.preferences == undefined){
+      if(user!.preferences == null || user!.preferences.positive == null){
         const valid : boolean = await createPreferences(user!);
         if(!valid){
           response.setValues(ServiceResponseCode.internalServerError, "Error creating preferences for the user")
@@ -67,15 +70,20 @@ export class PreferenceService {
       const userNegativePreferences = user!.preferences.negative;
       const userPositivePreferences = user!.preferences.positive;
       let presentInBlacklist = false;
+      try {
+        presentInBlacklist =
+        userNegativePreferences[request.category].indexOf(request.content) >
+          -1;
+      } catch (_) {}
 
+      let presentInThisList = false;
+      try {
+        presentInThisList =
+          userPositivePreferences[request.category].indexOf(request.content) >
+          -1;
+      } catch (_) {}
 
-      if (
-        userNegativePreferences![request.category].indexOf(request.content) > -1
-      ) {
-        presentInBlacklist = true;
-      }
-
-      if (presentInBlacklist) {
+      if (presentInBlacklist || presentInThisList) {
         response.setValues(
           ServiceResponseCode.preferenceError,
           "You cannot insert a positive preference which is already in the blacklist"
@@ -150,7 +158,7 @@ export class PreferenceService {
         "Error retrieving user"
       );
     } else {
-      if(user!.preferences == null || user!.preferences == undefined){
+      if(user!.preferences == null || user!.preferences.negative == undefined){
         const valid : boolean = await createPreferences(user!);
         if(!valid){
           response.setValues(ServiceResponseCode.internalServerError, "Error creating preferences for the user")
@@ -160,14 +168,20 @@ export class PreferenceService {
       const userNegativePreferences = user!.preferences.negative;
       const userPositivePreferences = user!.preferences.positive;
       let presentInWhiteList = false;
+      try {
+        presentInWhiteList =
+          userPositivePreferences[request.category].indexOf(request.content) >
+          -1;
+      } catch (_) {}
 
-      if (
-        userPositivePreferences[request.category].indexOf(request.content) > -1
-      ) {
-        presentInWhiteList = true;
-      }
+      let presentInThisList = false;
+      try {
+        presentInThisList =
+          userNegativePreferences[request.category].indexOf(request.content) >
+          -1;
+      } catch (_) {}
 
-      if (presentInWhiteList) {
+      if (presentInWhiteList || presentInThisList) {
         response.setValues(
           ServiceResponseCode.preferenceError,
           "You cannot insert a negative preference which is already in the whitelist"
@@ -232,39 +246,7 @@ export class PreferenceService {
 
 
 async function createPreferences(user : DocumentType<UserClass>) : Promise<boolean> {
-  let emptyPositive = new PositivePreferences();
-  emptyPositive.ingredients = [];
-  emptyPositive.recipes = [];
-  // TODO: scommenta questo una volta che ci sono i costLevels giusti 
-  // emptyPositive.priceRange = CostLevels.none;
-  try{
-    await emptyPositive.save();
-  } catch {
-    return false;
-  }
-
-  let emptyNegative = new NegativePreferences();
-  emptyNegative.categories = [];
-  emptyNegative.ingredients = [];
-  emptyNegative.labels = [];
-  emptyNegative.plans = [];
-  emptyNegative.recipes = [];
-  try{
-    await emptyNegative.save();
-  } catch {
-    return false;
-  }
-  
-  let emptyPreferences = new Preferences();
-  emptyPreferences.positive = emptyPositive;
-  emptyPreferences.negative = emptyNegative;
-  try{
-    await emptyPreferences.save();
-  } catch {
-    return false;
-  }
-
-  user.preferences = emptyPreferences;
+  user.preferences = emptyPrefs();
   try{
     await user.save();
     return true;

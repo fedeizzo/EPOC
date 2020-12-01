@@ -3,7 +3,7 @@ const token = getJwtCookie("JWT");
 //Retrieves user's preferences from the server
 async function getUserPreferences() {
   if (token != undefined) {
-    const res = await fetch(`/api/v1/preferenes`, {
+    const res = await fetch(`/api/v1/preference`, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-type": "application/json",
