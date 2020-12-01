@@ -1,4 +1,4 @@
-document.getElementById("searchBar")!.onkeydown = function(e) {
+document.getElementById("searchBar")!.onkeydown = function (e) {
   if (e.code === "Enter") {
     const element = <HTMLInputElement>document.getElementById("searchBar");
     const query = encodeURIComponent(element.value);
@@ -8,7 +8,7 @@ document.getElementById("searchBar")!.onkeydown = function(e) {
 
 const queryFromHome = window.location.href.split("searchString=")[1];
 if (queryFromHome !== undefined) {
-  window.history.pushState("", "", '/search');
+  // window.history.pushState("", "", '/search');
   search(queryFromHome);
 }
 

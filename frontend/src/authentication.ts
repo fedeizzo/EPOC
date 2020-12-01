@@ -1,8 +1,11 @@
 const isCookieSet =
   getCookie("JWT") === undefined || getCookie("JWT") === "" ? false : true;
 if (isCookieSet) {
-  document!.getElementById("logoutButton")!.hidden = false;
-  document!.getElementById("deleteButton")!.hidden = false;
+  document!.getElementById("auth-access")!.hidden = true;
+  document!.getElementById("auth-off")!.hidden = false;
+} else {
+  document!.getElementById("auth-access")!.hidden = false;
+  document!.getElementById("auth-off")!.hidden = true;
 }
 
 interface SignupData {
@@ -60,13 +63,6 @@ async function fetchSignUp() {
     window.location.replace("/");
   } else {
     showNotification((await response.json())["text"]);
-    // let content = (await response.json())["text"];
-    // var notification: any = document.querySelector('.mdl-js-snackbar');
-    // notification!.MaterialSnackbar.showSnackbar(
-    //   {
-    //     message: content
-    //   }
-    // );
   }
 }
 
@@ -94,15 +90,7 @@ async function fetchLogin() {
     window.location.replace("/");
   } else {
     showNotification((await response.json())["text"]);
-    // let content = (await response.json())["text"];
-    // var notification: any = document.querySelector('.mdl-js-snackbar');
-    // notification!.MaterialSnackbar.showSnackbar(
-    //   {
-    //     message: content
-    //   }
-    // );
     (<HTMLInputElement>document.getElementById("password")).value = "";
-    // console.log((await response.json())["text"]);
   }
 }
 
@@ -161,13 +149,6 @@ async function fetchDelete() {
   if (response.status == 200) {
     window.location.replace("/");
   } else {
-    // let content = (await response.json())["text"] || "Invalid request";
-    // var notification: any = document.querySelector('.mdl-js-snackbar');
-    // notification!.MaterialSnackbar.showSnackbar(
-    //   {
-    //     message: content
-    //   }
-    // );
     showNotification((await response.json())["text"]);
   }
 }
