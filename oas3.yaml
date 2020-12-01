@@ -404,6 +404,22 @@ paths:
         "500":
           $ref: "#/components/responses/500InternalServerError"
 
+  /favorites/add:
+    x-summary: Add plan to favorites
+    post:
+      description: Add plan to favorites given its id and user trough JWT
+      summary: Add plan to favorites
+      requestBody:
+        $ref: "#/components/requestBodies/FavoritesAddRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/200OkPlanAddedToFavorites"        
+        "400":
+          $ref: "#/components/responses/400BadRequestHtml"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+
+
 
 
 components:
@@ -733,7 +749,7 @@ components:
           numberOfRatings: 1246
           requiredTools:
             - "pentole"
-            - "fornello"
+            - "userInfo"
           nutritionalInfos:
             calories: 74
             carbohydrate: 1.5
@@ -803,6 +819,17 @@ components:
         numberOfMeals: 5
         usingPreferences: false
 
+    FavoritesAddRequestSchema:
+      type: object
+      properties:
+        planId:
+          type: string
+          description: Id of the plan
+      required:
+        - planId
+      example:
+        planId: "5fc5e42599b31d58f4d73ade"
+
   requestBodies:
     LoginRequest:
       description: "Login Request"
@@ -856,6 +883,15 @@ components:
             budget: "none"
             numberOfMeals: 5
             usingPreferences: false
+
+    FavoritesAddRequest:
+      description: "Add plan to favorites"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/FavoritesAddRequestSchema"
+          example:
+            planId: "5fc5e42599b31d58f4d73ade"
 
   responses:
     200OkHtml:
@@ -957,6 +993,23 @@ components:
               - recipes
               - author
      
+    200OkPlanAddedToFavorites:
+      description: Ok response for favorites adding operation for plan
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              text: 
+                type: string
+                description: The response
+              userInfo:
+                type: object
+                description: Information of the user
+            required:
+              - text
+              - userInfo
+
     400BadRequestHtml:
       description: BadRequest
 
