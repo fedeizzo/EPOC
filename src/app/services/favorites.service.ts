@@ -28,9 +28,11 @@ export class FavoritesService {
     const response = new FavoritesServiceResponse();
     if (await this.planService.isPlanExist(planId)) {
       if (user.favoritesPlan)
-        user.favoritesPlan.push(new ObjectId(planId));
-      else
-        user.favoritesPlan = [new ObjectId(planId)];
+        user.favoritesPlan.add(new ObjectId(planId));
+      else {
+        user.favoritesPlan = new Set();
+        user.favoritesPlan.add(new ObjectId(planId));
+      }
       response.code = ServiceResponseCode.ok;
       response.text = 'Plan with ' + planId + ' added to favorites';
       response.prop = user;

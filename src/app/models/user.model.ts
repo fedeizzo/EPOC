@@ -19,7 +19,7 @@ export class UserClass {
   public password: string;
 
   @prop({ ref: 'PlanClass' })
-  public favoritesPlan?: Ref<PlanClass>[];
+  public favoritesPlan?: Set<Ref<PlanClass>>;
 
   public getInfo() {
     return {
