@@ -14,4 +14,5 @@ export enum ServiceResponseCode {
   duplicateKeyInDb,
   internalServerError,
   preferenceError,
+  badRequest
 }

@@ -44,7 +44,7 @@ describe("The preference service", async function () {
     await new User().collection.drop();
     await disconnect();
   });
-
+/* GET PREFERENCES */
   describe("When we want to get all the preferences", function () {
     describe("if the user does not have any preference associated", function () {
       it("should return a ok response", async function () {
@@ -80,7 +80,7 @@ describe("The preference service", async function () {
       });
     });
   });
-
+  /* ADD PREFERENCES */
   describe("When we want to add a preference to some user", async function () {
     describe("if we want to add a positive preference", async function () {
       it("we should get an ok response and in the preferences we should find the recipe we added", async function () {
@@ -99,6 +99,7 @@ describe("The preference service", async function () {
         strictEqual(ServiceResponseCode.ok, response.code);
       });
     });
+
     describe("if we want to add a negative preference", async function () {
       it("we should get an ok response and in the negative preferences we should find the recipe we added", async function () {
         const recipeName = "Fasoi Stracotti";
@@ -116,13 +117,43 @@ describe("The preference service", async function () {
         strictEqual(ServiceResponseCode.ok, response.code);
       });
     });
+
+    describe("if we want to add a positive preference which has wrong category", async function () {
+      it("we should get a badRequest response", async function () {
+        const recipeName = "Fasoi bollity";
+        let preference: SinglePreference = new SinglePreference();
+        preference.category = "plans";
+        preference.content = recipeName;
+        let response: ServiceResponse = await preferenceService.addPositivePreference(
+          mockUsername,
+          preference
+        );
+        strictEqual(response.code, ServiceResponseCode.badRequest);
+        strictEqual(response.text, "You are trying to add to positive preference something which is not in positive preference categories");
+    });
   });
 
+    describe("if we want to add a negative preference which has wrong category", async function () {
+      it("we should get a badRequest response", async function () {
+        const recipeName = "Toast with dinosaur meat";
+        let preference: SinglePreference = new SinglePreference();
+        preference.category = "Velociraptors";
+        preference.content = recipeName;
+        let response: ServiceResponse = await preferenceService.addNegativePreference(
+          mockUsername,
+          preference
+        );
+        strictEqual(response.code, ServiceResponseCode.badRequest);
+        strictEqual(response.text, "You are trying to add to negative preference something which is not in negative preference categories");
+    });
+  });
+  });
+  /* DELETE PREFERENCES */
   describe("When we want to delete a preference", function () {
     describe("if we want to delete a positive preference which exists", async function () {
       const recipeName = "Fasoi e patate";
 
-      beforeEach(async function(){
+      beforeEach(async function () {
         let preferenceAdded: SinglePreference = new SinglePreference();
         preferenceAdded.category = "recipes";
         preferenceAdded.content = recipeName;
@@ -143,6 +174,69 @@ describe("The preference service", async function () {
         );
         strictEqual(ServiceResponseCode.ok, response.code);
         strictEqual(response.text, "Positive preference removed");
+      });
+    });
+
+    describe("if we want to delete a positive preference which does not exists", async function () {
+      it("we should get a PreferenceError response", async function () {
+        let preference: SinglePreference = new SinglePreference();
+        preference.category = "recipes";
+        preference.content = "Recipe which is not in the user preferences";
+
+        const response: ServiceResponse = await preferenceService.deletePositivePreference(
+          mockUsername,
+          preference
+        );
+        strictEqual(response.code, ServiceResponseCode.preferenceError);
+        strictEqual(
+          response.text,
+          "You are trying to remove a positive preference that does not exist"
+        );
+      });
+    });
+
+    describe("if we want to delete a negative preference which exists", async function () {
+      const recipeName = "Salsiccia e fagiuoli";
+
+      beforeEach(async function () {
+        let preferenceAdded: SinglePreference = new SinglePreference();
+        preferenceAdded.category = "recipes";
+        preferenceAdded.content = recipeName;
+        const responseAdded: ServiceResponse = await preferenceService.addNegativePreference(
+          mockUsername,
+          preferenceAdded
+        );
+      });
+
+      it("we should get an ok response with text 'Negative preference removed'", async function () {
+        let preference: SinglePreference = new SinglePreference();
+        preference.category = "recipes";
+        preference.content = recipeName;
+
+        const response: ServiceResponse = await preferenceService.deleteNegativePreference(
+          mockUsername,
+          preference
+        );
+        strictEqual(ServiceResponseCode.ok, response.code);
+        strictEqual(response.text, "Negative preference removed");
+      });
+    });
+
+    describe("if we want to delete a negative preference which does not exists", async function () {
+      it("we should get a PreferenceError response", async function () {
+        let preference: SinglePreference = new SinglePreference();
+        preference.category = "recipes";
+        preference.content = "Recipe which is not in the user preferences";
+
+        const response: ServiceResponse = await preferenceService.deleteNegativePreference(
+          mockUsername,
+          preference
+        );
+        strictEqual(response.code, ServiceResponseCode.preferenceError);
+        strictEqual(
+          response.text,
+          "You are trying to remove a negative preference that does not exist"
+        );
       });
     });
   });

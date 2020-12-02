@@ -8,10 +8,14 @@ import {
   HttpResponseInternalServerError,
   HttpResponseConflict,
   HttpResponseNotFound,
+  HttpResponseBadRequest,
 } from "@foal/core";
 import { JWTRequired } from "@foal/jwt";
 import { PreferenceService } from "../../services/preference.service";
-import { ServiceResponse, ServiceResponseCode } from "../../services/response.service";
+import {
+  ServiceResponse,
+  ServiceResponseCode,
+} from "../../services/response.service";
 
 // const singlePreference = {
 //   properites: {
@@ -34,26 +38,26 @@ const preferenceSchema = {
   },
   required: ["category", "content"],
   type: "object",
-}
-
+};
 
 export class PreferenceController {
   private preferenceService = new PreferenceService();
 
   @Get("/")
   @JWTRequired()
-  async getAllPreferences(ctx: Context){
+  async getAllPreferences(ctx: Context) {
     const username = ctx.user.username;
 
-    const response : ServiceResponse = await this.preferenceService.getAllPreference(username);
-    switch(response.code){
+    const response: ServiceResponse = await this.preferenceService.getAllPreference(
+      username
+    );
+    switch (response.code) {
       case ServiceResponseCode.ok:
         return new HttpResponseOK(response.buildResponse());
       case ServiceResponseCode.internalServerError:
         return new HttpResponseInternalServerError(response.buildResponse());
     }
   }
-
 
   @Post("/positive")
   @ValidateBody(preferenceSchema)
@@ -62,12 +66,17 @@ export class PreferenceController {
     const username = ctx.user.username;
     const request = ctx.request.body;
 
-    const response: ServiceResponse = await this.preferenceService.addPositivePreference(username, request);
-    switch(response.code){
+    const response: ServiceResponse = await this.preferenceService.addPositivePreference(
+      username,
+      request
+    );
+    switch (response.code) {
       case ServiceResponseCode.ok:
         return new HttpResponseOK(response.buildResponse());
       case ServiceResponseCode.preferenceError:
         return new HttpResponseConflict(response.buildResponse());
+      case ServiceResponseCode.badRequest:
+        return new HttpResponseBadRequest(response.buildResponse());
       default:
         return new HttpResponseInternalServerError(response.buildResponse());
     }
@@ -79,13 +88,18 @@ export class PreferenceController {
   async deletePositivePreference(ctx: Context) {
     const username = ctx.user.username;
     const request = ctx.request.body;
-    
-    const response: ServiceResponse = await this.preferenceService.deletePositivePreference(username, request);
-    switch(response.code){
+
+    const response: ServiceResponse = await this.preferenceService.deletePositivePreference(
+      username,
+      request
+    );
+    switch (response.code) {
       case ServiceResponseCode.ok:
         return new HttpResponseOK(response.buildResponse());
       case ServiceResponseCode.preferenceError:
         return new HttpResponseNotFound(response.buildResponse());
+      case ServiceResponseCode.badRequest:
+        return new HttpResponseBadRequest(response.buildResponse());
       default:
         return new HttpResponseInternalServerError(response.buildResponse());
     }
@@ -97,13 +111,18 @@ export class PreferenceController {
   async addNegativePreference(ctx: Context) {
     const username = ctx.user.username;
     const request = ctx.request.body;
-    
-    const response: ServiceResponse = await this.preferenceService.addNegativePreference(username, request);
-    switch(response.code){
+
+    const response: ServiceResponse = await this.preferenceService.addNegativePreference(
+      username,
+      request
+    );
+    switch (response.code) {
       case ServiceResponseCode.ok:
         return new HttpResponseOK(response.buildResponse());
       case ServiceResponseCode.preferenceError:
         return new HttpResponseConflict(response.buildResponse());
+      case ServiceResponseCode.badRequest:
+        return new HttpResponseBadRequest(response.buildResponse());
       default:
         return new HttpResponseInternalServerError(response.buildResponse());
     }
@@ -115,13 +134,18 @@ export class PreferenceController {
   async deleteNegativePreference(ctx: Context) {
     const username = ctx.user.username;
     const request = ctx.request.body;
-    
-    const response: ServiceResponse = await this.preferenceService.deleteNegativePreference(username, request);
-    switch(response.code){
+
+    const response: ServiceResponse = await this.preferenceService.deleteNegativePreference(
+      username,
+      request
+    );
+    switch (response.code) {
       case ServiceResponseCode.ok:
         return new HttpResponseOK(response.buildResponse());
       case ServiceResponseCode.preferenceError:
         return new HttpResponseNotFound(response.buildResponse());
+      case ServiceResponseCode.badRequest:
+        return new HttpResponseBadRequest(response.buildResponse());
       default:
         return new HttpResponseInternalServerError(response.buildResponse());
     }
