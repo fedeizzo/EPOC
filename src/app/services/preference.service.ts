@@ -4,20 +4,6 @@ import { UserClass } from "../models/user.model";
 import { DocumentType } from "@typegoose/typegoose";
 import { emptyPrefs } from "../models/preferences.model";
 
-const positivePreferencesCategories: string[] = [
-  "recipes",
-  "ingredients",
-  "priceRange",
-];
-const negativePreferencesCategories: string[] = [
-  "recipes",
-  "ingredients",
-  "priceRange",
-  "categories",
-  "plans",
-  "labels",
-];
-
 export class PreferenceResponse implements ServiceResponse {
   code: ServiceResponseCode;
   text: string;
@@ -43,20 +29,20 @@ export class PreferenceService {
   public async getAllPreference(username: string): Promise<ServiceResponse> {
     const user = await User.findOne({ username: username });
 
-    let response: PreferenceResponse = new PreferenceResponse();
-    if (user === undefined) {
+    const response: PreferenceResponse = new PreferenceResponse();
+    if (user == undefined) {
       response.setValues(
         ServiceResponseCode.internalServerError,
         "Error retrieving user"
       );
     } else {
-      if (user?.preferences == null) {
-        await createPreferences(user!);
+      if (user.preferences == null) {
+        await createPreferences(user);
       }
       response.setValues(
         ServiceResponseCode.ok,
         "Preferences found",
-        user?.preferences
+        user.preferences
       );
     }
     return response;
@@ -67,21 +53,21 @@ export class PreferenceService {
     request: SinglePreference
   ): Promise<ServiceResponse> {
     const user = await User.findOne({ username: username });
-    let response: PreferenceResponse = new PreferenceResponse();
+    const response: PreferenceResponse = new PreferenceResponse();
 
-    if (user === undefined) {
+    if (user == undefined) {
       response.setValues(
         ServiceResponseCode.internalServerError,
         "Error retrieving user"
       );
-    } else if (positivePreferencesCategories.indexOf(request.category) == -1) {
+    } else if (user.preferences?.positive[request.category] == null) {
       response.setValues(
         ServiceResponseCode.badRequest,
         "You are trying to add to positive preference something which is not in positive preference categories"
       );
     } else {
-      if (user!.preferences == null || user!.preferences.positive == null) {
-        const valid: boolean = await createPreferences(user!);
+      if (user.preferences?.positive == null) {
+        const valid: boolean = await createPreferences(user);
         if (!valid) {
           response.setValues(
             ServiceResponseCode.internalServerError,
@@ -89,12 +75,13 @@ export class PreferenceService {
           );
         }
       }
-      const userNegativePreferences = user!.preferences.negative;
-      const userPositivePreferences = user!.preferences.positive;
-      let presentInBlacklist =
+      const userNegativePreferences = user.preferences.negative;
+      const userPositivePreferences = user.preferences.positive;
+      const presentInBlacklist =
+        request.category in userNegativePreferences &&
         userNegativePreferences[request.category].indexOf(request.content) > -1;
 
-      let presentInThisList =
+      const presentInThisList =
         userPositivePreferences[request.category].indexOf(request.content) > -1;
 
       if (presentInBlacklist) {
@@ -112,8 +99,8 @@ export class PreferenceService {
           userPositivePreferences[request.category].indexOf(request.content) ===
           -1
         ) {
-          user!.preferences.positive[request.category].push(request.content);
-          await user!.save();
+          user.preferences.positive[request.category].push(request.content);
+          await user.save();
         }
         response.setValues(ServiceResponseCode.ok, "Positive preference added");
       }
@@ -127,21 +114,21 @@ export class PreferenceService {
     request: SinglePreference
   ): Promise<PreferenceResponse> {
     const user = await User.findOne({ username: username });
-    let response: PreferenceResponse = new PreferenceResponse();
+    const response: PreferenceResponse = new PreferenceResponse();
 
-    if (user === undefined) {
+    if (user == undefined) {
       response.setValues(
         ServiceResponseCode.internalServerError,
         "Error retrieving user"
       );
-    } else if (positivePreferencesCategories.indexOf(request.category) == -1) {
+    } else if (user.preferences?.positive[request.category] == null) {
       response.setValues(
         ServiceResponseCode.badRequest,
         "You are trying to remove from positive preference something which is not in positive preference categories"
       );
     } else {
-      if (user!.preferences == null || user!.preferences == undefined) {
-        const valid: boolean = await createPreferences(user!);
+      if (user.preferences == undefined) {
+        const valid: boolean = await createPreferences(user);
         if (!valid) {
           response.setValues(
             ServiceResponseCode.internalServerError,
@@ -150,7 +137,7 @@ export class PreferenceService {
         }
       }
 
-      const userPositivePreferences = user!.preferences.positive;
+      const userPositivePreferences = user.preferences.positive;
       if (
         userPositivePreferences[request.category].indexOf(request.content) ===
         -1
@@ -160,8 +147,8 @@ export class PreferenceService {
           "You are trying to remove a positive preference that does not exist"
         );
       } else {
-        user!.preferences.positive[request.category].pull(request.content);
-        user!.save();
+        user.preferences.positive[request.category].pull(request.content);
+        user.save();
         response.setValues(
           ServiceResponseCode.ok,
           "Positive preference removed"
@@ -177,24 +164,21 @@ export class PreferenceService {
     request: SinglePreference
   ): Promise<PreferenceResponse> {
     const user = await User.findOne({ username: username });
-    let response: PreferenceResponse = new PreferenceResponse();
+    const response: PreferenceResponse = new PreferenceResponse();
 
-    if (user === undefined) {
+    if (user == undefined) {
       response.setValues(
         ServiceResponseCode.internalServerError,
         "Error retrieving user"
       );
-    } else if (negativePreferencesCategories.indexOf(request.category) == -1) {
+    } else if (user.preferences?.negative[request.category] == null) {
       response.setValues(
         ServiceResponseCode.badRequest,
         "You are trying to add to negative preference something which is not in negative preference categories"
       );
     } else {
-      if (
-        user!.preferences == null ||
-        user!.preferences.negative == undefined
-      ) {
-        const valid: boolean = await createPreferences(user!);
+      if (user.preferences?.negative == undefined) {
+        const valid: boolean = await createPreferences(user);
         if (!valid) {
           response.setValues(
             ServiceResponseCode.internalServerError,
@@ -203,13 +187,14 @@ export class PreferenceService {
         }
       }
 
-      const userNegativePreferences = user!.preferences.negative;
-      const userPositivePreferences = user!.preferences.positive;
+      const userNegativePreferences = user.preferences.negative;
+      const userPositivePreferences = user.preferences.positive;
 
-      let presentInWhiteList =
+      const presentInWhiteList =
+        request.category in userPositivePreferences &&
         userPositivePreferences[request.category].indexOf(request.content) > -1;
 
-      let presentInThisList =
+      const presentInThisList =
         userNegativePreferences[request.category].indexOf(request.content) > -1;
 
       if (presentInWhiteList) {
@@ -227,8 +212,8 @@ export class PreferenceService {
           userNegativePreferences[request.category].indexOf(request.content) ===
           -1
         ) {
-          user!.preferences.negative[request.category].push(request.content);
-          await user!.save();
+          user.preferences.negative[request.category].push(request.content);
+          await user.save();
         }
         response.setValues(ServiceResponseCode.ok, "Negative preference added");
       }
@@ -242,21 +227,21 @@ export class PreferenceService {
     request: SinglePreference
   ): Promise<PreferenceResponse> {
     const user = await User.findOne({ username: username });
-    let response: PreferenceResponse = new PreferenceResponse();
+    const response: PreferenceResponse = new PreferenceResponse();
 
-    if (user === undefined) {
+    if (user == undefined) {
       response.setValues(
         ServiceResponseCode.internalServerError,
         "Error retrieving user"
       );
-    } else if (negativePreferencesCategories.indexOf(request.category) == -1) {
+    } else if (user.preferences?.negative[request.category] == null) {
       response.setValues(
         ServiceResponseCode.badRequest,
         "You are trying to remove from negative preference something which is not in negative preference categories"
       );
     } else {
-      if (user!.preferences == null || user!.preferences == undefined) {
-        const valid: boolean = await createPreferences(user!);
+      if (user.preferences == undefined) {
+        const valid: boolean = await createPreferences(user);
         if (!valid) {
           response.setValues(
             ServiceResponseCode.internalServerError,
@@ -265,7 +250,7 @@ export class PreferenceService {
         }
       }
 
-      const userNegativePreferences = user!.preferences.negative;
+      const userNegativePreferences = user.preferences.negative;
       if (
         userNegativePreferences[request.category].indexOf(request.content) == -1
       ) {
@@ -274,8 +259,8 @@ export class PreferenceService {
           "You are trying to remove a negative preference that does not exist"
         );
       } else {
-        user!.preferences.negative[request.category].pull(request.content);
-        user!.save();
+        user.preferences.negative[request.category].pull(request.content);
+        user.save();
         response.setValues(
           ServiceResponseCode.ok,
           "Negative preference removed"
