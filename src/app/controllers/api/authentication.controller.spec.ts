@@ -6,6 +6,7 @@ import { connection, connect, disconnect } from 'mongoose';
 import { HttpResponseOK, HttpResponseForbidden, HttpResponseConflict, HttpResponseBadRequest } from '@foal/core';
 import { User } from '../../models';
 import { UserService } from '../../services';
+import { emptyPrefs } from '../../models/preferences.model';
 
 describe('The Authentication Controller', () => {
   const controller: AuthenticationController = createController(AuthenticationController);
@@ -114,6 +115,7 @@ describe('The Authentication Controller', () => {
           email,
           username,
           password,
+          emptyPrefs(),
           secondName);
       });
       it('returns OK response', async () => {
@@ -156,6 +158,7 @@ describe('The Authentication Controller', () => {
           email,
           username,
           password,
+          emptyPrefs(),
           secondName);
       });
       it('returns 401 unauthorized response', async () => {
@@ -233,6 +236,7 @@ describe('The Authentication Controller', () => {
           email,
           username,
           password,
+          emptyPrefs(),
           secondName);
       });
       it('returns ok response', async () => {
@@ -272,6 +276,7 @@ describe('The Authentication Controller', () => {
           email,
           username,
           password,
+          emptyPrefs(),
           secondName);
       });
       it('returns 401 unauthorized response', async () => {
@@ -304,6 +309,7 @@ describe('The Authentication Controller', () => {
           email,
           username,
           password,
+          emptyPrefs(),
           secondName);
       });
       it('returns 401 unauthorized response', async () => {
