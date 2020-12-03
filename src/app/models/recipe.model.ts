@@ -3,9 +3,11 @@ import { NutritionalInfo } from "./nutritional-info.model";
 
 export enum CostLevels {
   none = "None",
-  low = "low",
-  medium = "medium",
-  high = "high",
+  veryLow = "molto basso",
+  low = "basso",
+  medium = "medio",
+  high = "elevato",
+  veryHigh = "molto elevata",
 }
 
 export enum UnitsOfMeasure {

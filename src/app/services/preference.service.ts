@@ -1,6 +1,7 @@
 import { ServiceResponse, ServiceResponseCode } from ".";
 import { User } from "../models";
 import { UserClass } from "../models/user.model";
+import { CostLevels } from "../models/recipe.model";
 import { DocumentType } from "@typegoose/typegoose";
 import { emptyPrefs } from "../models/preferences.model";
 
@@ -80,6 +81,26 @@ export class PreferenceService {
           );
         }
       }
+
+      if (request.category == "priceRange") {
+        let levels: string[] = Object.values(CostLevels) as string[];
+        let price: string = request.content as string;
+        if (levels.indexOf(price) > -1) {
+          user.preferences.positive.priceRange = request.content as CostLevels;
+          await user.save();
+          response.setValues(
+            ServiceResponseCode.ok,
+            "Positive preference added"
+          );
+        } else {
+          response.setValues(
+            ServiceResponseCode.preferenceError,
+            "Cost level is not valid"
+          );
+        }
+        return response;
+      }
+
       const userNegativePreferences = user.preferences.negative;
       const userPositivePreferences = user.preferences.positive;
 
@@ -229,7 +250,8 @@ export class PreferenceService {
       } else {
         /** Adding correctly negative preference */
         if (
-          userNegativePreferences[request.category].indexOf(request.content) == -1
+          userNegativePreferences[request.category].indexOf(request.content) ==
+          -1
         ) {
           user.preferences.negative[request.category].push(request.content);
           await user.save();
@@ -273,7 +295,9 @@ export class PreferenceService {
       }
 
       const userNegativePreferences = user.preferences.negative;
-      if (userNegativePreferences[request.category].indexOf(request.content)==-1) {
+      if (
+        userNegativePreferences[request.category].indexOf(request.content) == -1
+      ) {
         /** Error preference does not exist */
         response.setValues(
           ServiceResponseCode.preferenceError,
