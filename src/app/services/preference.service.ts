@@ -85,11 +85,10 @@ export class PreferenceService {
 
       const presentInBlacklist =
         request.category in userNegativePreferences &&
-        userNegativePreferences[request.category].has(request.content);
+        userNegativePreferences[request.category].indexOf(request.content) > -1;
 
-      const presentInThisList = userPositivePreferences[request.category].has(
-        request.content
-      );
+      const presentInThisList =
+        userPositivePreferences[request.category].indexOf(request.content) > -1;
 
       if (presentInBlacklist) {
         /* preference already in blacklist */
@@ -105,8 +104,11 @@ export class PreferenceService {
         );
       } else {
         /* adding new correct preference */
-        if (!userPositivePreferences[request.category].has(request.content)) {
-          user.preferences.positive[request.category].add(request.content);
+        if (
+          userPositivePreferences[request.category].indexOf(request.content) ==
+          -1
+        ) {
+          user.preferences.positive[request.category].push(request.content);
           await user.save();
         }
         response.setValues(ServiceResponseCode.ok, "Positive preference added");
@@ -149,7 +151,9 @@ export class PreferenceService {
 
       const userPositivePreferences = user.preferences.positive;
 
-      if (!userPositivePreferences[request.category].has(request.content)) {
+      if (
+        userPositivePreferences[request.category].indexOf(request.content) == -1
+      ) {
         /* removing preference that does not exist */
         response.setValues(
           ServiceResponseCode.preferenceError,
@@ -157,7 +161,7 @@ export class PreferenceService {
         );
       } else {
         /* Removing preference correctly */
-        user.preferences.positive[request.category].delete(request.content);
+        user.preferences.positive[request.category].pull(request.content);
         user.save();
         response.setValues(
           ServiceResponseCode.ok,
@@ -205,11 +209,10 @@ export class PreferenceService {
 
       const presentInWhiteList =
         request.category in userPositivePreferences &&
-        userPositivePreferences[request.category].has(request.content);
+        userPositivePreferences[request.category].indexOf(request.content) > -1;
 
-      const presentInThisList = userNegativePreferences[request.category].has(
-        request.content
-      );
+      const presentInThisList =
+        userNegativePreferences[request.category].indexOf(request.content) > -1;
 
       if (presentInWhiteList) {
         /** Error preference already in whitelist */
@@ -225,8 +228,10 @@ export class PreferenceService {
         );
       } else {
         /** Adding correctly negative preference */
-        if (!userNegativePreferences[request.category].has(request.content)) {
-          user.preferences.negative[request.category].add(request.content);
+        if (
+          userNegativePreferences[request.category].indexOf(request.content) == -1
+        ) {
+          user.preferences.negative[request.category].push(request.content);
           await user.save();
         }
         response.setValues(ServiceResponseCode.ok, "Negative preference added");
@@ -268,7 +273,7 @@ export class PreferenceService {
       }
 
       const userNegativePreferences = user.preferences.negative;
-      if (!userNegativePreferences[request.category].has(request.content)) {
+      if (userNegativePreferences[request.category].indexOf(request.content)==-1) {
         /** Error preference does not exist */
         response.setValues(
           ServiceResponseCode.preferenceError,
@@ -276,7 +281,7 @@ export class PreferenceService {
         );
       } else {
         /** Removing correctly negative preference */
-        user.preferences.negative[request.category].delete(request.content);
+        user.preferences.negative[request.category].pull(request.content);
         user.save();
         response.setValues(
           ServiceResponseCode.ok,

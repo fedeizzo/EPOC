@@ -21,15 +21,15 @@ describe("The preferences model", () => {
 
   it("when valid should be able to be inserted in the db", async () => {
     const positive = new PositivePreferences();
-    positive.recipes = new Set<string>();
-    positive.ingredients = new Set<string>();
-    positive.labels = new Set<string>();
+    positive.recipes = [];
+    positive.ingredients = [];
+    positive.labels = [];
     positive.priceRange = CostLevels.none;
 
     const negative = new NegativePreferences();
-    negative.recipes = new Set<string>();
-    negative.ingredients = new Set<string>();
-    negative.labels = new Set<string>();
+    negative.recipes = [];
+    negative.ingredients = [];
+    negative.labels = [];
 
     const prefs = new Preferences();
     prefs.positive = positive;

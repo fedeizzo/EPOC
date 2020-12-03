@@ -2,22 +2,25 @@ import { getModelForClass, prop } from "@typegoose/typegoose";
 import { CostLevels } from "./recipe.model";
 
 abstract class CommonPreferences {
-  @prop({type : new Set<String>()})
-  public recipes: Set<String>;
-  @prop({type : new Set<String>()})
-  public ingredients: Set<String>;
-  @prop({type : new Set<String>()})
-  public labels: Set<String>;
+  @prop({ _id: false })
+  @prop({type : [String]})
+  public recipes: String[];
+  public recipesDict : Map<string, boolean>;
+  @prop({type : [String]})
+  public ingredients: String[];
+  @prop({type : [String]})
+  public labels: String[];
 }
 
 export class PositivePreferences extends CommonPreferences {
-  @prop({type : CostLevels})
+  @prop({type : Object})
   public priceRange: CostLevels;
 }
 
 export class NegativePreferences extends CommonPreferences {}
 
 export class PreferencesClass {
+  @prop({ _id: false })
   @prop({type : PositivePreferences})
   public positive: PositivePreferences;
   @prop({type : NegativePreferences})
@@ -29,15 +32,16 @@ export function emptyPrefs() {
   const emptyPrefs = new Preferences();
 
   const positive = new PositivePreferences();
-  positive.ingredients = new Set<string>();
-  positive.recipes = new Set<string>();
-  positive.labels = new Set<string>();
+  positive.ingredients = [];
+  positive.recipes = [];
+  positive.recipesDict = new Map<string, boolean>();
+  positive.labels = [];
   positive.priceRange = CostLevels.none;
 
   const negative = new NegativePreferences();
-  negative.ingredients = new Set<string>();
-  negative.recipes = new Set<string>();
-  negative.labels = new Set<string>();
+  negative.ingredients = [];
+  negative.recipes = [];
+  negative.labels = [];
 
   emptyPrefs.positive = positive;
   emptyPrefs.negative = negative;
