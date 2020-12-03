@@ -17,7 +17,6 @@ async function search(query: string) {
   const j = await response.json();
   const recipes: Partial<Recipe>[] = j["recipes"];
   const elements = recipes.map((r) => recipeCard(r));
-  console.log('elements: ', elements)
   const container = document.getElementById("recipeContainer");
   if (container) {
     for (const e of elements) {
@@ -31,13 +30,6 @@ async function search(query: string) {
   }
 
 
-  // <li class="media item-list">
-  //   <img src="https://www.giallozafferano.it/images/ricette/223/22324/foto_hd/hd650x433_wm.jpg" class="mr-3 rounded" alt="...">
-  //   <div class="media-body">
-  //     <h3 class="mt-0 mb-1">Nome della ricetta</h3>
-  //     Descrizione Descrizione Descrizione Descrizione Descrizione Descrizione Descrizione Descrizione Descrizione Descrizione
-  //   </div>
-  // </li>
   function recipeCard(r: Partial<Recipe>): HTMLElement {
     const card = document.createElement("li");
     card.className = "media item-list";
