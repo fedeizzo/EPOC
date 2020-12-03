@@ -15,6 +15,8 @@
       crossorigin="anonymous"></script>
     <title>Research</title>
     <script src='../src/pages/search.js' defer></script>
+    <script type="text/javascript" src="./src/authentication.js" defer></script>
+    <script type="text/javascript" src="./src/index.js" defer></script>
     <style>
         html,
         body,
@@ -71,7 +73,7 @@
 <body>
   <header class="overflow-auto view bg">
     <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="#">EPOC</a>
+      <a class="navbar-brand" href="/">EPOC</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -93,15 +95,21 @@
           </li>
         </ul>
         <form action="/search" class="form-inline my-2 my-lg-0">
-          <input id="searchBar" class="form-control mr-sm-2 circle-item" type="search" placeholder="Search" aria-label="Search"
-            name="searchString">
-          <button class="btn btn-outline-success my-2 my-sm-0 search-button" type="submit"><svg width="1em" height="1em"
-              viewBox="0 0 16 16" class="bi bi-search" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path fill-rule="evenodd"
-                d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z" />
-              <path fill-rule="evenodd"
-                d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z" />
-            </svg></button>
+          <div class="input-group mr-sm-2 ">
+            <input id="searchBar" type="text" class="form-control circle-item" name="searchString" placeholder="Search"
+              aria-label="Search" aria-describedby="button-addon2">
+            <div class="input-group-append ">
+              <button class="btn btn btn-info circle-item" type="submit" id="button-addon2">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-search" fill="currentColor"
+                  xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd"
+                    d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z" />
+                  <path fill-rule="evenodd"
+                    d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z" />
+                </svg>
+              </button>
+            </div>
+          </div>
         </form>
 
         <ul id="auth-access" class="navbar-nav">
@@ -128,6 +136,7 @@
         </ul>
       </div>
     </nav>
+
     <div class="container-xl height-override">
       <ul class="list-unstyled items-holder" id="recipeContainer">
       </ul>
