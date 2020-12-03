@@ -16,23 +16,20 @@ describe("The preferences model", () => {
 
   after(async () => {
     await new Preferences().collection.drop().catch(() => {});
-    await new PositivePreferences().collection.drop().catch(() => {});
-    await new NegativePreferences().collection.drop().catch(() => {});
     await disconnect();
   });
 
   it("when valid should be able to be inserted in the db", async () => {
     const positive = new PositivePreferences();
-    positive.recipes = [];
-    positive.ingredients = [];
-    positive.priceRange = CostLevels.high;
+    positive.recipes = new Set<string>();
+    positive.ingredients = new Set<string>();
+    positive.labels = new Set<string>();
+    positive.priceRange = CostLevels.none;
 
     const negative = new NegativePreferences();
-    negative.recipes = [];
-    negative.ingredients = [];
-    negative.categories = [];
-    negative.plans = [];
-    negative.labels = [];
+    negative.recipes = new Set<string>();
+    negative.ingredients = new Set<string>();
+    negative.labels = new Set<string>();
 
     const prefs = new Preferences();
     prefs.positive = positive;
