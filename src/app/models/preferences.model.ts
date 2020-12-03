@@ -5,7 +5,6 @@ abstract class CommonPreferences {
   @prop({ _id: false })
   @prop({type : [String]})
   public recipes: String[];
-  public recipesDict : Map<string, boolean>;
   @prop({type : [String]})
   public ingredients: String[];
   @prop({type : [String]})
@@ -34,7 +33,6 @@ export function emptyPrefs() {
   const positive = new PositivePreferences();
   positive.ingredients = [];
   positive.recipes = [];
-  positive.recipesDict = new Map<string, boolean>();
   positive.labels = [];
   positive.priceRange = CostLevels.none;
 
