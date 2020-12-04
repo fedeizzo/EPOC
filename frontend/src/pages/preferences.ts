@@ -282,6 +282,9 @@ async function deletePreference(
     category: listName,
     content: preference,
   };
+  if (preference instanceof Array) {
+    body.content = preference[0];
+  }
   const res = await fetch(
     `/api/v1/preference/${positive ? "positive" : "negative"}`,
     {
