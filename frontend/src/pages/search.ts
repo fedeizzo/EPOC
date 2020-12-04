@@ -8,7 +8,7 @@ document.getElementById("searchBar")!.onkeydown = function(e) {
 
 const queryFromHome = window.location.href.split("searchString=")[1];
 if (queryFromHome !== undefined) {
-  window.history.pushState("", "", '/search');
+  // window.history.pushState("", "", '/search');
   search(queryFromHome);
 }
 
@@ -17,25 +17,29 @@ async function search(query: string) {
   const j = await response.json();
   const recipes: Partial<Recipe>[] = j["recipes"];
   const elements = recipes.map((r) => recipeCard(r));
-  const container = document.createElement("div");
-  container.className = "recipeContainer";
-  for (const e of elements) {
-    container.appendChild(e);
+  const container = document.getElementById("recipeContainer");
+  if (container) {
+    for (const e of elements) {
+      container.appendChild(e);
+    }
+    const a = document.getElementsByClassName('recipeContainer');
+    for (let i = 0; i < a.length; i++) {
+      a[i].remove();
+      document.getElementsByTagName("body")[0].appendChild(container);
+    }
   }
-  const a = document.getElementsByClassName('recipeContainer');
-  for (let i = 0; i < a.length; i++) {
-    a[i].remove();
-  }
-  document.getElementsByTagName("body")[0].appendChild(container);
+
 
   function recipeCard(r: Partial<Recipe>): HTMLElement {
-    const card = document.createElement("div");
-    card.className = "recipe_card";
+    const card = document.createElement("li");
+    card.className = "media item-list";
     const image = <HTMLImageElement>document.createElement("img");
     image.src = r.image ?? "https://via.placeholder.com/250";
+    image.className = "mr-3 rounded"
     image.setAttribute("src", r.image ?? "https://via.placeholder.com/250");
     const central = document.createElement("div");
-    central.innerHTML = `<h1>${r.name ?? ""}</h1><p>${r.description ?? ""}</p>`;
+    central.className = "media-body";
+    central.innerHTML = `<h3 class="mt-0 mb-1">${r.name ?? ""}</h3><p>${r.description ?? ""}</p>`;
     card.appendChild(image);
     card.appendChild(central);
     card.onclick = () => {
