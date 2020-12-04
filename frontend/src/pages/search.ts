@@ -13,7 +13,9 @@ if (queryFromHome !== undefined) {
 }
 
 async function search(query: string) {
-  const recipeResponse = await fetch(`/api/v1/search/recipe?searchString=${query}`);
+  const recipeResponse = await fetch(
+    `/api/v1/search/recipe?searchString=${query}`
+  );
   const j = await recipeResponse.json();
   const recipes: Partial<Recipe>[] = j["recipes"];
   const recipeElements = recipes.map((r) => recipeCard(r));
@@ -27,9 +29,9 @@ async function search(query: string) {
   const planElements = plans.map((p) => planCard(p));
   const planContainer = document.getElementById("planContainer")!;
   for (const e of planElements) {
-    planContainer.appendChild(e);
+    planContainer.appendChild(await e);
   }
-  
+
   function recipeCard(r: Partial<Recipe>): HTMLElement {
     const card = document.createElement("li");
     card.className = "media item-list";
@@ -49,9 +51,8 @@ async function search(query: string) {
 
     return card;
   }
-  
-  function planCard(p: Partial<Plan>): HTMLElement {
-    console.log(p);
+
+  async function planCard(p: Partial<Plan>): Promise<HTMLElement> {
     const card = document.createElement("li");
     card.className = "media item-list";
     const image = <HTMLImageElement>document.createElement("img");
@@ -59,9 +60,28 @@ async function search(query: string) {
     image.className = "mr-3 rounded";
     const central = document.createElement("div");
     central.className = "media-body";
-    central.innerHTML = `<h3 class="mt-0 mb-1">${p.name ?? ""}</h3><p>${
-      p.recipes ?? ""
-    }</p>`;
+    const heading = document.createElement("h3");
+    heading.classList.add("mt-0", "mb-1");
+    heading.innerText = p.name?.valueOf() ?? "";
+    const numMeals = document.createElement("p");
+    numMeals.innerText = `${p.numRecipes} ricette`;
+    const par = document.createElement("p");
+    par.innerText = p.recipes?.toString() ?? "";
+
+    const recipes: Recipe[] = [];
+    for (const id of p.recipes ?? []) {
+      const resp = await fetch(`/api/v1/recipe/${id}`);
+      if (resp.status == 200) {
+        const rec = (await resp.json())["recipe"];
+        recipes.push(rec);
+      }
+    }
+    image.src = recipes[0].image ?? image.src;
+    par.innerText = recipes
+      .reduce((prev, i) => `${prev}, ${i.name}`, "")
+      .substr(1);
+
+    central.append(heading, numMeals, par);
     card.appendChild(image);
     card.appendChild(central);
     card.onclick = () => {
