@@ -16,8 +16,6 @@ describe("The preferences model", () => {
 
   after(async () => {
     await new Preferences().collection.drop().catch(() => {});
-    await new PositivePreferences().collection.drop().catch(() => {});
-    await new NegativePreferences().collection.drop().catch(() => {});
     await disconnect();
   });
 
@@ -25,13 +23,12 @@ describe("The preferences model", () => {
     const positive = new PositivePreferences();
     positive.recipes = [];
     positive.ingredients = [];
-    positive.priceRange = CostLevels.high;
+    positive.labels = [];
+    positive.priceRange = CostLevels.none;
 
     const negative = new NegativePreferences();
     negative.recipes = [];
     negative.ingredients = [];
-    negative.categories = [];
-    negative.plans = [];
     negative.labels = [];
 
     const prefs = new Preferences();

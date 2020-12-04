@@ -2,54 +2,49 @@ import { getModelForClass, prop } from "@typegoose/typegoose";
 import { CostLevels } from "./recipe.model";
 
 abstract class CommonPreferences {
-  @prop({ type: [String], unique: true })
+  @prop({ _id: false })
+  @prop({type : [String]})
   public recipes: String[];
-
-  @prop({ type: [String], unique: true })
+  @prop({type : [String]})
   public ingredients: String[];
-}
-
-class PositivePreferencesClass extends CommonPreferences {
-  @prop({ enum: CostLevels })
-  public priceRange: CostLevels;
-}
-
-class NegativePreferencesClass extends CommonPreferences {
-  @prop({ type: [String], unique: true })
-  public categories: String[];
-
-  @prop({ type: [String], unique: true })
-  public plans: String[];
-
-  @prop({ type: [String], unique: true })
+  @prop({type : [String]})
   public labels: String[];
 }
 
-export class PreferencesClass {
-  @prop({ type: [PositivePreferencesClass] })
-  public positive: PositivePreferencesClass;
+export class PositivePreferences extends CommonPreferences {
+  @prop({type : Object})
+  public priceRange: CostLevels;
+}
 
-  @prop({ type: [NegativePreferencesClass] })
-  public negative: NegativePreferencesClass;
+export class NegativePreferences extends CommonPreferences {}
+
+export class PreferencesClass {
+  @prop({ _id: false })
+  @prop({type : PositivePreferences})
+  public positive: PositivePreferences;
+  @prop({type : NegativePreferences})
+  public negative: NegativePreferences;
 }
 
 /**Returns an empty preference object*/
 export function emptyPrefs() {
   const emptyPrefs = new Preferences();
+
   const positive = new PositivePreferences();
   positive.ingredients = [];
   positive.recipes = [];
+  positive.labels = [];
+  positive.priceRange = CostLevels.none;
+
   const negative = new NegativePreferences();
   negative.ingredients = [];
   negative.recipes = [];
-  negative.categories = [];
-  negative.plans = [];
   negative.labels = [];
+
   emptyPrefs.positive = positive;
   emptyPrefs.negative = negative;
+  emptyPrefs.save();
   return emptyPrefs;
 }
 
-export const NegativePreferences = getModelForClass(NegativePreferencesClass);
-export const PositivePreferences = getModelForClass(PositivePreferencesClass);
 export const Preferences = getModelForClass(PreferencesClass);

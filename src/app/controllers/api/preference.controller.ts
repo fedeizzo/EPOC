@@ -17,20 +17,6 @@ import {
   ServiceResponseCode,
 } from "../../services/response.service";
 
-// const singlePreference = {
-//   properites: {
-//     category: { type: "string" },
-//     content: { type: "strng" },
-//   },
-//   required: ["category", "content"],
-//   type: "object",
-// };
-
-// const preferenceSchema = {
-//   type: "array",
-//   items: singlePreference,
-// };
-
 const preferenceSchema = {
   properites: {
     category: { type: "string" },

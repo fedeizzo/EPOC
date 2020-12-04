@@ -1,8 +1,7 @@
 import { Config, createService } from "@foal/core";
-import { equal, strictEqual } from "assert";
+import { strictEqual } from "assert";
 import { PreferenceService, ServiceResponseCode } from ".";
-import { connection, connect, disconnect } from "mongoose";
-import { DocumentType, pre } from "@typegoose/typegoose";
+import { connect, disconnect } from "mongoose";
 import {
   CostLevels,
   NegativePreferences,
@@ -11,22 +10,30 @@ import {
   PreferencesClass,
   User,
 } from "../models";
-import { UserClass } from "../models/user.model";
 import { ServiceResponse } from ".";
 import { createPreferences, SinglePreference } from "./preference.service";
-import { assert } from "console";
-import { mock } from "ts-mockito";
-import { assertionIsClass } from "@typegoose/typegoose/lib/internal/utils";
 
 const mockUsername = "test";
 
-describe("The preference service", async function () {
+describe("The Preference service", async function () {
   const preferenceService: PreferenceService = createService(PreferenceService);
   const connectionSettings = {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true,
   };
+
+  before("Clearing the database, just to be sure", async function () {
+    await connect(
+      Config.getOrThrow("mongodb.uri", "string"),
+      connectionSettings
+    );
+    try {
+      await new User().collection.drop();
+      await new Preferences().collection.drop();
+    } catch (_) {}
+    await disconnect();
+  });
 
   beforeEach("Creating mock user without preferences", async function () {
     await connect(
@@ -36,15 +43,14 @@ describe("The preference service", async function () {
     await createMockUser();
     await User.syncIndexes();
     await Preferences.syncIndexes();
-    await PositivePreferences.syncIndexes();
-    await NegativePreferences.syncIndexes();
   });
 
   afterEach(async function () {
     await new User().collection.drop();
+    await new Preferences().collection.drop();
     await disconnect();
   });
-/* GET PREFERENCES */
+  /* GET PREFERENCES */
   describe("When we want to get all the preferences", function () {
     describe("if the user does not have any preference associated", function () {
       it("should return a ok response", async function () {
@@ -95,7 +101,11 @@ describe("The preference service", async function () {
 
         const dbPreference = (await User.findOne({ username: mockUsername }))
           ?.preferences.positive;
-        strictEqual(dbPreference?.recipes[0], recipeName);
+        let checkPhrase = "Preference is not in the database";
+        if (dbPreference!.recipes.indexOf(recipeName) > -1) {
+          checkPhrase = "Preference in the database";
+        }
+        strictEqual(checkPhrase, "Preference in the database");
         strictEqual(ServiceResponseCode.ok, response.code);
       });
     });
@@ -113,7 +123,11 @@ describe("The preference service", async function () {
 
         const dbPreference = (await User.findOne({ username: mockUsername }))
           ?.preferences.negative;
-        strictEqual(dbPreference?.recipes[0], recipeName);
+        let checkPhrase = "Preference is not in the database";
+        if (dbPreference!.recipes.indexOf(recipeName) > -1) {
+          checkPhrase = "Preference in the database";
+        }
+        strictEqual(checkPhrase, "Preference in the database");
         strictEqual(ServiceResponseCode.ok, response.code);
       });
     });
@@ -129,9 +143,12 @@ describe("The preference service", async function () {
           preference
         );
         strictEqual(response.code, ServiceResponseCode.badRequest);
-        strictEqual(response.text, "You are trying to add to positive preference something which is not in positive preference categories");
+        strictEqual(
+          response.text,
+          "You are trying to add to positive preference something which is not in positive preference categories"
+        );
+      });
     });
-  });
 
     describe("if we want to add a negative preference which has wrong category", async function () {
       it("we should get a badRequest response", async function () {
@@ -144,9 +161,12 @@ describe("The preference service", async function () {
           preference
         );
         strictEqual(response.code, ServiceResponseCode.badRequest);
-        strictEqual(response.text, "You are trying to add to negative preference something which is not in negative preference categories");
+        strictEqual(
+          response.text,
+          "You are trying to add to negative preference something which is not in negative preference categories"
+        );
+      });
     });
-  });
   });
   /* DELETE PREFERENCES */
   describe("When we want to delete a preference", function () {
