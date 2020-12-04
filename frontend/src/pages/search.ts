@@ -31,7 +31,6 @@ async function search(query: string) {
 
 
   function recipeCard(r: Partial<Recipe>): HTMLElement {
-    console.log('r: ', r.id)
     const card = document.createElement("li");
     card.className = "media item-list";
     const image = <HTMLImageElement>document.createElement("img");

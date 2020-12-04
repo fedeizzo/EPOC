@@ -13,4 +13,5 @@ export enum ServiceResponseCode {
   elementNotFound,
   duplicateKeyInDb,
   internalServerError,
+  elementAlreadyInCollection,
 }
