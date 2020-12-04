@@ -1,46 +1,78 @@
+async function manageFavorite() {
+  const emptyHearth = document.getElementById("notFavorite");
+  const filledHearth = document.getElementById("favorite");
+  if (emptyHearth && filledHearth) {
+    if (filledHearth.style.display == "none") {
+      emptyHearth.style.display = "none";
+      filledHearth.style.display = "inline";
+      console.log(planId)
+      // const response = await fetch(`/api/v1/favorites/add?planId=${planId}`);
+      // const plan = await response.json();
+    } else {
+      filledHearth.style.display = "none";
+      emptyHearth.style.display = "inline";
+    }
+  }
+}
+
+async function populatePlanRecipes(recipes: Array<any>, ids: Array<string>) {
+  const elements: Array<HTMLElement> = [];
+  for (let i = 0; i < recipes.length; i++) {
+    elements.push(recipeCard(recipes[i], ids[i]));
+  }
+  const container = document.getElementById("recipeContainer");
+  if (container) {
+    for (const e of elements) {
+      container.appendChild(e);
+    }
+    const a = document.getElementsByClassName('recipeContainer');
+    for (let i = 0; i < a.length; i++) {
+      a[i].remove();
+      document.getElementsByTagName("body")[0].appendChild(container);
+    }
+  }
+
+
+  function recipeCard(r: Partial<Recipe>, rId: string): HTMLElement {
+    const card = document.createElement("li");
+    card.className = "media item-list";
+    const image = <HTMLImageElement>document.createElement("img");
+    image.src = r.image ?? "https://via.placeholder.com/250";
+    image.className = "mr-3 rounded"
+    image.setAttribute("src", r.image ?? "https://via.placeholder.com/250");
+    const central = document.createElement("div");
+    central.className = "media-body";
+    central.innerHTML = `<h3 class="mt-0 mb-1">${r.name ?? ""}</h3><p>${r.description ?? ""}</p>`;
+    card.appendChild(image);
+    card.appendChild(central);
+    card.onclick = () => {
+      window.location.href = `/recipe/${rId}`;
+    };
+
+    return card;
+  }
+}
+
 async function loadAndShow() {
   const fragments = window.location.toString().split("/");
   const planId = fragments[fragments.length - 1];
   const response = await fetch(`/api/v1/plan/get?planId=${planId}`);
   const plan = await response.json();
-  const div = document.createElement("div");
-  div.className = "planContainer";
-  const name = document.createElement("h3");
-  name.innerText = plan.name;
-  div.appendChild(name);
-  if(plan.author != undefined){
-    const authorDiv = document.createElement("p");
-    authorDiv.innerText = `Author: ${plan.author}`;
-    div.appendChild(authorDiv);
-  }
-  const recipesText = document.createElement("p");
-  recipesText.innerText = "Recipes";
-  div.appendChild(recipesText);
+  const recipes: Array<any> = [];
+  const ids: Array<string> = [];
   for (const recipeId of plan.recipes) {
     const response = await fetch(`/api/v1/recipe/${recipeId}`);
     const j = await response.json();
-    div.appendChild(getRecipeCard(j.recipe, recipeId));
+    recipes.push(j.recipe);
+    ids.push(recipeId);
   }
-  document.getElementsByTagName("body")[0].appendChild(div);
+  populatePlanRecipes(recipes, ids);
+  const title = document.getElementById("planTitle");
+  if (title) {
+    title.innerText = "Plan name: " + plan.name;
+  }
 }
 
-function getRecipeCard(r: Recipe, id: string): HTMLElement {
-  const div = document.createElement("div");
-  div.className = "recipe_card";
-  div.onclick = () => (window.location.href = `/recipe/${id}`);
-  const img: HTMLImageElement = document.createElement("img");
-  img.className = "recipe_thumbnail";
-  img.src = r.image;
-  const recipeTextDiv = document.createElement("div");
-  const recipeTitle = document.createElement("h3");
-  recipeTitle.innerText = r.name;
-  const recipeDescr = document.createElement("div");
-  recipeDescr.innerText = r.description;
-  div.appendChild(img);
-  recipeTextDiv.appendChild(recipeTitle);
-  recipeTextDiv.appendChild(recipeDescr);
-  div.appendChild(recipeTextDiv);
-  return div;
-}
-
+const url = window.location.pathname.split("/");
+const planId = url.pop();
 loadAndShow();
