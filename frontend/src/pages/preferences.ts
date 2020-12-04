@@ -239,6 +239,7 @@ function listToDivs(
     "align-self-start",
     "text-break"
   );
+  add.style.marginRight = ".4em";
   add.innerText = "+";
   add.onclick = addPreference;
   div.append(input, add);
@@ -253,7 +254,6 @@ function listToDivs(
       "card",
       "d-sm-inline-flex",
       "m-2",
-      "w-25",
       "align-self-start",
       "text-break"
     );
