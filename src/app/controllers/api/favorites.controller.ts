@@ -42,6 +42,29 @@ export class FavoritesController {
   }
 
   @JWTRequired()
+  @ValidateBody(addFavoritePlanSchema)
+  @Post('/remove')
+  async removeFavoritePlan(ctx: Context) {
+    const username = ctx.user.username;
+    const planId = ctx.request.body.planId;
+    const user = await this.userService.getUserByUsername(username);
+    if (user) {
+      const response: ServiceResponse = await this.favoritesService.removeFavoritePlan(user, planId);
+      switch (response.code) {
+        case ServiceResponseCode.ok:
+          return new HttpResponseOK(response.buildResponse());
+        case ServiceResponseCode.elementNotFound:
+          return new HttpResponseBadRequest({ text: 'This plan does not exist or is not favorite' });
+        default:
+          return new HttpResponseInternalServerError();
+      }
+    }
+    else {
+      return new HttpResponseBadRequest({ text: 'User does not exist anymore' });
+    }
+  }
+
+  @JWTRequired()
   @Get('/isFavorite')
   async isFavoritePlan(ctx: Context) {
     const username = ctx.user.username;

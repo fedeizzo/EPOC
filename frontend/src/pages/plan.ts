@@ -24,6 +24,32 @@ async function fetchAddFavorites() {
   }
 }
 
+async function fetchRemoveFavorites() {
+  const url: string = "/api/v1/favorites/remove";
+  const headers = {
+    "Content-type": "application/json",
+  };
+
+  const token = getCookie("JWT");
+
+  if (token !== null && token !== undefined) {
+    headers["Authorization"] = "Bearer " + token;
+  }
+  const response = await fetch(url, {
+    method: "POST",
+    mode: "same-origin",
+    cache: "no-cache",
+    redirect: "follow",
+    credentials: "same-origin",
+    headers,
+    body: JSON.stringify({ planId: planId }),
+  });
+  if (response.status == 200) {
+    const isFavorite = false;
+    manageFavorite(isFavorite);
+  }
+}
+
 async function isFavoritePlan() {
   const url: string = "/api/v1/favorites/isFavorite?planId=" + planId;
   const headers = {

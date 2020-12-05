@@ -81,6 +81,36 @@ export class FavoritesService {
     return response;
   }
 
+  async removeFavoritePlan(user: DocumentType<UserClass>, planId: string): Promise<FavoritesServiceResponse> {
+    const response = new FavoritesServiceResponse();
+    if (await this.planService.doesPlanExist(planId)) {
+      const id = new ObjectId(planId);
+      if (!user.favoritesPlan || !this.isPlanAlreadyFavorite(user, id)) {
+        response.code = ServiceResponseCode.elementNotFound;
+        response.text = 'Plan ' + planId + ' is not in favorite list or does not exist';
+        response.prop = user;
+      } else {
+        user.favoritesPlan.forEach((plan, index) => {
+          if (plan?.toString() === planId) user.favoritesPlan?.splice(index, 1);
+        });
+        try {
+          await user.save();
+          response.code = ServiceResponseCode.ok;
+          response.text = 'Plan with ' + planId + ' removed to favorites';
+          response.prop = user;
+        } catch {
+          response.code = ServiceResponseCode.internalServerError;
+          response.text = 'Error removing ' + planId + ' to favorites';
+          response.prop = user;
+        }
+      }
+    } else {
+      response.code = ServiceResponseCode.elementNotFound;
+      response.text = 'Plan with ' + planId + ' id does not exist';
+    }
+    return response;
+  }
+
   async isFavoritePlan(user: DocumentType<UserClass>, planId: string): Promise<FavoritesServiceResponse> {
     const response = new FavoritesServiceResponse();
     if (await this.planService.doesPlanExist(planId)) {
