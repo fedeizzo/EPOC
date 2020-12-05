@@ -2,6 +2,7 @@ import { ObjectId } from 'mongodb';
 import { ServiceResponse, ServiceResponseCode, PlanService } from '../services';
 import { UserClass } from '../models/user.model';
 import { DocumentType } from "@typegoose/typegoose";
+import { PlanClass } from '../models/plan.model';
 
 class FavoritesServiceResponse implements ServiceResponse {
   code: ServiceResponseCode;
@@ -22,6 +23,25 @@ class FavoritesServiceResponse implements ServiceResponse {
   }
 }
 
+class FavoritesListServiceResponse implements ServiceResponse {
+  code: ServiceResponseCode;
+  text: string;
+  prop?: any;
+
+  setValues = (code: ServiceResponseCode, text: string, prop?: PlanClass[]) => {
+    this.code = code;
+    this.text = text;
+    this.prop = prop;
+  }
+
+  buildResponse = () => {
+    return {
+      text: this.text,
+      planList: this.prop?.map(x => x.getInfo())
+    };
+  }
+}
+
 export class FavoritesService {
   private planService: PlanService = new PlanService();
 
@@ -37,7 +57,7 @@ export class FavoritesService {
 
   async addFavoritePlan(user: DocumentType<UserClass>, planId: string): Promise<FavoritesServiceResponse> {
     const response = new FavoritesServiceResponse();
-    if (await this.planService.isPlanExist(planId)) {
+    if (await this.planService.doesPlanExist(planId)) {
       const id = new ObjectId(planId);
       if (!user.favoritesPlan)
         user.favoritesPlan = [];
@@ -63,7 +83,7 @@ export class FavoritesService {
 
   async isFavoritePlan(user: DocumentType<UserClass>, planId: string): Promise<FavoritesServiceResponse> {
     const response = new FavoritesServiceResponse();
-    if (await this.planService.isPlanExist(planId)) {
+    if (await this.planService.doesPlanExist(planId)) {
       const isFavorite = this.isPlanAlreadyFavorite(user, new ObjectId(planId));
       if (isFavorite) {
         response.code = ServiceResponseCode.elementAlreadyInCollection;
@@ -77,6 +97,33 @@ export class FavoritesService {
     } else {
       response.code = ServiceResponseCode.elementNotFound;
       response.text = 'Plan with ' + planId + ' id does not exist';
+    }
+
+    return response;
+  }
+
+  async getFavoritePlansByUser(user: DocumentType<UserClass>): Promise<FavoritesListServiceResponse> {
+    const response = new FavoritesListServiceResponse();
+    const planService: PlanService = new PlanService();
+
+    if (user.favoritesPlan != undefined) {
+      response.code = ServiceResponseCode.ok;
+      response.text = 'List of favorite plans for user ' + user.username;
+
+      response.prop = await Promise.all(
+        user.favoritesPlan.map(
+          async planId => (
+            await planService.getPlan(planId?.toString() ?? "")
+          )
+        )
+      );
+
+      // if a plan which has been deleted is inside the user preferences
+      // then it appears as null in the list
+      response.prop.filter(x => x != null);
+    } else {
+      response.code = ServiceResponseCode.elementNotFound;
+      response.text = 'No plans for user ' + user.username;
     }
 
     return response;

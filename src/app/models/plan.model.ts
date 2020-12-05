@@ -18,14 +18,14 @@ export class PlanClass {
   @prop({ required: true, ref: RecipeClass })
   public recipes: Ref<RecipeClass>[];
 
-  // public getInfo() {
-  //   return {
-  //     firstName: this.firstName,
-  //     secondName: this.secondName ? this.secondName : "",
-  //     email: this.email,
-  //     username: this.username
-  //   };
-  // }
+  public getInfo() {
+    return {
+      name: this.name,
+      user: this.user ? this.user : "",
+      numRecipes: this.numRecipes,
+      estimatedCost: this.estimatedCost ? this.estimatedCost : "",
+    };
+  }
 };
 
 export const Plan = getModelForClass(PlanClass);

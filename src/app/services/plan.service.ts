@@ -91,7 +91,7 @@ export class PlanService {
     }
   }
 
-  async isPlanExist(planId: string) {
+  async doesPlanExist(planId: string) {
     return await this.getPlan(planId) ? true : false;
   }
 }

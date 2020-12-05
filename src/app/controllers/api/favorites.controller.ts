@@ -31,13 +31,13 @@ export class FavoritesController {
         case ServiceResponseCode.ok:
           return new HttpResponseOK(response.buildResponse());
         case ServiceResponseCode.elementNotFound:
-          return new HttpResponseBadRequest();
+          return new HttpResponseBadRequest({ text: 'This plan does not exist' });
         default:
           return new HttpResponseInternalServerError();
       }
     }
     else {
-      return new HttpResponseBadRequest();
+      return new HttpResponseBadRequest({ text: 'User does not exist anymore' });
     }
   }
 
@@ -62,6 +62,27 @@ export class FavoritesController {
     }
     else {
       return new HttpResponseBadRequest();
+    }
+  }
+
+  @JWTRequired()
+  @Get('/getFavoritePlans')
+  async getFavoritePlans(ctx: Context) {
+    const username = ctx.user.username;
+    const user = await this.userService.getUserByUsername(username);
+    if (user) {
+      const response: ServiceResponse = await this.favoritesService.getFavoritePlansByUser(user);
+      switch (response.code) {
+        case ServiceResponseCode.ok:
+          return new HttpResponseOK(response.buildResponse());
+        case ServiceResponseCode.elementNotFound:
+          return new HttpResponseBadRequest();
+        default:
+          return new HttpResponseInternalServerError();
+      }
+    }
+    else {
+      return new HttpResponseBadRequest({ text: "User not found" });
     }
   }
 }
