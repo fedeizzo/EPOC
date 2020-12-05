@@ -76,8 +76,22 @@
       padding-top: 2em;
     }
 
-    #planContainer {
-      min-height: calc(100vh - var(--navbarHeight));
+    #planContainer,
+    #recipeContainer,
+    #nothingFound {
+      min-height: calc(100vh - var(--navbarHeight) - 99px);
+    }
+
+    #nothingFound {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    #nothingFound svg{
+      width: 10em;
+      height: 10em;
+      margin-bottom: 3em;
     }
 
     .nav-tabs .nav-link,
@@ -192,6 +206,23 @@
       </div>
     </div>
   </header>
+  <!-- For the not found page -->
+  <div hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id='notFoundImage'>
+      <g fill="#d5dced">
+        <path
+          d="M373 0h-17a9 9 0 100 17h17a9 9 0 100-17zM269 0h-17a9 9 0 100 17h17a9 9 0 100-17zM217 0h-26c-5 0-9 4-9 9v26a9 9 0 1018 0V17h17a9 9 0 100-17zM321 0h-17a9 9 0 100 17h17a9 9 0 100-17zM425 0h-17a9 9 0 100 17h17a9 9 0 100-17zM373 295h-17a9 9 0 100 17h17a9 9 0 100-17zM269 295h-17a9 9 0 100 17h17a9 9 0 100-17zM321 295h-17a9 9 0 100 17h17a9 9 0 100-17zM425 295h-17a9 9 0 100 17h17a9 9 0 100-17zM486 165c-5 0-9 4-9 9v17a9 9 0 1018 0v-17c0-5-4-9-9-9zM486 61c-5 0-9 4-9 8v18a9 9 0 1018 0V69c0-4-4-8-9-8zM486 113c-5 0-9 4-9 8v18a9 9 0 1018 0v-18c0-4-4-8-9-8zM191 200c5 0 9-4 9-9v-17a9 9 0 10-18 0v17c0 5 4 9 9 9zM191 255c5 0 9-4 9-9v-20a9 9 0 10-18 0v20c0 5 4 9 9 9zM191 95c5 0 9-3 9-8V69a9 9 0 10-18 0v18c0 5 4 8 9 8zM191 148c5 0 9-4 9-9v-18a9 9 0 10-18 0v18c0 5 4 9 9 9zM486 217c-5 0-9 4-9 9v17a9 9 0 1018 0v-17c0-5-4-9-9-9zM486 0h-26a9 9 0 100 17h17v18a9 9 0 1018 0V9c0-5-4-9-9-9zM486 269c-5 0-9 4-9 9v17h-17a9 9 0 100 17h26c5 0 9-3 9-8v-26c0-5-4-9-9-9z" />
+      </g>
+      <path
+        d="M101 511a69 69 0 0037-115l170-253c10-16 6-38-10-48L110 377a70 70 0 10-9 134zm-58-68a43 43 0 1187 0 43 43 0 01-87 0z"
+        fill="#ffdc64" />
+      <path d="M204 236l-55 81c7 10 18 17 29 20l54-82c-7-9-17-16-28-19z" fill="#ffc850" />
+      <path
+        d="M364 431a70 70 0 00-92-54l-50-75a34 34 0 00-31-50h-2L84 95a35 35 0 00-10 48l86 128a34 34 0 0031 50h2l50 75a69 69 0 10121 35zm-69 55a43 43 0 110-87 43 43 0 010 87z"
+        fill="#ffdc64" />
+      <circle cx="190.9" cy="286.4" r="13" fill="#e1a546" />
+    </svg>
+  </div>
 </body>
 
 </html>

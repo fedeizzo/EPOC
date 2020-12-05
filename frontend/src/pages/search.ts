@@ -20,16 +20,24 @@ async function search(query: string) {
   const recipes: Partial<Recipe>[] = j["recipes"];
   const recipeElements = recipes.map((r) => recipeCard(r));
   const recipeContainer = document.getElementById("recipeContainer")!;
-  for (const e of recipeElements) {
-    recipeContainer.appendChild(e);
+  if (recipeElements.length === 0) {
+    recipeContainer.appendChild(nothingFound(query));
+  } else {
+    for (const e of recipeElements) {
+      recipeContainer.appendChild(e);
+    }
   }
 
   const planResponse = await fetch(`/api/v1/search/plan?searchString=${query}`);
   const plans: Partial<Plan>[] = (await planResponse.json())["plan"];
   const planElements = plans.map((p) => planCard(p));
   const planContainer = document.getElementById("planContainer")!;
-  for (const e of planElements) {
-    planContainer.appendChild(await e);
+  if (plans.length === 0) {
+    planContainer.appendChild(nothingFound(query));
+  } else {
+    for (const e of planElements) {
+      planContainer.appendChild(await e);
+    }
   }
 
   function recipeCard(r: Partial<Recipe>): HTMLElement {
@@ -89,5 +97,20 @@ async function search(query: string) {
     };
 
     return card;
+  }
+
+  function nothingFound(query: String): HTMLElement {
+    const notfoundDiv = document.createElement("div");
+    notfoundDiv.id = "nothingFound";
+
+    const image = <HTMLElement>(
+      document.getElementById("notFoundImage")!.cloneNode(true)
+    );
+    const well = document.createElement("h4");
+    well.innerText = "Well, that was a tough one";
+    const nothignHereFor = document.createElement("span");
+    nothignHereFor.innerText = `We have nothing here for "${query}"`;
+    notfoundDiv.append(image, well, nothignHereFor);
+    return notfoundDiv;
   }
 }
