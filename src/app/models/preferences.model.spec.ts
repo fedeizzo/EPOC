@@ -1,25 +1,10 @@
-import { Config } from "@foal/core";
-import { connect, disconnect } from "mongoose";
-import { Preferences, NegativePreferences, PositivePreferences } from ".";
+import { equal } from "assert";
+import { NegativePreferences, PositivePreferences } from ".";
+import { PreferencesClass } from "./preferences.model";
 import { CostLevels } from "./recipe.model";
 
-describe("The preferences model", () => {
-  before(async () => {
-    const uri = Config.getOrThrow("mongodb.uri", "string");
-    await connect(uri, {
-      useNewUrlParser: true,
-      useCreateIndex: true,
-      useUnifiedTopology: true,
-    });
-    await new Preferences().collection.drop().catch(() => {});
-  });
-
-  after(async () => {
-    await new Preferences().collection.drop().catch(() => {});
-    await disconnect();
-  });
-
-  it("when valid should be able to be inserted in the db", async () => {
+describe("The preferences class", () => {
+  it("should have a working constructor", async () => {
     const positive = new PositivePreferences();
     positive.recipes = [];
     positive.ingredients = [];
@@ -31,10 +16,9 @@ describe("The preferences model", () => {
     negative.ingredients = [];
     negative.labels = [];
 
-    const prefs = new Preferences();
-    prefs.positive = positive;
-    prefs.negative = negative;
+    const prefs = new PreferencesClass(positive, negative);
 
-    await prefs.save();
+    equal(prefs.positive, positive);
+    equal(prefs.negative, negative);
   });
 });

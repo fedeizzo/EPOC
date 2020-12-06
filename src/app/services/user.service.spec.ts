@@ -6,17 +6,17 @@ import { ServiceResponseCode } from "./response.service";
 import {
   NegativePreferences,
   PositivePreferences,
-  Preferences,
+  PreferencesClass,
 } from "../models/preferences.model";
 import { User } from "../models/user.model";
 import { CostLevels } from "../models";
 
 describe("The User Service", () => {
   const userService: UserService = createService(UserService);
-  const prefs = new Preferences();
-  prefs.positive = new PositivePreferences();
-  prefs.positive.priceRange = CostLevels.high;
-  prefs.negative = new NegativePreferences();
+  const positive = new PositivePreferences();
+  positive.priceRange = CostLevels.high;
+  const negative = new NegativePreferences();
+  const prefs = new PreferencesClass(positive, negative);
 
   beforeEach(async () => {
     await connect(Config.getOrThrow("mongodb.uri", "string"), {
@@ -80,7 +80,11 @@ describe("The User Service", () => {
     });
     describe("When username already exists", () => {
       before(async () => {
-        await connect(Config.getOrThrow('mongodb.uri', 'string'), { useNewUrlParser: true, useCreateIndex: false, useUnifiedTopology: true });
+        await connect(Config.getOrThrow("mongodb.uri", "string"), {
+          useNewUrlParser: true,
+          useCreateIndex: false,
+          useUnifiedTopology: true,
+        });
         const firstName = "test";
         const secondName = "test";
         const email = "test";
@@ -116,7 +120,11 @@ describe("The User Service", () => {
     });
     describe("When email already exists", () => {
       before(async () => {
-        await connect(Config.getOrThrow('mongodb.uri', 'string'), { useNewUrlParser: true, useCreateIndex: false, useUnifiedTopology: true });
+        await connect(Config.getOrThrow("mongodb.uri", "string"), {
+          useNewUrlParser: true,
+          useCreateIndex: false,
+          useUnifiedTopology: true,
+        });
         const firstName = "test";
         const secondName = "test";
         const email = "test";
@@ -154,7 +162,11 @@ describe("The User Service", () => {
 
   describe("areValidCredentials", () => {
     beforeEach(async () => {
-      await connect(Config.getOrThrow('mongodb.uri', 'string'), { useNewUrlParser: true, useCreateIndex: false, useUnifiedTopology: true });
+      await connect(Config.getOrThrow("mongodb.uri", "string"), {
+        useNewUrlParser: true,
+        useCreateIndex: false,
+        useUnifiedTopology: true,
+      });
       const firstName = "test";
       const secondName = "test";
       const email = "test";

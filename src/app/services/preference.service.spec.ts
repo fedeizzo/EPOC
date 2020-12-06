@@ -6,7 +6,6 @@ import {
   CostLevels,
   NegativePreferences,
   PositivePreferences,
-  Preferences,
   PreferencesClass,
   User,
 } from "../models";
@@ -30,7 +29,6 @@ describe("The Preference service", async function () {
     );
     try {
       await new User().collection.drop();
-      await new Preferences().collection.drop();
     } catch (_) {}
     await disconnect();
   });
@@ -42,12 +40,10 @@ describe("The Preference service", async function () {
     );
     await createMockUser();
     await User.syncIndexes();
-    await Preferences.syncIndexes();
   });
 
   afterEach(async function () {
     await new User().collection.drop();
-    await new Preferences().collection.drop();
     await disconnect();
   });
   /* GET PREFERENCES */
@@ -82,7 +78,7 @@ describe("The Preference service", async function () {
           mockUsername
         );
         strictEqual(response.code, ServiceResponseCode.ok);
-        strictEqual(typeof response.prop, typeof new PreferencesClass());
+        strictEqual(response.prop instanceof PreferencesClass, true);
       });
     });
   });
