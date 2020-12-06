@@ -16,7 +16,7 @@ import {
   PlanService, ServiceResponse,
   ServiceResponseCode
 } from "../../services";
-import { User, CostLevels } from "../../models";
+import { User, CostLevels, PreferencesClass } from "../../models";
 
 
 const generatePlanSchema = {
@@ -43,7 +43,7 @@ export class PlanController {
     let numberOfMeals: number = json.numberOfMeals;
     let budget: CostLevels = json.budget;
     let usingPreferences: boolean = json.usingPreferences;
-    let preferences: any = usingPreferences ? json.preference : undefined;
+    let preferences: PreferencesClass = usingPreferences ? json.preferences : undefined;
 
     let user = ctx.user;
     //TODO: put inside userservice.
