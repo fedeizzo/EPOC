@@ -408,6 +408,8 @@ paths:
     x-summary: Add plan to favorites
     post:
       description: Add plan to favorites given its id and user trough JWT
+      security:
+        - jwtAuth: []
       summary: Add plan to favorites
       requestBody:
         $ref: "#/components/requestBodies/FavoritesAddRequest"
@@ -419,6 +421,22 @@ paths:
         "500":
           $ref: "#/components/responses/500InternalServerError"
 
+  /favorites/isFavorite:
+    x-summary: Check if plan is favorites
+    get:
+      description: Check if plan favorites given its id and user trough JWT
+      security:
+        - jwtAuth: []
+      summary: Check if plan is favorites
+      requestBody:
+        $ref: "#/components/requestBodies/FavoritesAddRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/200OkPlanIsFavorites"        
+        "400":
+          $ref: "#/components/responses/400BadRequestHtml"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
 
 
 
@@ -1009,6 +1027,18 @@ components:
             required:
               - text
               - userInfo
+              
+    200OkPlanIsFavorites:
+      description: Ok response for is favorites operation for plan
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              favorite: boolean
+              description: boolean that indicates if plan is favorite
+            required:
+              - favorite
 
     400BadRequestHtml:
       description: BadRequest
@@ -1095,3 +1125,4 @@ components:
 
     500InternalServerError:
       description: Internal server error
+
