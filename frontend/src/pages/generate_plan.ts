@@ -1,13 +1,15 @@
+let userPreferences: PreferencesClass;
+
 document.getElementById("submitButton")!.onclick = generatePlanAndRedirect;
 
 document.getElementById("usePreferences")!.onclick = async function () {
   const preferencePanelDiv = document.getElementById(
     "preferences_panel_div"
   )! as HTMLDivElement;
-
   const usePreferencesSwitch = document.getElementById(
     "usePreferences"
   )! as HTMLInputElement;
+
   if (usePreferencesSwitch.checked) {
     const preferencePanel = await getPreferencesAndDraw();
     preferencePanelDiv.appendChild(preferencePanel);
@@ -15,8 +17,6 @@ document.getElementById("usePreferences")!.onclick = async function () {
     preferencePanelDiv.innerHTML = "";
   }
 };
-
-let userPreferences: PreferencesClass;
 
 async function generatePlanAndRedirect() {
   // Get name for the plan
@@ -55,10 +55,6 @@ async function generatePlanAndRedirect() {
   }
 
   // Get preferences for the generation of the plan
-
-  const jwt = _getCookie("JWT");
-  const jwtPresent = jwt != null && jwt !== "";
-
   const usePreferencesInput = document.getElementById(
     "usePreferences"
   )! as HTMLInputElement;
@@ -70,8 +66,11 @@ async function generatePlanAndRedirect() {
     numberOfMeals: howManyMeals,
     budget: costLevel,
     usingPreferences: usingPreferences,
-    preferences: usingPreferences? userPreferences : {},
+    preferences: usingPreferences ? userPreferences : {},
   };
+
+  const jwt = _getCookie("JWT");
+  const jwtPresent = jwt != null && jwt !== "";
 
   // Sending the request
   const response = await fetch("/api/v1/plan/generate", {
@@ -99,7 +98,7 @@ async function generatePlanAndRedirect() {
   }
 }
 
-async function getPreferencesAndDraw() {
+async function getPreferencesAndDraw(): Promise<HTMLDivElement> {
   userPreferences = new PreferencesClass();
 
   // Composing preferences
@@ -113,7 +112,7 @@ async function getPreferencesAndDraw() {
       },
     });
     userPreferences = (await res.json()).content;
-    // Update also Cost preference
+    // Update immediatly Cost preference
     const costDiv = document.getElementById("costLevel") as HTMLInputElement;
     switch (userPreferences.positive.priceRange as CostLevelsEnum) {
       case CostLevelsEnum.veryLow:
@@ -160,23 +159,23 @@ function buildPreferencesPanel(): HTMLDivElement {
     "prefences_div",
     "card",
     "container-lg",
-    "mx-auto"
+    "mx-auto",
   );
 
   /** Construction of headers */
   const headerRow = document.createElement("div");
-  headerRow.className += "row w-100 text-center";
+  headerRow.className += "row w-100 text-center m-3";
 
   const favTitle = document.createElement("h2");
   favTitle.textContent = "Mi piace";
   const favTitleDiv = document.createElement("div");
-  favTitleDiv.className = "col-md-6 w-100";
+  favTitleDiv.className = "col-md-6 w-50";
   favTitleDiv.append(favTitle);
 
   const negTitle = document.createElement("h2");
   negTitle.textContent = "Non mi piace";
   const negTitleDiv = document.createElement("div");
-  negTitleDiv.className = "col-md-6 w-100";
+  negTitleDiv.className = "col-md-6 w-50";
   negTitleDiv.append(negTitle);
 
   headerRow.append(favTitleDiv, negTitleDiv);
@@ -306,13 +305,15 @@ function listToDivsPlan(
     const preference = input.value;
     const last = container.children[container.children.length - 1];
     input.value = "";
-    container.removeChild(last);
-    container.append(getSinglePrefDiv(preference, listName, positive), last);
-
-    if (positive) {
-      userPreferences.positive[listName].push(preference);
-    } else {
-      userPreferences.negative[listName].push(preference);
+    if(possibleToInsert(preference, listName)){
+      container.removeChild(last);
+      container.append(getSinglePrefDiv(preference, listName, positive), last);
+  
+      if (positive) {
+        userPreferences.positive[listName].push(preference);
+      } else {
+        userPreferences.negative[listName].push(preference);
+      }
     }
   };
 
@@ -341,23 +342,29 @@ function listToDivsPlan(
   return container;
 
   function getSinglePrefDiv(i: String, listName: string, positive: boolean) {
+    const placeholder = document.createElement("div");
+    placeholder.classList.add(
+      "preference",
+      "card",
+      "d-inline-flex",
+      "m-2",
+      "align-self-start",
+    );
+    placeholder.style.minWidth = "25%";
     const d = document.createElement("div");
     d.innerText = i.valueOf();
     d.classList.add(
-      "preference",
-      "card",
-      "d-sm-inline-flex",
-      "m-2",
-      "align-self-start",
-      "text-break"
+      "grid-child"
     );
-    const deleteButton = document.createElement("div");
-    deleteButton.className = "clickable";
+    const deleteButton = document.createElement("span");
+    deleteButton.classList.add(
+      "grid-child"
+    );
     deleteButton.innerHTML =
-      '<svg width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>';
-    d.appendChild(deleteButton);
+      '<svg  viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>';
+    placeholder.append(d, deleteButton);
     deleteButton.onclick = async () => {
-      d.remove();
+      placeholder.remove();
 
       if (positive) {
         userPreferences.positive[listName] = arrayRemove(
@@ -371,7 +378,7 @@ function listToDivsPlan(
         );
       }
     };
-    return d;
+    return placeholder;
   }
 }
 
@@ -416,5 +423,25 @@ class PreferencesClass {
 function arrayRemove(arr, value) {
   return arr.filter(function (ele) {
     return ele != value;
+  });
+}
+
+function possibleToInsert(preference : string, category : string){
+  let possible = true;
+  if(userPreferences.positive[category].indexOf(preference) > -1){
+    showNotificationPlan("Preference already present in positive preferences");
+    possible = false;
+  } else if(userPreferences.negative[category].indexOf(preference) > -1){
+    showNotificationPlan("Preference already present in negative preferences");
+    possible = false;
+  }
+  return possible;
+}
+
+function showNotificationPlan(message: string) {
+  const content = message || "Invalid request";
+  var notification: any = document.querySelector(".mdl-js-snackbar");
+  notification!.MaterialSnackbar.showSnackbar({
+    message: content,
   });
 }
