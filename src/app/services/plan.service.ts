@@ -137,8 +137,10 @@ export class PlanService {
     plan.estimatedCost = preferences.positive.priceRange;
     plan.preferences = preferences;
 
-    for (let i of setRandomIndexes) {
-      plan.recipes.push(ratedRecipes[i].recipe._id);
+    if (ratedRecipes.length > 0){
+      for (let i of setRandomIndexes) {
+        plan.recipes.push(ratedRecipes[i].recipe._id);
+      }
     }
 
     let response: PlanServiceResponse = new PlanServiceResponse();
