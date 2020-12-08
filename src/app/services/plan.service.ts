@@ -109,7 +109,7 @@ export class PlanService {
 
         const result: RatedRecipe = {
           recipe: recipe,
-          score: invalidRecipe ? 0 : score
+          score: invalidRecipe ? -1 : score
         };
 
         numValidRecipes += result.score > 0 ? 1 : 0;
