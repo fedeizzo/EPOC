@@ -144,10 +144,28 @@ paths:
       responses:
         "200":
           $ref: "#/components/responses/200OkRecipeServiceShortList"
+        "400":
+          $ref: "#/components/responses/400BadRequestHtml"
         "500":
           $ref: "#/components/responses/500InternalServerError"
         
         # No 404 response: an empty list should do
+
+  /search/plan:
+    x-summary: Search targeted only to plans
+    get:
+      description: >-
+        Search plans using a string as parameter
+      summary: Simple plan research, returns basic plan infos of the recipes that match the searchString.
+      parameters:
+        - $ref: "#/components/parameters/searchString"
+      responses:
+        "200":
+          $ref: "#/components/responses/200OkPlansList"
+        "400":
+          $ref: "#/components/responses/400BadRequestHtml"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
 
   /recipes/{recipeId}:
     get:
@@ -423,7 +441,7 @@ components:
         type: string
       required: true
       example:
-        "Primi piatti"
+        "Pasta"
 
   schemas:
     LoginBody:
@@ -682,8 +700,8 @@ components:
         recipes:
           type: array
           items:
-            $ref: "#/components/schemas/CompleteRecipe"
-          description: List of the recipes in the plan
+            type: string
+          description: Ids of the recipes of this plan
       required:
         - name
         - numRecipes
@@ -700,49 +718,9 @@ components:
           password: "princessPeach"
           estimatedCost: "low"
         recipes:
-        - name: "Carbonara"
-          dateModified: "20-09-2013-8:34:25"
-          estimatedCost: "medium"
-          image: "https://dpv87w1mllzh1.cloudfront.net/alitalia_discover/attachments/data/000/000/334/original/roma-how-to-carbonara-1920x1080.jpg?1519055920"
-          categories:
-            - "primi piatti"
-            - "classici"
-          description: "La pasta più buona di tutte"
-          prepTime: 5
-          cookTime: 20
-          totalTime: 20
-          conservationTime: 2
-          peopleFor: 4
-          ingredients:
-            - name: "uova"
-              quantity: 2
-            - name: "spaghetti"
-              quantity: 500
-              unitOfMeasure: "grams"
-            - name: "all the other"
-              quantity: 100
-          keywords:
-            - "buona"
-            - "carbonara"
-            - "pancetta"
-            - "uova"
-          labels:
-            - "primo piatto"
-            - "tradizionale"
-          averageRating: 5
-          numberOfRatings: 1246
-          requiredTools:
-            - "pentole"
-            - "fornello"
-          nutritionalInfos:
-            calories: 74
-            carbohydrate: 1.5
-            cholesterol: 0.3
-            fat: 2.5
-            fiber: 2.1
-            saturedFat: 0.2
-            sodium: 1.3
-            sugar: 1.2
+          - 'pastaCarbonara01'
+          - 'tofuInCarrozza'
+          - 'seitanAlFunghetto9'
 
     User:
       type: object
@@ -913,6 +891,24 @@ components:
             required:
               - text
               - recipe
+    
+    200OkPlansList:
+      description: Everything went well, the search result is included in the response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              text:
+                type: string
+                description: Short text with the response
+              plan:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Plan"
+            required:
+              - text
+              - plan
 
     200OkPlanGenerate:
       description: Ok response for plan generation
