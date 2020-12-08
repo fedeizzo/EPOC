@@ -73,6 +73,13 @@ async function generatePlanAndRedirect() {
   const jwtPresent = jwt != null && jwt !== "";
 
   // Sending the request
+  const previousContent = document.getElementsByName("central_card")[0];
+  const bodyContainer = document.getElementsByName("body_container")[0]!;
+  const newContent = document
+    .getElementById("loader_container")!
+    .cloneNode(true);
+  bodyContainer.replaceChild(newContent, previousContent);
+
   const response = await fetch("/api/v1/plan/generate", {
     method: "POST",
     mode: "same-origin",
@@ -89,6 +96,7 @@ async function generatePlanAndRedirect() {
     const id = json.plan._id;
     window.location.href = `/plan/${id}`;
   } else {
+    bodyContainer.replaceChild(previousContent, newContent);
     const json = await response.json();
     const text = json.text;
     var notification: any = document.querySelector(".mdl-js-snackbar");
@@ -159,7 +167,7 @@ function buildPreferencesPanel(): HTMLDivElement {
     "prefences_div",
     "card",
     "container-lg",
-    "mx-auto",
+    "mx-auto"
   );
 
   /** Construction of headers */
@@ -305,10 +313,10 @@ function listToDivsPlan(
     const preference = input.value;
     const last = container.children[container.children.length - 1];
     input.value = "";
-    if(possibleToInsert(preference, listName)){
+    if (possibleToInsert(preference, listName)) {
       container.removeChild(last);
       container.append(getSinglePrefDiv(preference, listName, positive), last);
-  
+
       if (positive) {
         userPreferences.positive[listName].push(preference);
       } else {
@@ -349,18 +357,14 @@ function listToDivsPlan(
       "card",
       "d-inline-flex",
       "m-2",
-      "align-self-start",
+      "align-self-start"
     );
     placeholder.style.minWidth = "25%";
     const d = document.createElement("div");
     d.innerText = i.valueOf();
-    d.classList.add(
-      "grid-child"
-    );
+    d.classList.add("grid-child");
     const deleteButton = document.createElement("span");
-    deleteButton.classList.add(
-      "grid-child"
-    );
+    deleteButton.classList.add("grid-child");
     deleteButton.innerHTML =
       '<svg  viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>';
     placeholder.append(d, deleteButton);
@@ -427,12 +431,12 @@ function arrayRemove(arr, value) {
   });
 }
 
-function possibleToInsert(preference : string, category : string){
+function possibleToInsert(preference: string, category: string) {
   let possible = true;
-  if(userPreferences.positive[category].indexOf(preference) > -1){
+  if (userPreferences.positive[category].indexOf(preference) > -1) {
     showNotificationPlan("Preference already present in positive preferences");
     possible = false;
-  } else if(userPreferences.negative[category].indexOf(preference) > -1){
+  } else if (userPreferences.negative[category].indexOf(preference) > -1) {
     showNotificationPlan("Preference already present in negative preferences");
     possible = false;
   }
