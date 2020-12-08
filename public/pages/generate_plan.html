@@ -28,6 +28,30 @@
       crossorigin="anonymous"
     ></script>
   </head>
+  <style>
+    .preference {
+      display: flex;
+      flex-direction: row;
+    }
+    .prefences_div {
+      padding: 1.5em !important;
+    }
+
+    .preference > input {
+      border: none;
+      width: 4em;
+      margin-right: 0.5em;
+    }
+
+    .card {
+      padding-top: 0.5em;
+      padding-bottom: 0.5em;
+      padding-left: 0.5em;
+      padding-right: 0.5em;
+      align-items: center;
+      margin-left: 1em;
+    }
+  </style>
 
   <body
     style="
@@ -109,11 +133,14 @@
           <div id="preferences_panel_div" class="mb-4"></div>
 
           <div class="text-center">
-            <button id="submitButton" type="button" class="btn btn-primary btn-lg">
+            <button
+              id="submitButton"
+              type="button"
+              class="btn btn-primary btn-lg"
+            >
               Crea Piano
             </button>
           </div>
-
         </div>
       </div>
     </div>

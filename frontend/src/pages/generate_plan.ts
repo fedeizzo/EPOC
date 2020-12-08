@@ -331,7 +331,8 @@ function listToDivsPlan(
     "d-sm-inline-flex",
     "m-2",
     "align-self-start",
-    "text-break"
+    "text-break",
+    "preference-card"
   );
 
   add.style.marginRight = ".4em";
