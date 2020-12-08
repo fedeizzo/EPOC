@@ -24,6 +24,7 @@ export class PlanClass {
       user: this.user ? this.user : "",
       numRecipes: this.numRecipes,
       estimatedCost: this.estimatedCost ? this.estimatedCost : "",
+      recipes: this.recipes,
     };
   }
 };

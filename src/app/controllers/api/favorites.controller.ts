@@ -2,6 +2,7 @@ import { Context, Post, Get, HttpResponseOK, HttpResponseBadRequest, HttpRespons
 import { JWTRequired } from '@foal/jwt';
 import { UserService, FavoritesService } from '../../services';
 import { ServiceResponse, ServiceResponseCode } from '../../services';
+import { FavoritesListServiceResponse } from '../../services/favorites.service';
 
 const addFavoritePlanSchema = {
   properites: {
@@ -97,7 +98,7 @@ export class FavoritesController {
       const response: ServiceResponse = await this.favoritesService.getFavoritePlansByUser(user);
       switch (response.code) {
         case ServiceResponseCode.ok:
-          return new HttpResponseOK(response.buildResponse());
+          return new HttpResponseOK((response as FavoritesListServiceResponse).buildResponsePlusId());
         case ServiceResponseCode.elementNotFound:
           return new HttpResponseBadRequest();
         default:
