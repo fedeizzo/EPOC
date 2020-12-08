@@ -1,4 +1,5 @@
 import { prop, DocumentType, getModelForClass, Ref } from '@typegoose/typegoose'
+import { PreferencesClass } from './preferences.model';
 import { CostLevels, RecipeClass } from './recipe.model';
 import { UserClass } from './user.model';
 
@@ -17,6 +18,9 @@ export class PlanClass {
 
   @prop({ required: true, ref: RecipeClass })
   public recipes: Ref<RecipeClass>[];
+
+  @prop({ type: PreferencesClass, required: true })
+  public preferences: PreferencesClass;
 
   // public getInfo() {
   //   return {

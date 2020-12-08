@@ -17,6 +17,7 @@ import {
   ServiceResponseCode
 } from "../../services";
 import { User, CostLevels, PreferencesClass } from "../../models";
+import { emptyPrefs } from "../../models/preferences.model";
 
 
 const generatePlanSchema = {
@@ -43,20 +44,20 @@ export class PlanController {
     let numberOfMeals: number = json.numberOfMeals;
     let budget: CostLevels = json.budget;
     let usingPreferences: boolean = json.usingPreferences;
-    let preferences: PreferencesClass = usingPreferences ? json.preferences : undefined;
-
+    let preferences: PreferencesClass = usingPreferences ? json.preferences : emptyPrefs();
+    
     let user = ctx.user;
     //TODO: put inside userservice.
     let userObj: any = undefined;
     if (user !== undefined) {
-      userObj = (await User.find({ username: user.username }))[0];
+      userObj = await User.findOne({ username: user.username });
     }
 
-    let response: ServiceResponse = await this.planService.generateAndSavePlan(
+    const response: ServiceResponse = await this.planService.generateAndSavePlanWithPreferences(
       name,
       numberOfMeals,
-      budget,
       preferences,
+      budget,
       userObj
     );
 
@@ -66,7 +67,7 @@ export class PlanController {
       case ServiceResponseCode.duplicateKeyInDb:
         return new HttpResponseConflict(response.buildResponse());
       default:
-        return new HttpResponseInternalServerError();
+        return new HttpResponseInternalServerError('test');
     }
   }
 

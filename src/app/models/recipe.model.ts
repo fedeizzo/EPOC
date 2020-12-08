@@ -66,7 +66,7 @@ export class RecipeClass {
   public keywords: string[];
 
   @prop({ type: [String], required: true })
-  public lables: string[];
+  public labels: string[];
 
   @prop({ type: Number, required: true })
   public averageRating: Number;
@@ -104,7 +104,7 @@ export class RecipeClass {
       peopleFor: this.peopleFor,
       ingredients: this.ingredients,
       keywords: this.keywords,
-      labels: this.lables,
+      labels: this.labels,
       averageRating: this.averageRating,
       numberOfRatings: this.numberOfRatings,
       nutritionalInfos: this.nutritionalInfos,

@@ -74,7 +74,7 @@ export class RecipeResponse implements ServiceResponse {
   }
 }
 
-class ErrorWrapper {
+export class ErrorWrapper {
   constructor(error: any) {
     this.error = error;
   }
@@ -82,7 +82,7 @@ class ErrorWrapper {
 }
 
 export class RecipeService {
-  private static fieldsToSelect = "name image description averageRating";
+  private static fieldsToSelect = "name image description averageRating ingredients keywords labels";
   private static queryLimit = 50;
 
   async getPartialRecipeList(searchString: string): Promise<RecipeResponse> {
