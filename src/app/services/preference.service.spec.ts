@@ -78,7 +78,8 @@ describe("The Preference service", async function () {
           mockUsername
         );
         strictEqual(response.code, ServiceResponseCode.ok);
-        strictEqual(response.prop instanceof PreferencesClass, true);
+        strictEqual(response.prop.positive ? true : false, true);
+        strictEqual(response.prop.negative ? true : false, true);
       });
     });
   });
