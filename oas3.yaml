@@ -420,6 +420,23 @@ paths:
           $ref: "#/components/responses/400BadRequestHtml"
         "500":
           $ref: "#/components/responses/500InternalServerError"
+          
+  /favorites/remove:
+    x-summary: Remove plan from favorites
+    post:
+      description: Remove plan from favorites given its id and user trough JWT
+      security:
+        - jwtAuth: []
+      summary: Remove plan from favorites
+      requestBody:
+        $ref: "#/components/requestBodies/FavoritesRemoveRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/200OkPlanRemovedFromFavorites"        
+        "400":
+          $ref: "#/components/responses/400BadRequestHtml"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
 
   /favorites/isFavorite:
     x-summary: Check if plan is favorites
@@ -837,7 +854,7 @@ components:
         numberOfMeals: 5
         usingPreferences: false
 
-    FavoritesAddRequestSchema:
+    FavoritesRequestSchema:
       type: object
       properties:
         planId:
@@ -907,7 +924,16 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/FavoritesAddRequestSchema"
+            $ref: "#/components/schemas/FavoritesRequestSchema"
+          example:
+            planId: "5fc5e42599b31d58f4d73ade"
+            
+    FavoritesRemoveRequest:
+      description: "Remove plan from favorites"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/FavoritesRequestSchema"
           example:
             planId: "5fc5e42599b31d58f4d73ade"
 
@@ -1028,6 +1054,23 @@ components:
               - text
               - userInfo
               
+    200OkPlanRemovedFromFavorites:
+      description: Ok response for favorites removing operation for plan
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              text: 
+                type: string
+                description: The response
+              userInfo:
+                type: object
+                description: Information of the user
+            required:
+              - text
+              - userInfo
+              
     200OkPlanIsFavorites:
       description: Ok response for is favorites operation for plan
       content:
@@ -1125,4 +1168,3 @@ components:
 
     500InternalServerError:
       description: Internal server error
-
