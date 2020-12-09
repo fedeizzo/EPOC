@@ -9,3 +9,9 @@ export { Ingredient } from "./ingredient.model";
 export { Tool } from "./tool.model";
 export { NutritionalInfo } from "./nutritional-info.model";
 export { Plan } from "./plan.model";
+export {
+  Preferences,
+  NegativePreferences,
+  PositivePreferences,
+  PreferencesClass,
+} from "./preferences.model";

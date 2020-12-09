@@ -2,72 +2,120 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
-      integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-      crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
-      crossorigin="anonymous"></script>
-    <title>Research</title>
-    <script src='../src/pages/search.js' defer></script>
-    <script type="text/javascript" src="./src/authentication.js" defer></script>
-    <script type="text/javascript" src="./src/index.js" defer></script>
-    <style>
-        html,
-        body,
-        header,
-        .view {
-          /*
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+    integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+    crossorigin="anonymous"></script>
+  <title>Research</title>
+  <script src='../src/pages/search.js' defer></script>
+  <script type="text/javascript" src="./src/authentication.js" defer></script>
+  <script type="text/javascript" src="./src/index.js" defer></script>
+  <style>
+    :root {
+      --navbarHeight: 56px;
+    }
+
+    html,
+    body,
+    header,
+    .view {
+      /*
           https://developers.google.com/web/updates/2016/12/url-bar-resizing
           */
-          height: 100vh;
-        }
+      height: 100vh;
+    }
 
-        .bg {
-          background-image: url('images/search_bg.jpg');
-          background-repeat: no-repeat;
-          background-size: cover;
-          background-position: center center;
-        }
+    .bg {
+      background-image: url('images/search_bg.jpg');
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center center;
+    }
 
-        .search-button {
-          border-radius: 30px;
-          border-color: white;
-        }
+    .search-button {
+      border-radius: 30px;
+      border-color: white;
+    }
 
-        .circle-item {
-          border-radius: 50px
-        }
-        
-        img {
-          display: block;
-          max-width: 230px;
-          max-height: 150px;
-          width: auto;
-          height: auto;
-        }
+    .circle-item {
+      border-radius: 50px
+    }
 
-        .height-override {
-          height: 100%;
-        }
+    img {
+      display: block;
+      max-width: 230px;
+      max-height: 150px;
+      width: auto;
+      height: auto;
+    }
 
-        .items-holder {
-          margin-top: 56px;
-          margin-bottom: 0px;
-          background-color: rgb(255, 255, 255);
-        }
+    .height-override {
+      height: 100%;
+    }
 
-        .item-list {
-          padding: 16px;
-          padding-left: 32px;
-          padding-right: 32px;
-        }
-    </style>
+    div.height-override {
+      margin-top: var(--navbarHeight);
+      margin-bottom: 0px;
+      background-color: rgb(255, 255, 255);
+    }
+
+    .item-list {
+      padding: 16px;
+      padding-left: 32px;
+      padding-right: 32px;
+    }
+
+    #myTabJust {
+      padding-top: 2em;
+    }
+
+    #planContainer,
+    #recipeContainer,
+    #nothingFound {
+      min-height: calc(100vh - var(--navbarHeight) - 99px);
+    }
+
+    #nothingFound {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    #nothingFound svg{
+      width: 10em;
+      height: 10em;
+      margin-bottom: 3em;
+    }
+
+    .nav-tabs .nav-link,
+    .nav-tabs {
+      border: none;
+    }
+
+    .nav-tabs .nav-link.active {
+      border-bottom: 2px solid rgba(0, 255, 255, 0.303);
+    }
+
+    .nav-tabs .nav-link {
+      width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+      color: black;
+    }
+
+    .nav-tabs {
+      width: 40%;
+      margin: auto;
+      margin-bottom: 1.7em;
+    }
+  </style>
 </head>
 
 <body>
@@ -137,11 +185,44 @@
       </div>
     </nav>
 
-    <div class="container-xl height-override">
-      <ul class="list-unstyled items-holder" id="recipeContainer">
+    <div class="container-xl height-override" style="background-color: white; height:auto;">
+      <ul class="nav nav-tabs nav-justified" id="myTabJust" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="recipes-tab-just" data-toggle="tab" href="#recipes" role="tab"
+            aria-controls="recipes" aria-selected="true">Recipes</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="plans-tab-just" data-toggle="tab" href="#plans" role="tab" aria-controls="plans"
+            aria-selected="false">Plans</a>
+        </li>
       </ul>
+      <div class="tab-content" id="myTabContentJust">
+        <div class="tab-pane fade show active" id="recipes" role="tabpanel" aria-labelledby="recipes-tab-just">
+          <div class="list-unstyled items-holder" id="recipeContainer"></div>
+        </div>
+        <div class="tab-pane fade" id="plans" role="tabpanel" aria-labelledby="plans-tab-just">
+          <div class="list-unstyled items-holder" id="planContainer"></div>
+        </div>
+      </div>
     </div>
   </header>
+  <!-- For the not found page -->
+  <div hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id='notFoundImage'>
+      <g fill="#d5dced">
+        <path
+          d="M373 0h-17a9 9 0 100 17h17a9 9 0 100-17zM269 0h-17a9 9 0 100 17h17a9 9 0 100-17zM217 0h-26c-5 0-9 4-9 9v26a9 9 0 1018 0V17h17a9 9 0 100-17zM321 0h-17a9 9 0 100 17h17a9 9 0 100-17zM425 0h-17a9 9 0 100 17h17a9 9 0 100-17zM373 295h-17a9 9 0 100 17h17a9 9 0 100-17zM269 295h-17a9 9 0 100 17h17a9 9 0 100-17zM321 295h-17a9 9 0 100 17h17a9 9 0 100-17zM425 295h-17a9 9 0 100 17h17a9 9 0 100-17zM486 165c-5 0-9 4-9 9v17a9 9 0 1018 0v-17c0-5-4-9-9-9zM486 61c-5 0-9 4-9 8v18a9 9 0 1018 0V69c0-4-4-8-9-8zM486 113c-5 0-9 4-9 8v18a9 9 0 1018 0v-18c0-4-4-8-9-8zM191 200c5 0 9-4 9-9v-17a9 9 0 10-18 0v17c0 5 4 9 9 9zM191 255c5 0 9-4 9-9v-20a9 9 0 10-18 0v20c0 5 4 9 9 9zM191 95c5 0 9-3 9-8V69a9 9 0 10-18 0v18c0 5 4 8 9 8zM191 148c5 0 9-4 9-9v-18a9 9 0 10-18 0v18c0 5 4 9 9 9zM486 217c-5 0-9 4-9 9v17a9 9 0 1018 0v-17c0-5-4-9-9-9zM486 0h-26a9 9 0 100 17h17v18a9 9 0 1018 0V9c0-5-4-9-9-9zM486 269c-5 0-9 4-9 9v17h-17a9 9 0 100 17h26c5 0 9-3 9-8v-26c0-5-4-9-9-9z" />
+      </g>
+      <path
+        d="M101 511a69 69 0 0037-115l170-253c10-16 6-38-10-48L110 377a70 70 0 10-9 134zm-58-68a43 43 0 1187 0 43 43 0 01-87 0z"
+        fill="#ffdc64" />
+      <path d="M204 236l-55 81c7 10 18 17 29 20l54-82c-7-9-17-16-28-19z" fill="#ffc850" />
+      <path
+        d="M364 431a70 70 0 00-92-54l-50-75a34 34 0 00-31-50h-2L84 95a35 35 0 00-10 48l86 128a34 34 0 0031 50h2l50 75a69 69 0 10121 35zm-69 55a43 43 0 110-87 43 43 0 010 87z"
+        fill="#ffdc64" />
+      <circle cx="190.9" cy="286.4" r="13" fill="#e1a546" />
+    </svg>
+  </div>
 </body>
 
 </html>

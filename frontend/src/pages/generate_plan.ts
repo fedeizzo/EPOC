@@ -1,6 +1,15 @@
 document.getElementById("submitButton")!.onclick = generatePlanAndRedirect;
 
 async function generatePlanAndRedirect() {
+  enum CostLevels {
+    none = "None",
+    veryLow = "molto basso",
+    low = "basso",
+    medium = "medio",
+    high = "elevato",
+    veryHigh = "molto elevata",
+  }
+
   const nameInput = document.getElementById("name")! as HTMLInputElement;
   const name = nameInput.value;
   const howManyMealsInput = document.getElementById(
@@ -59,12 +68,10 @@ async function generatePlanAndRedirect() {
   } else {
     const json = await response.json();
     const text = json.text;
-    var notification: any = document.querySelector('.mdl-js-snackbar');
-    notification!.MaterialSnackbar.showSnackbar(
-      {
-        message: text
-      }
-    );
+    var notification: any = document.querySelector(".mdl-js-snackbar");
+    notification!.MaterialSnackbar.showSnackbar({
+      message: text,
+    });
   }
 }
 
@@ -72,13 +79,4 @@ function _getCookie(name: string) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
   return parts[1];
-}
-
-enum CostLevels {
-  none = "None",
-  veryLow = "molto basso",
-  low = "basso",
-  medium = "medio",
-  high = "elevato",
-  veryHigh = "molto elevata",
 }

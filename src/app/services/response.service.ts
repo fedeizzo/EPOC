@@ -13,4 +13,6 @@ export enum ServiceResponseCode {
   elementNotFound,
   duplicateKeyInDb,
   internalServerError,
+  preferenceError,
+  badRequest
 }

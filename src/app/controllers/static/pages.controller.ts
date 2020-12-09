@@ -33,30 +33,38 @@ export class PagesController {
     return render("./public/pages/search.html");
   }
 
-  @Get('/signup')
+  @Get("preferences")
+  async preferencesPage(ctx: Context) {
+    if (!ctx.request.accepts("html")) {
+      return new HttpResponseNotFound();
+    }
+    return render("./public/pages/preferences.html");
+  }
+
+  @Get("/signup")
   async signupPage(ctx: Context) {
-    if (!ctx.request.accepts('html')) {
+    if (!ctx.request.accepts("html")) {
       return new HttpResponseNotFound();
     }
 
-    return await render('./public/signup.html');
+    return await render("./public/signup.html");
   }
 
-  @Get('/login')
+  @Get("/login")
   async loginPage(ctx: Context) {
-    if (!ctx.request.accepts('html')) {
+    if (!ctx.request.accepts("html")) {
       return new HttpResponseNotFound();
     }
 
-    return await render('./public/login.html');
+    return await render("./public/login.html");
   }
 
-  @Get('/deleteUser')
+  @Get("/deleteUser")
   async deleteUserPage(ctx: Context) {
-    if (!ctx.request.accepts('html')) {
+    if (!ctx.request.accepts("html")) {
       return new HttpResponseNotFound();
     }
 
-    return await render('./public/deleteUser.html');
+    return await render("./public/deleteUser.html");
   }
 }
