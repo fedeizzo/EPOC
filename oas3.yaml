@@ -455,6 +455,21 @@ paths:
         "500":
           $ref: "#/components/responses/500InternalServerError"
 
+  /favorites/getFavoritePlans:
+    x-summary: All the favorite plans of a user
+    get:
+      description: Gets all the favorite plans of a user given the JWT
+      security:
+        - jwtAuth: []
+      summary: Get all favorite plans
+      responses:
+        "200":
+          $ref: "#/components/responses/200OkFavoritePlansList"        
+        "400":
+          $ref: "#/components/responses/400BadRequestService"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+
 
 
 components:
@@ -795,6 +810,36 @@ components:
             sodium: 1.3
             sugar: 1.2
 
+    ShortPlan:
+      type: object
+      description: Short version of the plan object
+      properties:
+        info:
+          type: object
+          properties:
+            name:
+              type: string
+              description: name of the plan
+            user:
+              $ref: "#/components/schemas/CompleteRecipe"
+              description: user
+            numRecipes:
+              type: number
+              description: numer of recipes in the plan
+            estimatedCost:
+              type: string
+              enum: ["none","veryLow","low","medium","high","veryHigh"]
+              description: number of recipes in the paln
+            recipes:
+              type: array
+              items:
+                $ref: "#/components/schemas/CompleteRecipe"
+              description: recipes of the plan
+          description: Information about the plan
+        id:
+          type: string
+          description: id of the plan
+
     User:
       type: object
       description: User of the system
@@ -1082,6 +1127,16 @@ components:
               description: boolean that indicates if plan is favorite
             required:
               - favorite
+
+    200OkFavoritePlansList:
+      description: Ok response for the getFavoritePlans request
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/ShortPlan"
+
 
     400BadRequestHtml:
       description: BadRequest
