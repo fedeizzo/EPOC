@@ -770,8 +770,8 @@ components:
           type: boolean
           description: Specifies if the generation of the plan has preferences set
         preferences:
-          type: string
-          description: Preferenze per la richiesta non ancora implementate
+          $ref: "#/components/schemas/PreferencesGeneratePlan"
+          description: Preferences for the request
       required:
         - numberOfMeals
         - usingPreferences
@@ -780,7 +780,78 @@ components:
         budget: "none"
         numberOfMeals: 5
         usingPreferences: false
-
+    
+    PreferencesGeneratePlan:
+      type: object
+      properties:
+        positive:
+          $ref: "#/components/schemas/PositivePrefsGeneratePlan"
+          description: Positive preferences for the creation of a plan
+        negative:
+          $ref: "#/components/schemas/NegativePrefsGeneratePlan"
+          description: Negative preferences for the creation of a plan
+      example:
+        positive:
+          recipes: ["Carbonara", "Matriciana"]
+          labels: ["Carne"]
+          ingredients: ["Rosmarin", "Burro"]
+          priceRange: "none"
+        negative:
+          recipes: ["Minestrone", "Zuppa di zucca"]
+          labels: ["Vegetariano"]
+          ingredients: ["Aglio", "Carciofo"]
+      
+    PositivePrefsGeneratePlan:
+      type: object
+      properties:
+        recipes:
+          type: array
+          items: 
+            type: string
+          description: Preferred recipes
+        labels:
+          type: array
+          items: 
+            type: string
+          description: Preferred labels
+        ingredients:
+          type: array
+          items: 
+            type: string
+          description: Preferred ingredients
+        priceRange:
+          type: string
+          enum: ["none","veryLow","low","medium","high","veryHigh"]
+          description: Preferred price range
+      example:
+        recipes: ["Carbonara", "Matriciana"]
+        labels: ["Carne"]
+        ingredients: ["Rosmarin", "Burro"]
+        priceRange: "none"
+    
+    NegativePrefsGeneratePlan:
+      type: object
+      properties:
+        recipes:
+          type: array
+          items: 
+            type: string
+          description: Recipes which the user does not like
+        labels:
+          type: array
+          items: 
+            type: string
+          description: Labels which the user does not like
+        ingredients:
+          type: array
+          items: 
+            type: string
+          description: Ingredients which the user does not like
+      example:
+        recipes: ["Minestrone", "Zuppa di zucca"]
+        labels: ["Vegetariano"]
+        ingredients: ["Aglio", "Carciofo"]
+          
   requestBodies:
     LoginRequest:
       description: "Login Request"
