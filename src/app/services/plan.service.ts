@@ -61,8 +61,7 @@ export class PlanService {
       || preferences.negative.recipes.length > 0;
 
     const queryParams = {};
-    if (preferences.positive.priceRange !== "None") {
-      // queryParams['estimatedCost'] = preferences.positive.priceRange;
+    if (budget !== "None") {
       queryParams['estimatedCost'] = budget;
     }
 
@@ -134,7 +133,7 @@ export class PlanService {
     plan.name = name;
     plan.user = user;
     plan.numRecipes = numberOfRecipes;
-    plan.estimatedCost = preferences.positive.priceRange;
+    plan.estimatedCost = budget;
     plan.preferences = preferences;
 
     if (ratedRecipes.length > 0){

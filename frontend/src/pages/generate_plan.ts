@@ -54,11 +54,15 @@ async function generatePlanAndRedirect() {
       break;
   }
 
+
   // Get preferences for the generation of the plan
   const usePreferencesInput = document.getElementById(
     "usePreferences"
   )! as HTMLInputElement;
   const usingPreferences = usePreferencesInput.checked;
+  if(usingPreferences){
+    userPreferences.positive.priceRange=costLevel;
+  }
 
   // Building the request
   const reqBody = {
