@@ -85,7 +85,7 @@ export class FavoritesController {
       }
     }
     else {
-      return new HttpResponseBadRequest({ text: 'User not found'});
+      return new HttpResponseBadRequest({ text: 'User not found' });
     }
   }
 

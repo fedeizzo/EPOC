@@ -262,5 +262,48 @@ describe("The Favorites Service", () => {
       });
     });
   });
+  describe('getFavoritePlansByUser', () => {
+    describe('When user has not favorites', () => {
+      before(async () => {
+        await connect(Config.getOrThrow('mongodb.uri', 'string'), { useNewUrlParser: true, useCreateIndex: false, useUnifiedTopology: true });
+        await createFakeUser(userService);
+        await createFakePlan();
+      });
+      it('returns a elementNotFound response', async () => {
+        const expectedErrorCode: ServiceResponseCode = ServiceResponseCode.elementNotFound;
+        const username = "test";
+        const user = await userService.getUserByUsername(username);
+
+        if (user != undefined) {
+          const actualErrorCode = await favoriteService.getFavoritePlansByUser(user);
+          strictEqual(actualErrorCode.code, expectedErrorCode);
+        } else {
+          throw 'Error';
+        }
+      });
+    });
+    describe('When user has favorites', () => {
+      before(async () => {
+        await connect(Config.getOrThrow('mongodb.uri', 'string'), { useNewUrlParser: true, useCreateIndex: false, useUnifiedTopology: true });
+        const username = await createFakeUser(userService);
+        const id = await createFakePlan();
+        const user = await userService.getUserByUsername(username);
+        if (user != undefined)
+          await favoriteService.addFavoritePlan(user, id);
+      });
+      it('returns a ok response', async () => {
+        const plan = await Plan.findOne({ name: 'piano' });
+        const username = "test";
+        const user = await userService.getUserByUsername(username);
+
+        if (user != undefined) {
+          const actualResponse = await favoriteService.getFavoritePlansByUser(user);
+          strictEqual(actualResponse.buildResponse().planList[0].name, plan?.name);
+        } else {
+          throw 'Error';
+        }
+      });
+    });
+  });
 });
 

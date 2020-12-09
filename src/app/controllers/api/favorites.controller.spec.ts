@@ -231,4 +231,56 @@ describe('The Favorites Controller', () => {
       strictEqual(actualResponse.statusCode, expectedResponse.statusCode);
     });
   });
+
+  describe('getFavoritePlans', () => {
+    describe('When JWT is set but linked with deleted user', () => {
+      it('returns bad request response', async () => {
+        const ctx = new Context({});
+        ctx.user = { username: "test2" };
+
+        const authResponse = {
+          text: 'User not found',
+        };
+
+        const expectedResponse = new HttpResponseBadRequest(authResponse);
+        const actualResponse = await controller.getFavoritePlans(ctx);
+        deepEqual(actualResponse, expectedResponse);
+      });
+    });
+
+    describe('When user is valid and has no favorites', () => {
+      it('returns bad request response', async () => {
+        const ctx = new Context({});
+        ctx.user = { username: "test" };
+
+        const expectedResponse = new HttpResponseBadRequest();
+        const actualResponse = await controller.getFavoritePlans(ctx);
+        deepEqual(actualResponse, expectedResponse);
+      });
+    });
+
+    describe('When user is valid and has favorites', () => {
+      beforeEach(async () => {
+        await connect(Config.getOrThrow('mongodb.uri', 'string'), { useNewUrlParser: true, useCreateIndex: false, useUnifiedTopology: true });
+        const plan = await Plan.findOne({ name: 'piano' });
+        const user = await userService.getUserByUsername('test');
+        if (user)
+          await favoritesService.addFavoritePlan(user, plan?._id);
+      })
+      it('returns ok response with favorites plans list', async () => {
+        const plan = await Plan.findOne({ name: 'piano' });
+        const ctx = new Context({});
+        ctx.user = { username: "test" };
+
+        const authResponse = {
+          text: 'List of favorite plans user test',
+          planList: [{ info: [Object], id: plan?._id }]
+        }
+
+        const expectedResponse = new HttpResponseOK(authResponse);
+        const actualResponse = await controller.getFavoritePlans(ctx);
+        strictEqual(actualResponse.statusCode, expectedResponse.statusCode);
+      });
+    });
+  });
 });
