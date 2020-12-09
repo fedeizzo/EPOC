@@ -2,13 +2,7 @@ import { Config, createService } from "@foal/core";
 import { strictEqual } from "assert";
 import { PreferenceService, ServiceResponseCode } from ".";
 import { connect, disconnect } from "mongoose";
-import {
-  CostLevels,
-  NegativePreferences,
-  PositivePreferences,
-  PreferencesClass,
-  User,
-} from "../models";
+import { User } from "../models";
 import { ServiceResponse } from ".";
 import { createPreferences, SinglePreference } from "./preference.service";
 
@@ -174,10 +168,6 @@ describe("The Preference service", async function () {
         let preferenceAdded: SinglePreference = new SinglePreference();
         preferenceAdded.category = "recipes";
         preferenceAdded.content = recipeName;
-        const responseAdded: ServiceResponse = await preferenceService.addPositivePreference(
-          mockUsername,
-          preferenceAdded
-        );
       });
 
       it("we should get an ok response with text 'Positive preference removed'", async function () {
@@ -219,10 +209,6 @@ describe("The Preference service", async function () {
         let preferenceAdded: SinglePreference = new SinglePreference();
         preferenceAdded.category = "recipes";
         preferenceAdded.content = recipeName;
-        const responseAdded: ServiceResponse = await preferenceService.addNegativePreference(
-          mockUsername,
-          preferenceAdded
-        );
       });
 
       it("we should get an ok response with text 'Negative preference removed'", async function () {

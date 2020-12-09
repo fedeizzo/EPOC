@@ -28,7 +28,7 @@ const generatePlanSchema = {
     preferences: { type: "object" },
     budget: { type: typeof (CostLevels) },
   },
-  required: ["numberOfMeals", "usingPreferences"],
+  required: ["name", "numberOfMeals", "usingPreferences", "budget"],
 };
 
 export class PlanController {
@@ -45,7 +45,7 @@ export class PlanController {
     let budget: CostLevels = json.budget;
     let usingPreferences: boolean = json.usingPreferences;
     let preferences: PreferencesClass = usingPreferences ? json.preferences : emptyPrefs();
-    
+
     let user = ctx.user;
     //TODO: put inside userservice.
     let userObj: any = undefined;
@@ -67,7 +67,7 @@ export class PlanController {
       case ServiceResponseCode.duplicateKeyInDb:
         return new HttpResponseConflict(response.buildResponse());
       default:
-        return new HttpResponseInternalServerError('test');
+        return new HttpResponseInternalServerError();
     }
   }
 
@@ -77,7 +77,7 @@ export class PlanController {
     const planId = ctx.request.query.planId;
     const plan = await this.planService.getPlan(planId);
     if (plan === null) {
-      return new HttpResponseNotFound();
+      return new HttpResponseNotFound({ text: "Plan not found" });
     } else {
       const user = await User.findById(plan.user);
       return new HttpResponseOK({
