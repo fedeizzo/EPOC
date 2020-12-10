@@ -187,57 +187,34 @@ paths:
         "500":
           $ref: "#/components/responses/500InternalServerError"
 
-  /preferences/positive:
-    x-summary: Endpoint to manage the user preferences
+  /preference:
     get:
       description: "Returns a json with the list of preferences of the user.
         It is possible to specify the types of preference you want to retrieve"
       summary: Retrieves user positive preferences
       security:
         - jwtAuth: []
-      parameters:
-        - name: types
-          in: query
-          description: Types of preferences to fetch
-          required: true
-          schema:
-            type: array
-            items: 
-              enum:
-                - recipe
-                - ingredient
-                - priceRange
-          example: types=[recipe, priceRange]
-            
-          explode: true
       responses:
         "200":
-          description: "Array of preferences"
+          description: "User preferences"
           content:
             application/json:
               schema:
                 properties:
-                  recipes:
-                    type: array
-                    items:
-                      type: string
-                  ingredients:
-                    type: array
-                    items:
-                      type: string
-                  priceRange:
+                  text:
                     type: string
-              example:
-                recipes: ['pollo alla cantonese','pasta alla carbonara']      
-                ingredients: ['prezzemolo','aglio']      
-                priceRange: 'high'      
-            
+                    example: 'Preferences found'
+                  content:
+                    $ref: "#/components/schemas/Preference"
         "400":
           $ref: "#/components/responses/400BadRequestHtml"
         "401":
           $ref: "#/components/responses/401UnauthorizedErrorJWT"
         "500":
           $ref: "#/components/responses/500InternalServerError"
+
+  /preference/positive:
+    x-summary: Endpoint to manage the user preferences
     post:
       security:
         - jwtAuth: []
@@ -266,6 +243,7 @@ paths:
       security:
         - jwtAuth: []
       description: 'Deletes the given (positive) preference from the user profile'
+      summary: Delete a positive preference
       requestBody:
         $ref: "#/components/requestBodies/PreferencePositivePost"
       responses:
@@ -280,7 +258,7 @@ paths:
         "500":
           $ref: "#/components/responses/500InternalServerError"
 
-  /preferences/negative:
+  /preference/negative:
     x-summary: Endpoint to manage the user negative preferences
     get:
       description: "Returns a json with the list of negative preferences of the user.
@@ -372,6 +350,7 @@ paths:
     delete:
       security:
         - jwtAuth: []
+      summary: Delete a negative preference
       description: 'Deletes the given (negative) preference from the user profile'
       requestBody:
         $ref: "#/components/requestBodies/PreferenceNegativePost"
@@ -729,8 +708,57 @@ components:
           saturedFat: 0.2
           sodium: 1.3
           sugar: 1.2
+    
+    Preference:
+      properties:
+        positive:
+          $ref: "#/components/schemas/PositivePreference"
+        negative:
+          $ref: "#/components/schemas/NegativePreference"
 
     PositivePreference:
+      properties:
+        recipes:
+          type: array
+          items:
+            type: string
+        ingredients:
+          type: array
+          items:
+            type: string
+        priceRange:
+          type: array
+          items:
+            type: string
+
+    NegativePreference:
+      properties:
+        recipes:
+          type: array
+          items:
+            type: string
+        ingredients:
+          type: array
+          items:
+            type: string
+        priceRange:
+          type: array
+          items:
+            type: string
+        categories:
+          type: array
+          items:
+            type: string
+        plans:
+          type: array
+          items:
+            type: string
+        labels:
+          type: array
+          items:
+            type: string
+
+    PositivePreferencePostDelete:
       type: object
       properties:
         "type":
@@ -739,7 +767,7 @@ components:
         value:
           type: string
 
-    NegativePreference:
+    NegativePreferencePostDelete:
       type: object
       properties:
         "type":
@@ -1027,19 +1055,19 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/PositivePreference"
+            $ref: "#/components/schemas/PositivePreferencePostDelete"
           example:
-            "type": recipe
-            "value": mousse al cioccolato con scorzette d'arancia
+            "category": recipe
+            "content": mousse al cioccolato con scorzette d'arancia
             
     PreferenceNegativePost:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/NegativePreference"
+            $ref: "#/components/schemas/NegativePreferencePostDelete"
           example:
-            "type": ingredient
-            "value": broccoli
+            "category": ingredient
+            "content": broccoli
 
     PlanRequest:
       description: "Plan Request"
