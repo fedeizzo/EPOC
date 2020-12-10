@@ -422,6 +422,72 @@ paths:
         "500":
           $ref: "#/components/responses/500InternalServerError"
 
+  /favorites/add:
+    x-summary: Add plan to favorites
+    post:
+      description: Add plan to favorites given its id and user trough JWT
+      security:
+        - jwtAuth: []
+      summary: Add plan to favorites
+      requestBody:
+        $ref: "#/components/requestBodies/FavoritesAddRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/200OkPlanAddedToFavorites"        
+        "400":
+          $ref: "#/components/responses/400BadRequestHtml"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+          
+  /favorites/remove:
+    x-summary: Remove plan from favorites
+    post:
+      description: Remove plan from favorites given its id and user trough JWT
+      security:
+        - jwtAuth: []
+      summary: Remove plan from favorites
+      requestBody:
+        $ref: "#/components/requestBodies/FavoritesRemoveRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/200OkPlanRemovedFromFavorites"        
+        "400":
+          $ref: "#/components/responses/400BadRequestHtml"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+
+  /favorites/isFavorite:
+    x-summary: Check if plan is favorites
+    get:
+      description: Check if plan favorites given its id and user trough JWT
+      security:
+        - jwtAuth: []
+      summary: Check if plan is favorites
+      requestBody:
+        $ref: "#/components/requestBodies/FavoritesAddRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/200OkPlanIsFavorites"        
+        "400":
+          $ref: "#/components/responses/400BadRequestHtml"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+
+  /favorites/getFavoritePlans:
+    x-summary: All the favorite plans of a user
+    get:
+      description: Gets all the favorite plans of a user given the JWT
+      security:
+        - jwtAuth: []
+      summary: Get all favorite plans
+      responses:
+        "200":
+          $ref: "#/components/responses/200OkFavoritePlansList"        
+        "400":
+          $ref: "#/components/responses/400BadRequestService"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+
 
 
 components:
@@ -718,9 +784,79 @@ components:
           password: "princessPeach"
           estimatedCost: "low"
         recipes:
-          - 'pastaCarbonara01'
-          - 'tofuInCarrozza'
-          - 'seitanAlFunghetto9'
+        - name: "Carbonara"
+          dateModified: "20-09-2013-8:34:25"
+          estimatedCost: "medium"
+          image: "https://dpv87w1mllzh1.cloudfront.net/alitalia_discover/attachments/data/000/000/334/original/roma-how-to-carbonara-1920x1080.jpg?1519055920"
+          categories:
+            - "primi piatti"
+            - "classici"
+          description: "La pasta più buona di tutte"
+          prepTime: 5
+          cookTime: 20
+          totalTime: 20
+          conservationTime: 2
+          peopleFor: 4
+          ingredients:
+            - name: "uova"
+              quantity: 2
+            - name: "spaghetti"
+              quantity: 500
+              unitOfMeasure: "grams"
+            - name: "all the other"
+              quantity: 100
+          keywords:
+            - "buona"
+            - "carbonara"
+            - "pancetta"
+            - "uova"
+          labels:
+            - "primo piatto"
+            - "tradizionale"
+          averageRating: 5
+          numberOfRatings: 1246
+          requiredTools:
+            - "pentole"
+            - "userInfo"
+          nutritionalInfos:
+            calories: 74
+            carbohydrate: 1.5
+            cholesterol: 0.3
+            fat: 2.5
+            fiber: 2.1
+            saturedFat: 0.2
+            sodium: 1.3
+            sugar: 1.2
+
+    ShortPlan:
+      type: object
+      description: Short version of the plan object
+      properties:
+        info:
+          type: object
+          properties:
+            name:
+              type: string
+              description: name of the plan
+            user:
+              $ref: "#/components/schemas/CompleteRecipe"
+              description: user
+            numRecipes:
+              type: number
+              description: numer of recipes in the plan
+            estimatedCost:
+              type: string
+              enum: ["none","veryLow","low","medium","high","veryHigh"]
+              description: number of recipes in the paln
+            recipes:
+              type: array
+              items:
+                $ref: "#/components/schemas/CompleteRecipe"
+              description: recipes of the plan
+          description: Information about the plan
+        id:
+          type: string
+          description: id of the plan
 
     User:
       type: object
@@ -780,7 +916,18 @@ components:
         budget: "none"
         numberOfMeals: 5
         usingPreferences: false
-    
+
+    FavoritesRequestSchema:
+      type: object
+      properties:
+        planId:
+          type: string
+          description: Id of the plan
+      required:
+        - planId
+      example:
+        planId: "5fc5e42599b31d58f4d73ade"
+
     PreferencesGeneratePlan:
       type: object
       properties:
@@ -851,7 +998,7 @@ components:
         recipes: ["Minestrone", "Zuppa di zucca"]
         labels: ["Vegetariano"]
         ingredients: ["Aglio", "Carciofo"]
-          
+        
   requestBodies:
     LoginRequest:
       description: "Login Request"
@@ -905,6 +1052,24 @@ components:
             budget: "none"
             numberOfMeals: 5
             usingPreferences: false
+
+    FavoritesAddRequest:
+      description: "Add plan to favorites"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/FavoritesRequestSchema"
+          example:
+            planId: "5fc5e42599b31d58f4d73ade"
+            
+    FavoritesRemoveRequest:
+      description: "Remove plan from favorites"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/FavoritesRequestSchema"
+          example:
+            planId: "5fc5e42599b31d58f4d73ade"
 
   responses:
     200OkHtml:
@@ -1024,6 +1189,62 @@ components:
               - recipes
               - author
      
+    200OkPlanAddedToFavorites:
+      description: Ok response for favorites adding operation for plan
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              text: 
+                type: string
+                description: The response
+              userInfo:
+                type: object
+                description: Information of the user
+            required:
+              - text
+              - userInfo
+              
+    200OkPlanRemovedFromFavorites:
+      description: Ok response for favorites removing operation for plan
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              text: 
+                type: string
+                description: The response
+              userInfo:
+                type: object
+                description: Information of the user
+            required:
+              - text
+              - userInfo
+              
+    200OkPlanIsFavorites:
+      description: Ok response for is favorites operation for plan
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              favorite: boolean
+              description: boolean that indicates if plan is favorite
+            required:
+              - favorite
+
+    200OkFavoritePlansList:
+      description: Ok response for the getFavoritePlans request
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/ShortPlan"
+
+
     400BadRequestHtml:
       description: BadRequest
 
