@@ -3,3 +3,4 @@ export { ServiceResponse, ServiceResponseCode } from './response.service';
 export { RecipeService } from "./recipe.service";
 export { PlanService } from './plan.service';
 export { PreferenceService } from './preference.service';
+export { FavoritesService } from './favorites.service';

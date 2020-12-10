@@ -15,4 +15,5 @@ export enum ServiceResponseCode {
   internalServerError,
   preferenceError,
   badRequest
+  elementAlreadyInCollection,
 }

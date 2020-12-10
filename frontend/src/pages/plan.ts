@@ -1,13 +1,89 @@
-async function manageFavorite() {
+async function fetchAddFavorites() {
+  const url: string = "/api/v1/favorites/add";
+  const headers = {
+    "Content-type": "application/json",
+  };
+
+  const token = getCookie("JWT");
+
+  if (token !== null && token !== undefined) {
+    headers["Authorization"] = "Bearer " + token;
+  }
+  const response = await fetch(url, {
+    method: "POST",
+    mode: "same-origin",
+    cache: "no-cache",
+    redirect: "follow",
+    credentials: "same-origin",
+    headers,
+    body: JSON.stringify({ planId: planId }),
+  });
+  if (response.status == 200) {
+    const isFavorite = true;
+    manageFavorite(isFavorite);
+  }
+}
+
+async function fetchRemoveFavorites() {
+  const url: string = "/api/v1/favorites/remove";
+  const headers = {
+    "Content-type": "application/json",
+  };
+
+  const token = getCookie("JWT");
+
+  if (token !== null && token !== undefined) {
+    headers["Authorization"] = "Bearer " + token;
+  }
+  const response = await fetch(url, {
+    method: "POST",
+    mode: "same-origin",
+    cache: "no-cache",
+    redirect: "follow",
+    credentials: "same-origin",
+    headers,
+    body: JSON.stringify({ planId: planId }),
+  });
+  if (response.status == 200) {
+    const isFavorite = false;
+    manageFavorite(isFavorite);
+  }
+}
+
+async function isFavoritePlan() {
+  const url: string = "/api/v1/favorites/isFavorite?planId=" + planId;
+  const headers = {
+    "Content-type": "application/json",
+  };
+
+  const token = getCookie("JWT");
+
+  if (token !== null && token !== undefined) {
+    headers["Authorization"] = "Bearer " + token;
+  }
+  const response = await fetch(url, {
+    method: "GET",
+    mode: "same-origin",
+    cache: "no-cache",
+    redirect: "follow",
+    credentials: "same-origin",
+    headers,
+  });
+  if (response.status == 200) {
+    const json = await response.json();
+    const isFavorite = json.favorite;
+    if (isFavorite)
+      manageFavorite(isFavorite);
+  }
+}
+
+async function manageFavorite(isFavorite: boolean) {
   const emptyHearth = document.getElementById("notFavorite");
   const filledHearth = document.getElementById("favorite");
   if (emptyHearth && filledHearth) {
-    if (filledHearth.style.display == "none") {
+    if (isFavorite) {
       emptyHearth.style.display = "none";
       filledHearth.style.display = "inline";
-      console.log(planId)
-      // const response = await fetch(`/api/v1/favorites/add?planId=${planId}`);
-      // const plan = await response.json();
     } else {
       filledHearth.style.display = "none";
       emptyHearth.style.display = "inline";
@@ -54,6 +130,7 @@ async function populatePlanRecipes(recipes: Array<any>, ids: Array<string>) {
 }
 
 async function loadAndShow() {
+  await isFavoritePlan();
   const fragments = window.location.toString().split("/");
   const planId = fragments[fragments.length - 1];
   const response = await fetch(`/api/v1/plan/get?planId=${planId}`);
@@ -75,4 +152,10 @@ async function loadAndShow() {
 
 const url = window.location.pathname.split("/");
 const planId = url.pop();
+if (isCookieSet) {
+  document!.getElementById("favoritesIcon")!.hidden = false;
+} else {
+  document!.getElementById("favoritesIcon")!.hidden = true;
+}
+
 loadAndShow();

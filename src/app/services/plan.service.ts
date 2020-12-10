@@ -171,4 +171,7 @@ export class PlanService {
       .exec()
       .catch((_: any) => []);
   }
+  async doesPlanExist(planId: string) {
+    return await this.getPlan(planId) ? true : false;
+  }
 }
