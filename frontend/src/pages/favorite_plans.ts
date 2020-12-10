@@ -97,14 +97,6 @@ function showNotificationFavPlans(message: string) {
   (<any>$(".toast")).toast("show");
 }
 
-class Plan {
-  name: String;
-  user: String;
-  numRecipes: number;
-  estimatedCost: CostLevels;
-  recipes: String[];
-}
-
 async function deleteFromFavorites(plan, plan_row) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; JWT=`);
