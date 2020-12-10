@@ -16,7 +16,6 @@ async function createFakePlan() {
   plan.name = 'piano';
   plan.numRecipes = 3;
   plan.estimatedCost = CostLevels.high;
-  plan.preferences = emptyPrefs();
   await plan.save();
 }
 

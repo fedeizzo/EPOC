@@ -19,17 +19,15 @@ export class PlanClass {
   @prop({ required: true, ref: RecipeClass })
   public recipes: Ref<RecipeClass>[];
 
-  @prop({ type: PreferencesClass, required: true })
-  public preferences: PreferencesClass;
-
-  // public getInfo() {
-  //   return {
-  //     firstName: this.firstName,
-  //     secondName: this.secondName ? this.secondName : "",
-  //     email: this.email,
-  //     username: this.username
-  //   };
-  // }
+  public getInfo() {
+    return {
+      name: this.name,
+      user: this.user ? this.user : "",
+      numRecipes: this.numRecipes,
+      estimatedCost: this.estimatedCost ? this.estimatedCost : "",
+      recipes: this.recipes,
+    };
+  }
 };
 
 export const Plan = getModelForClass(PlanClass);
