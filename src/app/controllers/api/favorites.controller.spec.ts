@@ -3,6 +3,7 @@ import { Context, createController, Config, HttpResponse, HttpResponseNotFound, 
 import { connection, connect, disconnect } from 'mongoose';
 import { HttpResponseOK, HttpResponseForbidden, HttpResponseConflict, HttpResponseBadRequest } from '@foal/core';
 import { Plan, User, CostLevels } from '../../models';
+import { emptyPrefs } from '../../models/preferences.model';
 import { UserService, FavoritesService } from '../../services';
 import { FavoritesController } from './favorites.controller';
 
@@ -20,7 +21,7 @@ describe('The Favorites Controller', () => {
     const email = "test";
     const username = "test";
     const password = "qqweupodfsksjffewfd232@";
-    await userService.insertUser(firstName, email, username, password, secondName);
+    await userService.insertUser(firstName, email, username, password, emptyPrefs(), secondName);
 
     const plan = new Plan();
     plan.name = 'piano';
