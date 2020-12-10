@@ -5,6 +5,7 @@ import { UserService, FavoritesService, PlanService } from './';
 import { connection, connect, disconnect, Collection } from 'mongoose';
 import { ServiceResponse, ServiceResponseCode } from './response.service';
 import { CostLevels, User } from '../models';
+import { emptyPrefs } from '../models/preferences.model';
 import { Plan } from '../models/plan.model';
 
 async function createFakeUser(userService: UserService) {
@@ -13,7 +14,7 @@ async function createFakeUser(userService: UserService) {
   const email = "test";
   const username = "test";
   const password = "qqweupodfsksjffewfd232@";
-  await userService.insertUser(firstName, email, username, password, secondName);
+  await userService.insertUser(firstName, email, username, password, emptyPrefs(), secondName);
   return username;
 }
 

@@ -3,9 +3,9 @@ import { strictEqual } from "assert";
 import { connect, disconnect, connection } from "mongoose";
 import { ServiceResponseCode, UserService } from "../services";
 import {
+  emptyPrefs,
   NegativePreferences,
   PositivePreferences,
-  Preferences,
 } from "./preferences.model";
 import { CostLevels } from "./recipe.model";
 
@@ -40,7 +40,7 @@ describe("The user model", () => {
     const email = "mario.rossi@rossi.com";
     const username = "MarioRossi";
     const password = "Mario123";
-    const prefs = new Preferences();
+    const prefs = emptyPrefs();
     prefs.positive = new PositivePreferences();
     prefs.positive.priceRange = CostLevels.high;
     prefs.negative = new NegativePreferences();

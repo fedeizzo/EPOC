@@ -2,14 +2,7 @@ import { Config, createService } from "@foal/core";
 import { strictEqual } from "assert";
 import { PreferenceService, ServiceResponseCode } from ".";
 import { connect, disconnect } from "mongoose";
-import {
-  CostLevels,
-  NegativePreferences,
-  PositivePreferences,
-  Preferences,
-  PreferencesClass,
-  User,
-} from "../models";
+import { User } from "../models";
 import { ServiceResponse } from ".";
 import { createPreferences, SinglePreference } from "./preference.service";
 
@@ -30,7 +23,6 @@ describe("The Preference service", async function () {
     );
     try {
       await new User().collection.drop();
-      await new Preferences().collection.drop();
     } catch (_) {}
     await disconnect();
   });
@@ -42,12 +34,10 @@ describe("The Preference service", async function () {
     );
     await createMockUser();
     await User.syncIndexes();
-    await Preferences.syncIndexes();
   });
 
   afterEach(async function () {
     await new User().collection.drop();
-    await new Preferences().collection.drop();
     await disconnect();
   });
   /* GET PREFERENCES */
@@ -82,7 +72,8 @@ describe("The Preference service", async function () {
           mockUsername
         );
         strictEqual(response.code, ServiceResponseCode.ok);
-        strictEqual(typeof response.prop, typeof new PreferencesClass());
+        strictEqual(response.prop.positive ? true : false, true);
+        strictEqual(response.prop.negative ? true : false, true);
       });
     });
   });
@@ -177,10 +168,6 @@ describe("The Preference service", async function () {
         let preferenceAdded: SinglePreference = new SinglePreference();
         preferenceAdded.category = "recipes";
         preferenceAdded.content = recipeName;
-        const responseAdded: ServiceResponse = await preferenceService.addPositivePreference(
-          mockUsername,
-          preferenceAdded
-        );
       });
 
       it("we should get an ok response with text 'Positive preference removed'", async function () {
@@ -222,10 +209,6 @@ describe("The Preference service", async function () {
         let preferenceAdded: SinglePreference = new SinglePreference();
         preferenceAdded.category = "recipes";
         preferenceAdded.content = recipeName;
-        const responseAdded: ServiceResponse = await preferenceService.addNegativePreference(
-          mockUsername,
-          preferenceAdded
-        );
       });
 
       it("we should get an ok response with text 'Negative preference removed'", async function () {

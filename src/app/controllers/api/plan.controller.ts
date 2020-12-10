@@ -16,7 +16,8 @@ import {
   PlanService, ServiceResponse,
   ServiceResponseCode
 } from "../../services";
-import { User, CostLevels } from "../../models";
+import { User, CostLevels, PreferencesClass } from "../../models";
+import { emptyPrefs } from "../../models/preferences.model";
 
 
 const generatePlanSchema = {
@@ -27,7 +28,7 @@ const generatePlanSchema = {
     preferences: { type: "object" },
     budget: { type: typeof (CostLevels) },
   },
-  required: ["numberOfMeals", "usingPreferences"],
+  required: ["name", "numberOfMeals", "usingPreferences", "budget"],
 };
 
 export class PlanController {
@@ -43,20 +44,20 @@ export class PlanController {
     let numberOfMeals: number = json.numberOfMeals;
     let budget: CostLevels = json.budget;
     let usingPreferences: boolean = json.usingPreferences;
-    let preferences: any = usingPreferences ? json.preference : undefined;
+    let preferences: PreferencesClass = usingPreferences ? json.preferences : emptyPrefs();
 
     let user = ctx.user;
     //TODO: put inside userservice.
     let userObj: any = undefined;
     if (user !== undefined) {
-      userObj = (await User.find({ username: user.username }))[0];
+      userObj = await User.findOne({ username: user.username });
     }
 
-    let response: ServiceResponse = await this.planService.generateAndSavePlan(
+    const response: ServiceResponse = await this.planService.generateAndSavePlanWithPreferences(
       name,
       numberOfMeals,
-      budget,
       preferences,
+      budget,
       userObj
     );
 
@@ -76,7 +77,7 @@ export class PlanController {
     const planId = ctx.request.query.planId;
     const plan = await this.planService.getPlan(planId);
     if (plan === null) {
-      return new HttpResponseNotFound();
+      return new HttpResponseNotFound({ text: "Plan not found" });
     } else {
       const user = await User.findById(plan.user);
       return new HttpResponseOK({

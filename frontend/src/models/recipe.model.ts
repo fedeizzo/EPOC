@@ -12,7 +12,7 @@ type Recipe = {
   peopleFor: Number;
   ingredients: Ingredient[];
   keywords: string[];
-  lables: string[];
+  labels: string[];
   averageRating: Number;
   numberOfRatings: Number;
   nutritionalInfos: NutritionalInfo;

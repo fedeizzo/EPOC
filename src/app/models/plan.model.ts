@@ -1,4 +1,5 @@
 import { prop, DocumentType, getModelForClass, Ref } from '@typegoose/typegoose'
+import { PreferencesClass } from './preferences.model';
 import { CostLevels, RecipeClass } from './recipe.model';
 import { UserClass } from './user.model';
 
