@@ -1,5 +1,6 @@
-import { prop, getModelForClass } from "@typegoose/typegoose";
 import { PreferencesClass } from "./preferences.model";
+import { prop, getModelForClass, Ref } from '@typegoose/typegoose';
+import { PlanClass } from './plan.model';
 
 export class UserClass {
   @prop({ type: String, required: true })
@@ -19,6 +20,9 @@ export class UserClass {
 
   @prop({ type: PreferencesClass, required: true })
   public preferences: PreferencesClass;
+
+  @prop({ ref: 'PlanClass' })
+  public favoritesPlan?: Ref<PlanClass>[];
 
   public getInfo() {
     return {

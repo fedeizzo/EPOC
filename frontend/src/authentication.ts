@@ -1,9 +1,3 @@
-const isCookieSet =
-  getCookie("JWT") === undefined || getCookie("JWT") === "" ? false : true;
-if (isCookieSet) {
-  document!.getElementById("logoutButton")!.hidden = false;
-  document!.getElementById("deleteButton")!.hidden = false;
-}
 
 interface SignupData {
   firstName: string;
@@ -26,10 +20,12 @@ function getCookie(name: string) {
 
 function showNotification(message: string) {
   const content = message || "Invalid request";
-  var notification: any = document.querySelector(".mdl-js-snackbar");
-  notification!.MaterialSnackbar.showSnackbar({
-    message: content,
+
+  document.getElementById('toast-message')!.innerText = content;
+  (<any>$(".toast")).toast({
+    delay: 2000
   });
+  (<any>$('.toast')).toast('show')
 }
 
 async function fetchSignUp() {
@@ -60,13 +56,6 @@ async function fetchSignUp() {
     window.location.replace("/");
   } else {
     showNotification((await response.json())["text"]);
-    // let content = (await response.json())["text"];
-    // var notification: any = document.querySelector('.mdl-js-snackbar');
-    // notification!.MaterialSnackbar.showSnackbar(
-    //   {
-    //     message: content
-    //   }
-    // );
   }
 }
 
@@ -94,15 +83,7 @@ async function fetchLogin() {
     window.location.replace("/");
   } else {
     showNotification((await response.json())["text"]);
-    // let content = (await response.json())["text"];
-    // var notification: any = document.querySelector('.mdl-js-snackbar');
-    // notification!.MaterialSnackbar.showSnackbar(
-    //   {
-    //     message: content
-    //   }
-    // );
     (<HTMLInputElement>document.getElementById("password")).value = "";
-    // console.log((await response.json())["text"]);
   }
 }
 
@@ -161,13 +142,6 @@ async function fetchDelete() {
   if (response.status == 200) {
     window.location.replace("/");
   } else {
-    // let content = (await response.json())["text"] || "Invalid request";
-    // var notification: any = document.querySelector('.mdl-js-snackbar');
-    // notification!.MaterialSnackbar.showSnackbar(
-    //   {
-    //     message: content
-    //   }
-    // );
     showNotification((await response.json())["text"]);
   }
 }
