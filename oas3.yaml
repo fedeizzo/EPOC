@@ -1,6 +1,6 @@
 openapi: "3.0.0"
 info:
-  version: "1.0"
+  version: "2.0"
   title: "EPOC"
   description: EPOC gives you simple apis to get a well-built eating plan, and much much more.
   license:
