@@ -168,6 +168,7 @@ describe("The Preference service", async function () {
         let preferenceAdded: SinglePreference = new SinglePreference();
         preferenceAdded.category = "recipes";
         preferenceAdded.content = recipeName;
+        await preferenceService.addPositivePreference(mockUsername, preferenceAdded);
       });
 
       it("we should get an ok response with text 'Positive preference removed'", async function () {
@@ -209,6 +210,7 @@ describe("The Preference service", async function () {
         let preferenceAdded: SinglePreference = new SinglePreference();
         preferenceAdded.category = "recipes";
         preferenceAdded.content = recipeName;
+        await preferenceService.addNegativePreference(mockUsername, preferenceAdded);
       });
 
       it("we should get an ok response with text 'Negative preference removed'", async function () {

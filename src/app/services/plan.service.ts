@@ -57,7 +57,7 @@ export class PlanService {
     // return Math.floor(Math.random() * (max - min) + min);
     const normalDistribution: Function = normal(0, Math.sqrt(max) * this.alpha);
     const randomValue: number = Math.floor(Math.abs(normalDistribution()));
-    return randomValue > max ? max : randomValue;
+    return randomValue > max ? max - 1 : randomValue;
   }
 
   async generateAndSavePlanWithPreferences(
@@ -90,12 +90,20 @@ export class PlanService {
         let score = 0;
         let invalidRecipe: boolean = false;
 
-        // calculate score for recipe name
         if (usePref) {
-          if (preferences.positive.recipes.indexOf(recipe.name) != -1) {
-            score += 10;
-          } else if (preferences.negative.recipes.indexOf(recipe.name) != -1) {
-            invalidRecipe = true;
+          // calculate score for recipe name
+          for (let positiveRecipe of preferences.positive.recipes) {
+            if (recipe.name == <string>positiveRecipe) {
+              score += 10;
+            } else if (recipe.name.indexOf(<string>positiveRecipe) != -1) {
+              score += 3;
+            }
+          }
+
+          for (let negativeRecipe of preferences.negative.recipes) {
+            if (recipe.name.indexOf(<string>negativeRecipe) != -1) {
+              invalidRecipe = true;
+            }
           }
 
           // calculate score for labels
@@ -108,15 +116,25 @@ export class PlanService {
           }
 
           // calculate score for ingredients
-          for (let ingr of recipe.ingredients) {
-            if (preferences.positive.ingredients.indexOf(ingr.name) != -1) {
-              score += 2;
-            } else if (
-              preferences.negative.ingredients.indexOf(ingr.name) != -1
-            ) {
-              invalidRecipe = true;
+          for (let positiveIngr of preferences.positive.ingredients) {
+            // consider single/plural for ingredients
+            // positiveIngr = positiveIngr.slice(0, positiveIngr.length - 1);
+            for (let recipeIngr of recipe.ingredients) {
+              if (recipeIngr.name.indexOf(<string>positiveIngr) != -1) {
+                score += 2;
+              }
             }
           }
+          for (let negativeIngr of preferences.negative.ingredients) {
+            // consider single/plural for ingredients
+            // negativeIngr = negativeIngr.slice(0, negativeIngr.length - 1);
+            for (let recipeIngr of recipe.ingredients) {
+              if (recipeIngr.name.indexOf(<string>negativeIngr) != -1) {
+                invalidRecipe = true;
+              }
+            }
+          }
+
         } else {
           // if user is not using preferences, then set to 1
           // all the scores
@@ -129,7 +147,6 @@ export class PlanService {
         };
 
         numValidRecipes += result.score > 0 ? 1 : 0;
-
         return result;
       });
 
@@ -145,12 +162,7 @@ export class PlanService {
       setRandomIndexes.size < numberOfRecipes &&
       iteration < this.MAX_ITERATIONS
     ) {
-      setRandomIndexes.add(
-        this.getRandomArbitrary(
-          0,
-          (recipes as DocumentType<RecipeClass>[]).length - 1
-        )
-      );
+      setRandomIndexes.add(this.getRandomArbitrary(0, numValidRecipes));
       iteration++;
     }
 
