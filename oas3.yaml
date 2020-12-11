@@ -372,7 +372,19 @@ paths:
           $ref: "#/components/responses/500InternalServerError"
 
   /favorites:
-    x-summary: Add plan to favorites
+    x-summary: Manage favorites
+    get:
+      description: Gets all the favorite plans of a user given the JWT
+      security:
+        - jwtAuth: []
+      summary: Get all favorite plans
+      responses:
+        "200":
+          $ref: "#/components/responses/200OkFavoritePlansList"        
+        "400":
+          $ref: "#/components/responses/400BadRequestService"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
     post:
       description: Add plan to favorites given its id and user trough JWT
       security:
@@ -418,22 +430,6 @@ paths:
           $ref: "#/components/responses/400BadRequest"
         "500":
           $ref: "#/components/responses/500InternalServerError"
-
-  /favorites/getFavoritePlans:
-    x-summary: All the favorite plans of a user
-    get:
-      description: Gets all the favorite plans of a user given the JWT
-      security:
-        - jwtAuth: []
-      summary: Get all favorite plans
-      responses:
-        "200":
-          $ref: "#/components/responses/200OkFavoritePlansList"        
-        "400":
-          $ref: "#/components/responses/400BadRequestService"
-        "500":
-          $ref: "#/components/responses/500InternalServerError"
-
 
 
 components:
@@ -1229,7 +1225,7 @@ components:
               - favorite
 
     200OkFavoritePlansList:
-      description: Ok response for the getFavoritePlans request
+      description: Ok response for the get request for favorite plans
       content:
         application/json:
           schema:

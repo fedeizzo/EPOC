@@ -90,7 +90,7 @@ export class FavoritesController {
   }
 
   @JWTRequired()
-  @Get('/getFavoritePlans')
+  @Get('/')
   async getFavoritePlans(ctx: Context) {
     const username = ctx.user.username;
     const user = await this.userService.getUserByUsername(username);

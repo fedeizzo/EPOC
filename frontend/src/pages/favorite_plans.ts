@@ -3,7 +3,7 @@ onload = async () => {
   const parts = value.split(`; JWT=`);
   const token: string = parts[1];
 
-  const response = await fetch("/api/v2/favorites/getFavoritePlans", {
+  const response = await fetch("/api/v2/favorites/", {
     method: "GET",
     mode: "same-origin",
     cache: "no-cache",
