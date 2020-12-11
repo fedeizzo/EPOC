@@ -97,7 +97,7 @@ async function getUserPreferences() {
     ingredientsNegOnly.className += "col-md-6 ";
 
     const negIngredients: String[] = negative.ingredients;
-    ingredientsNegOnly.append(listToDivs(negIngredients, "ingredients", true));
+    ingredientsNegOnly.append(listToDivs(negIngredients, "ingredients", false));
 
     ingredientsRow.append(ingredientsPosOnly, ingredientsNegOnly);
 

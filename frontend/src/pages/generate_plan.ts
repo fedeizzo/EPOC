@@ -18,6 +18,18 @@ document.getElementById("usePreferences")!.onclick = async function () {
   }
 };
 
+const token_gp = getCookie_gp("JWT");
+const tokenIsPresent_gp = !(token_gp === undefined || token_gp === "");
+
+if (tokenIsPresent_gp) {
+  document!.getElementById("auth-access")!.hidden = true;
+  document!.getElementById("auth-off")!.hidden = false;
+} else {
+  document!.getElementById("auth-access")!.hidden = false;
+  document!.getElementById("auth-off")!.hidden = true;
+}
+
+
 async function generatePlanAndRedirect() {
   // Get name for the plan
   const nameInput = document.getElementById("name")! as HTMLInputElement;
@@ -115,12 +127,11 @@ async function getPreferencesAndDraw(): Promise<HTMLDivElement> {
   userPreferences = new PreferencesClass();
 
   // Composing preferences
-  const token = _getCookie("JWT");
-  if (token) {
+  if (token_gp) {
     // real preferences if logged
     const res = await fetch(`/api/v1/preference`, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token_gp}`,
         "Content-type": "application/json",
       },
     });
@@ -454,4 +465,10 @@ function showNotificationPlan(message: string) {
   notification!.MaterialSnackbar.showSnackbar({
     message: content,
   });
+}
+
+function getCookie_gp(name: string) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  return parts[1];
 }

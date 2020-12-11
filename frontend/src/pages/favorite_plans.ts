@@ -1,15 +1,22 @@
-onload = async () => {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; JWT=`);
-  const token: string = parts[1];
+const token_fp = getCookie_fp("JWT");
+const tokenIsPresent_fp = !(token_fp === undefined || token_fp === "");
 
+if (tokenIsPresent_fp) {
+  document!.getElementById("auth-access")!.hidden = true;
+  document!.getElementById("auth-off")!.hidden = false;
+} else {
+  document!.getElementById("auth-access")!.hidden = false;
+  document!.getElementById("auth-off")!.hidden = true;
+}
+
+onload = async () => {
   const response = await fetch("/api/v1/favorites/getFavoritePlans", {
     method: "GET",
     mode: "same-origin",
     cache: "no-cache",
     redirect: "follow",
     credentials: "same-origin",
-    headers: { Authorization: `Bearer ${token}` },
+    headers: { Authorization: `Bearer ${token_fp}` },
   });
 
   if (response.ok) {
@@ -98,10 +105,6 @@ function showNotificationFavPlans(message: string) {
 }
 
 async function deleteFromFavorites(plan, plan_row) {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; JWT=`);
-  const token: string = parts[1];
-
   const response = await fetch("/api/v1/favorites/remove", {
     method: "POST",
     mode: "same-origin",
@@ -109,7 +112,7 @@ async function deleteFromFavorites(plan, plan_row) {
     redirect: "follow",
     credentials: "same-origin",
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${token_fp}`,
       "Content-type": "application/json",
     },
     body: JSON.stringify({ planId: plan.id }),
@@ -122,4 +125,10 @@ async function deleteFromFavorites(plan, plan_row) {
     const text = json.text;
     showNotificationFavPlans(text);
   }
+}
+
+function getCookie_fp(name: string) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  return parts[1];
 }
