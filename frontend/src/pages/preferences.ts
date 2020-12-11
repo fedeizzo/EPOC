@@ -3,7 +3,7 @@ const token = getJwtCookie("JWT");
 //Retrieves user's preferences from the server
 async function getUserPreferences() {
   if (token != undefined) {
-    const res = await fetch(`/api/v1/preference`, {
+    const res = await fetch(`/api/v2/preference`, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-type": "application/json",
@@ -202,7 +202,7 @@ function listToDivs(
         content: preference,
       };
       const res = await fetch(
-        `/api/v1/preference/${positive ? "positive" : "negative"}`,
+        `/api/v2/preference/${positive ? "positive" : "negative"}`,
         {
           method: "POST",
           body: JSON.stringify(body),
@@ -286,7 +286,7 @@ async function deletePreference(
     body.content = preference[0];
   }
   const res = await fetch(
-    `/api/v1/preference/${positive ? "positive" : "negative"}`,
+    `/api/v2/preference/${positive ? "positive" : "negative"}`,
     {
       method: "DELETE",
       body: JSON.stringify(body),
@@ -329,7 +329,7 @@ async function updateCostPreference(newPreferredCost: string) {
     category: "priceRange",
     content: (cost = cost),
   };
-  const res = await fetch("/api/v1/preference/positive", {
+  const res = await fetch("/api/v2/preference/positive", {
     method: "POST",
     body: JSON.stringify(body),
     headers: {

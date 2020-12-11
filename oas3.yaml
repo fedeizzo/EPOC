@@ -7,9 +7,9 @@ info:
     name: MIT
     url: https://github.com/apiaryio/polls-api/blob/master/LICENSE
 servers:
-  - url: http://localhost:3001/api/v1
+  - url: http://localhost:3001/api/v2
     description: Localhost
-  - url: https://epoc-planner.herokuapp.com/api/v1
+  - url: https://epoc-planner.herokuapp.com/api/v2
     description: Heroku server
 
 paths:

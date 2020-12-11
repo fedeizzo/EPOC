@@ -3,7 +3,7 @@ onload = async () => {
   const parts = value.split(`; JWT=`);
   const token: string = parts[1];
 
-  const response = await fetch("/api/v1/favorites/getFavoritePlans", {
+  const response = await fetch("/api/v2/favorites/getFavoritePlans", {
     method: "GET",
     mode: "same-origin",
     cache: "no-cache",
@@ -66,7 +66,7 @@ async function planCard(p): Promise<HTMLElement> {
 
   const recipes: Recipe[] = [];
   for (const id of p.info.recipes ?? []) {
-    const resp = await fetch(`/api/v1/recipe/${id}`);
+    const resp = await fetch(`/api/v2/recipe/${id}`);
     if (resp.status == 200) {
       const rec = (await resp.json())["recipe"];
       recipes.push(rec);
@@ -102,7 +102,7 @@ async function deleteFromFavorites(plan, plan_row) {
   const parts = value.split(`; JWT=`);
   const token: string = parts[1];
 
-  const response = await fetch("/api/v1/favorites/remove", {
+  const response = await fetch("/api/v2/favorites/remove", {
     method: "POST",
     mode: "same-origin",
     cache: "no-cache",

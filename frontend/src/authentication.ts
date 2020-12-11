@@ -29,7 +29,7 @@ function showNotification(message: string) {
 }
 
 async function fetchSignUp() {
-  const url: string = "/api/v1/signup";
+  const url: string = "/api/v2/signup";
   const headers = {
     "Content-type": "application/json",
   };
@@ -60,7 +60,7 @@ async function fetchSignUp() {
 }
 
 async function fetchLogin() {
-  const url: string = "/api/v1/login";
+  const url: string = "/api/v2/login";
   const headers = {
     "Content-type": "application/json",
   };
@@ -88,7 +88,7 @@ async function fetchLogin() {
 }
 
 async function fetchLogout() {
-  const url: string = "/api/v1/logout";
+  const url: string = "/api/v2/logout";
   const headers = {
     "Content-type": "application/json",
   };
@@ -114,7 +114,7 @@ async function fetchLogout() {
 }
 
 async function fetchDelete() {
-  const url: string = "/api/v1/deleteUser";
+  const url: string = "/api/v2/deleteUser";
   const headers = {
     "Content-type": "application/json",
   };

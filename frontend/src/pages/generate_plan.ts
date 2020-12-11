@@ -84,7 +84,7 @@ async function generatePlanAndRedirect() {
   bodyContainer.replaceChild(newContent, previousContent);
 
   // Sending the request
-  const response = await fetch("/api/v1/plan/generate", {
+  const response = await fetch("/api/v2/plan/generate", {
     method: "POST",
     mode: "same-origin",
     cache: "no-cache",
@@ -118,7 +118,7 @@ async function getPreferencesAndDraw(): Promise<HTMLDivElement> {
   const token = _getCookie("JWT");
   if (token) {
     // real preferences if logged
-    const res = await fetch(`/api/v1/preference`, {
+    const res = await fetch(`/api/v2/preference`, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-type": "application/json",

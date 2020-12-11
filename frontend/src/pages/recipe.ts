@@ -1,7 +1,7 @@
 async function getRecipeAndPopulate(): Promise<void> {
   const fragments = window.location.toString().split("/");
   const recipeId = fragments[fragments.length - 1];
-  const res = await fetch(`/api/v1/recipe/${recipeId}`);
+  const res = await fetch(`/api/v2/recipe/${recipeId}`);
   const json = await res.json();
 
   const recipeText = document.getElementById("recipeText");
