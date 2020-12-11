@@ -122,7 +122,7 @@ export class AuthenticationController {
   }
 
   @JWTRequired()
-  @Delete('/deleteUser')
+  @Delete('/user')
   @ValidateBody(loginSchema)
   async deleteUser(ctx: Context) {
     const username = ctx.request.body.username;

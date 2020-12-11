@@ -79,7 +79,7 @@ paths:
         "500":
           $ref: "#/components/responses/500InternalServerError"
   
-  /deleteUser:
+  /user:
     x-summary: Delete user account from the service
     delete:
       security:

@@ -114,7 +114,7 @@ async function fetchLogout() {
 }
 
 async function fetchDelete() {
-  const url: string = "/api/v2/deleteUser";
+  const url: string = "/api/v2/user";
   const headers = {
     "Content-type": "application/json",
   };
