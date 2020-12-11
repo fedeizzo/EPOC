@@ -13,8 +13,11 @@
       crossorigin="anonymous"></script>
     <script type="text/javascript" src="./../src/authentication.js" defer></script>
     <script type="text/javascript" src="./../src/index.js" defer></script>
-    <title>Document</title>
+    <title>Recipe</title>
     <style>
+      :root {
+        --navbarHeight: 56px;
+      }
       html,
       body,
       header,
@@ -42,16 +45,10 @@
       }
 
       .height-override {
-        height: auto;
-        margin-top: 54px;
+        margin-top: var(--navbarHeight);
         background-color: white;
-      }
-
-      .parent-center2 {
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        margin-bottom: 0px;
+        min-height: calc(100vh - var(--navbarHeight));
       }
 
       img {
@@ -67,12 +64,14 @@
         padding-bottom: 32px;
       }
 
-      #recipeContainer {
-        margin-top: 56px;
-      }
-
       #ingredientsTable {
         margin-top: 32px;
+      }
+
+      #nutrInfoTable {
+        margin-top: 32px;
+        margin-left: 32px;
+        margin-right: 32px;
       }
 
       #recipeText {
@@ -148,30 +147,40 @@
         </ul>
       </div>
     </nav>
-    <div class="parent-center">
-        <div class="container-xl height-override">
+    <div class="container-xl height-override">
+      <div class="row">
+        <div class="col-md">
+          <div id="recipeText">
+            <h2 id="recipeTitle"></h2>
+            <div id="recipeImage"></div>
+          </div>
           <div class="row">
-            <div class="col-md">
-              <div id="recipeText">
-                <h2 id="recipeTitle"></h2>
-                <div id="recipeImage"></div>
-              </div>
-            </div>
-            <div class="col-md table-responsive">
-              <table id="ingredientsTable" class="table table-hover">
-              <thead>
-                <tr>
-                  <th scope="col">Ingredient</th>
-                  <th scope="col">Quantity</th>
-                  <th scope="col">Unit of measure</th>
-                </tr>
-              </thead>
-                <tbody id="ingredientsTableContent">
-                 </tbody>
-              </table>
-            </div>
+            <table id="nutrInfoTable" class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Info</th>
+                <th scope="col">Content</th>
+              </tr>
+            </thead>
+              <tbody id="nutrInfoTableContent">
+               </tbody>
+            </table>
           </div>
         </div>
+        <div class="col-md table-responsive">
+          <table id="ingredientsTable" class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">Ingredient</th>
+              <th scope="col">Quantity</th>
+              <th scope="col">Unit of measure</th>
+            </tr>
+          </thead>
+            <tbody id="ingredientsTableContent">
+             </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </header>
   </body>
