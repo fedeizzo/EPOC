@@ -7,24 +7,14 @@ info:
     name: MIT
     url: https://github.com/apiaryio/polls-api/blob/master/LICENSE
 servers:
-  - url: http://localhost:3001/api/v1
+  - url: http://localhost:3001/api/v2
     description: Localhost
-  - url: https://epoc-planner.herokuapp.com/api/v1
+  - url: https://epoc-planner.herokuapp.com/api/v2
     description: Heroku server
 
 paths:
   /signup:
     x-summary: Signup to the service
-    get:
-      description: Get html page for signup
-      summary: Signup html page
-      responses:
-        "200":
-          $ref: "#/components/responses/200OkHtml"
-        "404":
-          $ref: "#/components/responses/404NotAcceptigHtml"
-        "500":
-          $ref: "#/components/responses/500InternalServerError"
     post:
       description: Signup to the service
       summary: Signup
@@ -47,16 +37,6 @@ paths:
   
   /login:
     x-summary: Login to the service
-    get:
-      description: Get html page for signup
-      summary: Login html page
-      responses:
-        "200":
-          $ref: "#/components/responses/200OkHtml"
-        "404":
-          $ref: "#/components/responses/404NotAcceptigHtml"
-        "500":
-          $ref: "#/components/responses/500InternalServerError"
     post:
       description: Login to the service providing your credentials.
       summary: Login
@@ -99,18 +79,8 @@ paths:
         "500":
           $ref: "#/components/responses/500InternalServerError"
   
-  /deleteUser:
+  /user:
     x-summary: Delete user account from the service
-    get:
-      description: Get html page for deleting user
-      summary: Delete user html page
-      responses:
-        "200":
-          $ref: "#/components/responses/200OkHtml"
-        "404":
-          $ref: "#/components/responses/404NotAcceptigHtml"
-        "500":
-          $ref: "#/components/responses/500InternalServerError"
     delete:
       security:
         - jwtAuth: []
@@ -145,7 +115,7 @@ paths:
         "200":
           $ref: "#/components/responses/200OkRecipeServiceShortList"
         "400":
-          $ref: "#/components/responses/400BadRequestHtml"
+          $ref: "#/components/responses/400BadRequest"
         "500":
           $ref: "#/components/responses/500InternalServerError"
         
@@ -163,7 +133,7 @@ paths:
         "200":
           $ref: "#/components/responses/200OkPlansList"
         "400":
-          $ref: "#/components/responses/400BadRequestHtml"
+          $ref: "#/components/responses/400BadRequest"
         "500":
           $ref: "#/components/responses/500InternalServerError"
 
@@ -207,7 +177,7 @@ paths:
                   content:
                     $ref: "#/components/schemas/Preference"
         "400":
-          $ref: "#/components/responses/400BadRequestHtml"
+          $ref: "#/components/responses/400BadRequest"
         "401":
           $ref: "#/components/responses/401UnauthorizedErrorJWT"
         "500":
@@ -226,7 +196,7 @@ paths:
         "200":
           description: "Correctly added preference"
         "400":
-          $ref: "#/components/responses/400BadRequestHtml"
+          $ref: "#/components/responses/400BadRequest"
         "401":
           $ref: "#/components/responses/401UnauthorizedErrorJWT"
         "409":
@@ -250,7 +220,7 @@ paths:
         "200":
           description: "Correctly removed preference"
         "400":
-          $ref: "#/components/responses/400BadRequestHtml"
+          $ref: "#/components/responses/400BadRequest"
         "401":
           $ref: "#/components/responses/401UnauthorizedErrorJWT"
         "404":
@@ -318,7 +288,7 @@ paths:
                 plans: []      
                 labels: []      
         "400":
-          $ref: "#/components/responses/400BadRequestHtml"
+          $ref: "#/components/responses/400BadRequest"
         "401":
           $ref: "#/components/responses/401UnauthorizedErrorJWT"
         "500":
@@ -334,7 +304,7 @@ paths:
         "200":
           description: "Correctly added preference"
         "400":
-          $ref: "#/components/responses/400BadRequestHtml"
+          $ref: "#/components/responses/400BadRequest"
         "401":
           $ref: "#/components/responses/401UnauthorizedErrorJWT"
         "409":
@@ -358,7 +328,7 @@ paths:
         "200":
           description: "Correctly removed preference"
         "400":
-          $ref: "#/components/responses/400BadRequestHtml"
+          $ref: "#/components/responses/400BadRequest"
         "401":
           $ref: "#/components/responses/401UnauthorizedErrorJWT"
         "404":
@@ -366,23 +336,7 @@ paths:
         "500":
           $ref: "#/components/responses/500InternalServerError"
 
-  /plan/generate:
-    x-summary: Generate an eating plan for the user
-    post:
-      description: Generates an eating palan for the user basing on the parameters the user specified in the request
-      summary: Plan generation
-      requestBody:
-        $ref: "#/components/requestBodies/PlanRequest"
-      responses:
-        "200":
-          $ref: "#/components/responses/200OkPlanGenerate"        
-        "409":
-          $ref: "#/components/responses/409ConflictService"
-        "500":
-          $ref: "#/components/responses/500InternalServerError"
-  
-  /plan/get:
-    x-summary: Search a plan for id
+  /plan:
     get:
       description: Retrieves a plan given its id
       summary: Retrieving plan
@@ -400,9 +354,33 @@ paths:
           $ref: "#/components/responses/404NotFoundResource"
         "500":
           $ref: "#/components/responses/500InternalServerError"
-
-  /favorites/add:
-    x-summary: Add plan to favorites
+    post:
+      description: Generates an eating palan for the user basing on the parameters the user specified in the request
+      summary: Plan generation
+      requestBody:
+        $ref: "#/components/requestBodies/PlanRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/200OkPlanGenerate"        
+        "409":
+          $ref: "#/components/responses/409ConflictService"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+    
+  /favorites:
+    x-summary: Manage favorites
+    get:
+      description: Gets all the favorite plans of a user given the JWT
+      security:
+        - jwtAuth: []
+      summary: Get all favorite plans
+      responses:
+        "200":
+          $ref: "#/components/responses/200OkFavoritePlansList"        
+        "400":
+          $ref: "#/components/responses/400BadRequestService"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
     post:
       description: Add plan to favorites given its id and user trough JWT
       security:
@@ -414,13 +392,10 @@ paths:
         "200":
           $ref: "#/components/responses/200OkPlanAddedToFavorites"        
         "400":
-          $ref: "#/components/responses/400BadRequestHtml"
+          $ref: "#/components/responses/400BadRequest"
         "500":
           $ref: "#/components/responses/500InternalServerError"
-          
-  /favorites/remove:
-    x-summary: Remove plan from favorites
-    post:
+    delete:
       description: Remove plan from favorites given its id and user trough JWT
       security:
         - jwtAuth: []
@@ -431,7 +406,7 @@ paths:
         "200":
           $ref: "#/components/responses/200OkPlanRemovedFromFavorites"        
         "400":
-          $ref: "#/components/responses/400BadRequestHtml"
+          $ref: "#/components/responses/400BadRequest"
         "500":
           $ref: "#/components/responses/500InternalServerError"
 
@@ -448,25 +423,9 @@ paths:
         "200":
           $ref: "#/components/responses/200OkPlanIsFavorites"        
         "400":
-          $ref: "#/components/responses/400BadRequestHtml"
+          $ref: "#/components/responses/400BadRequest"
         "500":
           $ref: "#/components/responses/500InternalServerError"
-
-  /favorites/getFavoritePlans:
-    x-summary: All the favorite plans of a user
-    get:
-      description: Gets all the favorite plans of a user given the JWT
-      security:
-        - jwtAuth: []
-      summary: Get all favorite plans
-      responses:
-        "200":
-          $ref: "#/components/responses/200OkFavoritePlansList"        
-        "400":
-          $ref: "#/components/responses/400BadRequestService"
-        "500":
-          $ref: "#/components/responses/500InternalServerError"
-
 
 
 components:
@@ -1099,10 +1058,7 @@ components:
           example:
             planId: "5fc5e42599b31d58f4d73ade"
 
-  responses:
-    200OkHtml:
-      description: Html page
-    
+  responses:    
     200OkUserService:
       description: Ok response from User Service 
       content:
@@ -1258,13 +1214,14 @@ components:
           schema:
             type: object
             properties:
-              favorite: boolean
-              description: boolean that indicates if plan is favorite
+              favorite:
+                type: boolean
+                description: boolean that indicates if plan is favorite
             required:
               - favorite
 
     200OkFavoritePlansList:
-      description: Ok response for the getFavoritePlans request
+      description: Ok response for the get request for favorite plans
       content:
         application/json:
           schema:
@@ -1273,7 +1230,7 @@ components:
               $ref: "#/components/schemas/ShortPlan"
 
 
-    400BadRequestHtml:
+    400BadRequest:
       description: BadRequest
 
     400BadRequestService:
@@ -1337,9 +1294,6 @@ components:
               - text
             example:
               text: "Service error: resource not found"
-    
-    404NotAcceptigHtml:
-      description: Request sender does not accept html
 
     409ConflictService:
       description: Conflict error response

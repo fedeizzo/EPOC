@@ -11,7 +11,7 @@ abstract class CommonPreferences {
 }
 
 export class PositivePreferences extends CommonPreferences {
-  @prop({ type: Object })
+  @prop({ enum: CostLevels })
   public priceRange: CostLevels;
 }
 

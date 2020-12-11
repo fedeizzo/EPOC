@@ -14,7 +14,7 @@ if (queryFromHome !== undefined) {
 
 async function search(query: string) {
   const recipeResponse = await fetch(
-    `/api/v1/search/recipe?searchString=${query}`
+    `/api/v2/search/recipe?searchString=${query}`
   );
   const j = await recipeResponse.json();
   const recipes: Partial<Recipe>[] = j["recipes"];
@@ -28,7 +28,7 @@ async function search(query: string) {
     }
   }
 
-  const planResponse = await fetch(`/api/v1/search/plan?searchString=${query}`);
+  const planResponse = await fetch(`/api/v2/search/plan?searchString=${query}`);
   const plans: Partial<Plan>[] = (await planResponse.json())["plan"];
   const planElements = plans.map((p) => planCard(p));
   const planContainer = document.getElementById("planContainer")!;
@@ -78,7 +78,7 @@ async function search(query: string) {
 
     const recipes: Recipe[] = [];
     for (const id of p.recipes ?? []) {
-      const resp = await fetch(`/api/v1/recipe/${id}`);
+      const resp = await fetch(`/api/v2/recipe/${id}`);
       if (resp.status == 200) {
         const rec = (await resp.json())["recipe"];
         recipes.push(rec);

@@ -35,7 +35,7 @@ export class PlanController {
   @dependency
   planService: PlanService;
 
-  @Post("/generate")
+  @Post("/")
   @ValidateBody(generatePlanSchema)
   @JWTOptional()
   async generatePlan(ctx: Context) {
@@ -71,7 +71,7 @@ export class PlanController {
     }
   }
 
-  @Get("/get")
+  @Get("/")
   @ValidateQueryParam("planId", { type: "string" }, { required: true })
   async getRecipeById(ctx: Context) {
     const planId = ctx.request.query.planId;

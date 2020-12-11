@@ -1,5 +1,5 @@
 async function fetchAddFavorites() {
-  const url: string = "/api/v1/favorites/add";
+  const url: string = "/api/v2/favorites";
   const headers = {
     "Content-type": "application/json",
   };
@@ -25,7 +25,7 @@ async function fetchAddFavorites() {
 }
 
 async function fetchRemoveFavorites() {
-  const url: string = "/api/v1/favorites/remove";
+  const url: string = "/api/v2/favorites";
   const headers = {
     "Content-type": "application/json",
   };
@@ -36,7 +36,7 @@ async function fetchRemoveFavorites() {
     headers["Authorization"] = "Bearer " + token;
   }
   const response = await fetch(url, {
-    method: "POST",
+    method: "DELETE",
     mode: "same-origin",
     cache: "no-cache",
     redirect: "follow",
@@ -51,7 +51,7 @@ async function fetchRemoveFavorites() {
 }
 
 async function isFavoritePlan() {
-  const url: string = "/api/v1/favorites/isFavorite?planId=" + planId;
+  const url: string = "/api/v2/favorites/isFavorite?planId=" + planId;
   const headers = {
     "Content-type": "application/json",
   };
@@ -133,12 +133,12 @@ async function loadAndShow() {
   await isFavoritePlan();
   const fragments = window.location.toString().split("/");
   const planId = fragments[fragments.length - 1];
-  const response = await fetch(`/api/v1/plan/get?planId=${planId}`);
+  const response = await fetch(`/api/v2/plan?planId=${planId}`);
   const plan = await response.json();
   const recipes: Array<any> = [];
   const ids: Array<string> = [];
   for (const recipeId of plan.recipes) {
-    const response = await fetch(`/api/v1/recipe/${recipeId}`);
+    const response = await fetch(`/api/v2/recipe/${recipeId}`);
     const j = await response.json();
     recipes.push(j.recipe);
     ids.push(recipeId);
