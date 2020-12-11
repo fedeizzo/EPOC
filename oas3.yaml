@@ -336,7 +336,7 @@ paths:
         "500":
           $ref: "#/components/responses/500InternalServerError"
 
-  /plan/generate:
+  /plan:
     x-summary: Generate an eating plan for the user
     post:
       description: Generates an eating palan for the user basing on the parameters the user specified in the request

@@ -35,7 +35,7 @@ export class PlanController {
   @dependency
   planService: PlanService;
 
-  @Post("/generate")
+  @Post("/")
   @ValidateBody(generatePlanSchema)
   @JWTOptional()
   async generatePlan(ctx: Context) {

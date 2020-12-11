@@ -84,7 +84,7 @@ async function generatePlanAndRedirect() {
   bodyContainer.replaceChild(newContent, previousContent);
 
   // Sending the request
-  const response = await fetch("/api/v2/plan/generate", {
+  const response = await fetch("/api/v2/plan", {
     method: "POST",
     mode: "same-origin",
     cache: "no-cache",
