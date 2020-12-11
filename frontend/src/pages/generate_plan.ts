@@ -1,6 +1,7 @@
 let userPreferences: PreferencesClass;
 
 document.getElementById("submitButton")!.onclick = generatePlanAndRedirect;
+(document.getElementById("usePreferences")! as HTMLInputElement).checked = false;
 
 document.getElementById("usePreferences")!.onclick = async function () {
   const preferencePanelDiv = document.getElementById(
@@ -84,8 +85,8 @@ async function generatePlanAndRedirect() {
     preferences: usingPreferences ? userPreferences : {},
   };
 
-  const jwt = _getCookie("JWT");
-  const jwtPresent = jwt != null && jwt !== "";
+
+  const jwtPresent = token_gp != null && token_gp !== "";
 
   //Showing loading screen
   const previousContent = document.getElementsByName("central_card")[0];
@@ -102,7 +103,7 @@ async function generatePlanAndRedirect() {
     cache: "no-cache",
     redirect: "follow",
     credentials: "same-origin",
-    headers: jwtPresent ? { Authorization: `Bearer ${jwt}` } : {},
+    headers: jwtPresent ? { Authorization: `Bearer ${token_gp}` } : {},
     body: JSON.stringify(reqBody),
   });
 
@@ -407,12 +408,6 @@ function getHeadingPlan(text: String) {
   const heading = document.createElement("h3");
   heading.innerText = text.valueOf();
   return heading;
-}
-
-function _getCookie(name: string) {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  return parts[1];
 }
 
 enum CostLevelsEnum {
