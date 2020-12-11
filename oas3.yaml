@@ -371,7 +371,7 @@ paths:
         "500":
           $ref: "#/components/responses/500InternalServerError"
 
-  /favorites/add:
+  /favorites:
     x-summary: Add plan to favorites
     post:
       description: Add plan to favorites given its id and user trough JWT

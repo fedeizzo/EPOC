@@ -1,5 +1,5 @@
 async function fetchAddFavorites() {
-  const url: string = "/api/v2/favorites/add";
+  const url: string = "/api/v2/favorites";
   const headers = {
     "Content-type": "application/json",
   };

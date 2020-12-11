@@ -21,7 +21,7 @@ export class FavoritesController {
 
   @JWTRequired()
   @ValidateBody(addFavoritePlanSchema)
-  @Post('/add')
+  @Post('/')
   async addFavoritePlan(ctx: Context) {
     const username = ctx.user.username;
     const planId = ctx.request.body.planId;
