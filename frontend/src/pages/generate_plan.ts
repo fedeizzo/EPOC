@@ -249,7 +249,7 @@ function buildPreferencesPanel(): HTMLDivElement {
 
   const negIngredients: String[] = negative.ingredients;
   ingredientsNegOnly.append(
-    listToDivsPlan(negIngredients, "ingredients", true)
+    listToDivsPlan(negIngredients, "ingredients", false)
   );
 
   ingredientsRow.append(ingredientsPosOnly, ingredientsNegOnly);
