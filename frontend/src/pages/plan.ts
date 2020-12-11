@@ -25,7 +25,7 @@ async function fetchAddFavorites() {
 }
 
 async function fetchRemoveFavorites() {
-  const url: string = "/api/v2/favorites/remove";
+  const url: string = "/api/v2/favorites";
   const headers = {
     "Content-type": "application/json",
   };
@@ -36,7 +36,7 @@ async function fetchRemoveFavorites() {
     headers["Authorization"] = "Bearer " + token;
   }
   const response = await fetch(url, {
-    method: "POST",
+    method: "DELETE",
     mode: "same-origin",
     cache: "no-cache",
     redirect: "follow",

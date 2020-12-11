@@ -1,4 +1,4 @@
-import { Context, Post, Get, HttpResponseOK, HttpResponseBadRequest, HttpResponseInternalServerError, dependency, ValidateBody } from '@foal/core';
+import { Context, Post, Get, HttpResponseOK, HttpResponseBadRequest, HttpResponseInternalServerError, dependency, ValidateBody, Delete } from '@foal/core';
 import { JWTRequired } from '@foal/jwt';
 import { UserService, FavoritesService } from '../../services';
 import { ServiceResponse, ServiceResponseCode } from '../../services';
@@ -44,7 +44,7 @@ export class FavoritesController {
 
   @JWTRequired()
   @ValidateBody(addFavoritePlanSchema)
-  @Post('/remove')
+  @Delete('/')
   async removeFavoritePlan(ctx: Context) {
     const username = ctx.user.username;
     const planId = ctx.request.body.planId;

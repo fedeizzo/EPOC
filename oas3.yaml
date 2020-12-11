@@ -387,10 +387,7 @@ paths:
           $ref: "#/components/responses/400BadRequest"
         "500":
           $ref: "#/components/responses/500InternalServerError"
-          
-  /favorites/remove:
-    x-summary: Remove plan from favorites
-    post:
+    delete:
       description: Remove plan from favorites given its id and user trough JWT
       security:
         - jwtAuth: []

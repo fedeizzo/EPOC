@@ -102,8 +102,8 @@ async function deleteFromFavorites(plan, plan_row) {
   const parts = value.split(`; JWT=`);
   const token: string = parts[1];
 
-  const response = await fetch("/api/v2/favorites/remove", {
-    method: "POST",
+  const response = await fetch("/api/v2/favorites", {
+    method: "DELETE",
     mode: "same-origin",
     cache: "no-cache",
     redirect: "follow",
