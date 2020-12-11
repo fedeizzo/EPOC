@@ -54,14 +54,13 @@ async function generatePlanAndRedirect() {
       break;
   }
 
-
   // Get preferences for the generation of the plan
   const usePreferencesInput = document.getElementById(
     "usePreferences"
   )! as HTMLInputElement;
   const usingPreferences = usePreferencesInput.checked;
-  if(usingPreferences){
-    userPreferences.positive.priceRange=costLevel;
+  if (usingPreferences) {
+    userPreferences.positive.priceRange = costLevel;
   }
 
   // Building the request
@@ -76,7 +75,7 @@ async function generatePlanAndRedirect() {
   const jwt = _getCookie("JWT");
   const jwtPresent = jwt != null && jwt !== "";
 
-  // Sending the request
+  //Showing loading screen
   const previousContent = document.getElementsByName("central_card")[0];
   const bodyContainer = document.getElementsByName("body_container")[0]!;
   const newContent = document
@@ -84,6 +83,7 @@ async function generatePlanAndRedirect() {
     .cloneNode(true);
   bodyContainer.replaceChild(newContent, previousContent);
 
+  // Sending the request
   const response = await fetch("/api/v1/plan/generate", {
     method: "POST",
     mode: "same-origin",
@@ -98,6 +98,7 @@ async function generatePlanAndRedirect() {
   if (response.ok) {
     const json = await response.json();
     const id = json.plan._id;
+    location.reload();
     window.location.href = `/plan/${id}`;
   } else {
     bodyContainer.replaceChild(previousContent, newContent);
