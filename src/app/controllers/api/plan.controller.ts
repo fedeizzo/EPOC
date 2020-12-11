@@ -71,7 +71,7 @@ export class PlanController {
     }
   }
 
-  @Get("/get")
+  @Get("/")
   @ValidateQueryParam("planId", { type: "string" }, { required: true })
   async getRecipeById(ctx: Context) {
     const planId = ctx.request.query.planId;

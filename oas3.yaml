@@ -337,22 +337,6 @@ paths:
           $ref: "#/components/responses/500InternalServerError"
 
   /plan:
-    x-summary: Generate an eating plan for the user
-    post:
-      description: Generates an eating palan for the user basing on the parameters the user specified in the request
-      summary: Plan generation
-      requestBody:
-        $ref: "#/components/requestBodies/PlanRequest"
-      responses:
-        "200":
-          $ref: "#/components/responses/200OkPlanGenerate"        
-        "409":
-          $ref: "#/components/responses/409ConflictService"
-        "500":
-          $ref: "#/components/responses/500InternalServerError"
-  
-  /plan/get:
-    x-summary: Search a plan for id
     get:
       description: Retrieves a plan given its id
       summary: Retrieving plan
@@ -370,7 +354,19 @@ paths:
           $ref: "#/components/responses/404NotFoundResource"
         "500":
           $ref: "#/components/responses/500InternalServerError"
-
+    post:
+      description: Generates an eating palan for the user basing on the parameters the user specified in the request
+      summary: Plan generation
+      requestBody:
+        $ref: "#/components/requestBodies/PlanRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/200OkPlanGenerate"        
+        "409":
+          $ref: "#/components/responses/409ConflictService"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+    
   /favorites:
     x-summary: Manage favorites
     get:

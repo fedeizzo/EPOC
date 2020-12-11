@@ -133,7 +133,7 @@ async function loadAndShow() {
   await isFavoritePlan();
   const fragments = window.location.toString().split("/");
   const planId = fragments[fragments.length - 1];
-  const response = await fetch(`/api/v2/plan/get?planId=${planId}`);
+  const response = await fetch(`/api/v2/plan?planId=${planId}`);
   const plan = await response.json();
   const recipes: Array<any> = [];
   const ids: Array<string> = [];
