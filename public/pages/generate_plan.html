@@ -407,10 +407,10 @@
           class="container-xl height-override"
           style="background-color: white; height: auto"
         >
-          <h1 class="header text-center fs-1">Crea il tuo piano</h1>
+          <h1 class="header text-center fs-1">Create your plan</h1>
           <div class="card-body">
             <h5 class="card-title text-center fs- mb-3">
-              Come si chiamerà il tuo piano?
+              How do you want to call it?
             </h5>
   
             <div>
@@ -423,7 +423,7 @@
             </div>
   
             <h5 class="card-title text-center fs-3 mb-3">
-              Quanti pasti deve contenere?
+              How many meals?
             </h5>
             <div>
               <input
@@ -437,7 +437,7 @@
             </div>
   
             <h5 class="card-title text-center fs-3 mb-3">
-              Seleziona la fascia di prezzo
+              Select price range
             </h5>
   
             <select
@@ -447,12 +447,12 @@
               aria-label="Default select example"
               style="display: block; margin: 0 auto"
             >
-              <option selected value="None">Nessuna</option>
-              <option value="veryLow">Molto bassa</option>
-              <option value="low">Bassa</option>
-              <option value="medium">Media</option>
-              <option value="high">Alta</option>
-              <option value="veryHigh">Molto alta</option>
+              <option selected value="None">None</option>
+              <option value="Very low">Very low</option>
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
+              <option value="Very high">Very high</option>
             </select>
   
             <div class="form-check form-switch mb-4 p-1 text-center">
@@ -462,7 +462,7 @@
               id="usePreferences"
             />
               <label class="form-check-label" for="usePreferences">
-                Utilizza le preferenze avanzate
+                Use advanced preferences
               </label>
             </div>
   
@@ -474,7 +474,7 @@
                 type="button"
                 class="btn btn-primary btn-lg"
               >
-                Crea Piano
+                Create plan
               </button>
             </div>
           </div>
@@ -493,13 +493,12 @@
 
       </div>
     
-
-    <div hidden>
-      <div id="loader_container" style="margin-top: 30vh;">
-        <span class="loader"></span>
-        <h3>Generating your custom plan</h3>
-      </div>
-    </div>
   </header>
-  </body>
+  <div hidden>
+    <div id="loader_container" style="margin-top: 30vh;">
+      <span class="loader"></span>
+      <h3>Generating your custom plan</h3>
+    </div>
+  </div>  
+</body>
 </html>

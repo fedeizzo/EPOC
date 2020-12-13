@@ -31,13 +31,13 @@ async function getUserPreferences() {
     headerRow.className += "row w-100 text-center";
 
     const favTitle = document.createElement("h2");
-    favTitle.textContent = "Mi piace";
+    favTitle.textContent = "I like";
     const favTitleDiv = document.createElement("div");
     favTitleDiv.className = "col-md-6 w-100";
     favTitleDiv.append(favTitle);
 
     const negTitle = document.createElement("h2");
-    negTitle.textContent = "Non mi piace";
+    negTitle.textContent = "I don't like";
     const negTitleDiv = document.createElement("div");
     negTitleDiv.className = "col-md-6 w-100";
     negTitleDiv.append(negTitle);
@@ -45,7 +45,7 @@ async function getUserPreferences() {
     headerRow.append(favTitleDiv, negTitleDiv);
 
     /* Construction of Recipe row */
-    const favRecipesTitle = getHeading("Ricette");
+    const favRecipesTitle = getHeading("Recipes");
     const recipesRowTitle = document.createElement("div");
     recipesRowTitle.className += "row w-100";
     const recipesColumnTitle = document.createElement("div");
@@ -74,7 +74,7 @@ async function getUserPreferences() {
     recipesRow.append(recipesPosCol, recipesNegCol);
 
     /* Construction of Ingredients row */
-    const ingredientsTitle = getHeading("Ingredienti");
+    const ingredientsTitle = getHeading("Ingredients");
     const ingredientsRowTitle = document.createElement("div");
     ingredientsRowTitle.className += "row w-100";
     const ingredientsColumnTitle = document.createElement("div");
@@ -102,7 +102,7 @@ async function getUserPreferences() {
     ingredientsRow.append(ingredientsPosOnly, ingredientsNegOnly);
 
     /** Labels row */
-    const labelsTitle = getHeading("Etichette");
+    const labelsTitle = getHeading("Labels");
     const labelsRowTitle = document.createElement("div");
     labelsRowTitle.className += "row w-100";
     const labelsColumnTitle = document.createElement("div");
@@ -130,7 +130,7 @@ async function getUserPreferences() {
     labelsRow.append(labelsPositiveColumn, labelsNegativeColumn);
 
     /** Cost row */
-    const costTitle = getHeading("Fascia di prezzo");
+    const costTitle = getHeading("Price range");
     const costRowTitle = document.createElement("div");
     costRowTitle.className += "row w-100";
     const costColumnTitle = document.createElement("div");
@@ -325,19 +325,19 @@ function getJwtCookie(name: string) {
 async function updateCostPreference(newPreferredCost: string) {
   let cost: CostLevels = CostLevels.veryHigh;
   switch (newPreferredCost) {
-    case "Nessuna":
+    case "None":
       cost = CostLevels.none;
       break;
-    case "Molto bassa":
+    case "Very low":
       cost = CostLevels.veryLow;
       break;
-    case "Bassa":
+    case "Low":
       cost = CostLevels.low;
       break;
-    case "Media":
+    case "Medium":
       cost = CostLevels.medium;
       break;
-    case "Alta":
+    case "High":
       cost = CostLevels.high;
       break;
   }
@@ -365,14 +365,13 @@ enum CostLevels {
   high = "elevato",
   veryHigh = "molto elevata",
 }
-
 const costLevelsArray: string[] = [
-  "Nessuna",
-  "Molto bassa",
-  "Bassa",
-  "Media",
-  "Alta",
-  "Molto Alta",
+  "None",
+  "Very low",
+  "Low",
+  "Medium",
+  "High",
+  "Very high",
 ];
 
 getUserPreferences();

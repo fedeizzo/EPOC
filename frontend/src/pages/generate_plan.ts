@@ -48,19 +48,19 @@ async function generatePlanAndRedirect() {
   )! as HTMLInputElement;
   let costLevel = CostLevelsEnum.none;
   switch (costLevelInput.value) {
-    case "veryLow":
+    case "Very Low":
       costLevel = CostLevelsEnum.veryLow;
       break;
-    case "low":
+    case "Low":
       costLevel = CostLevelsEnum.low;
       break;
-    case "medium":
+    case "Medium":
       costLevel = CostLevelsEnum.medium;
       break;
-    case "high":
+    case "High":
       costLevel = CostLevelsEnum.high;
       break;
-    case "veryHigh":
+    case "Very high":
       costLevel = CostLevelsEnum.veryHigh;
       break;
     default:
@@ -141,19 +141,19 @@ async function getPreferencesAndDraw(): Promise<HTMLDivElement> {
     const costDiv = document.getElementById("costLevel") as HTMLInputElement;
     switch (userPreferences.positive.priceRange as CostLevelsEnum) {
       case CostLevelsEnum.veryLow:
-        costDiv!.value = "veryLow";
+        costDiv!.value = "Very low";
         break;
       case CostLevelsEnum.low:
-        costDiv!.value = "low";
+        costDiv!.value = "Low";
         break;
       case CostLevelsEnum.medium:
-        costDiv!.value = "medium";
+        costDiv!.value = "Medium";
         break;
       case CostLevelsEnum.high:
-        costDiv!.value = "high";
+        costDiv!.value = "High";
         break;
       case CostLevelsEnum.veryHigh:
-        costDiv!.value = "veryHigh";
+        costDiv!.value = "Very high";
         break;
       default:
         costDiv!.value = "None";
@@ -192,13 +192,13 @@ function buildPreferencesPanel(): HTMLDivElement {
   headerRow.className += "row w-100 text-center m-3";
 
   const favTitle = document.createElement("h2");
-  favTitle.textContent = "Mi piace";
+  favTitle.textContent = "I like";
   const favTitleDiv = document.createElement("div");
   favTitleDiv.className = "col-md-6 w-50";
   favTitleDiv.append(favTitle);
 
   const negTitle = document.createElement("h2");
-  negTitle.textContent = "Non mi piace";
+  negTitle.textContent = "I don't like";
   const negTitleDiv = document.createElement("div");
   negTitleDiv.className = "col-md-6 w-50";
   negTitleDiv.append(negTitle);
@@ -206,7 +206,7 @@ function buildPreferencesPanel(): HTMLDivElement {
   headerRow.append(favTitleDiv, negTitleDiv);
 
   /* Construction of Recipe row */
-  const favRecipesTitle = getHeadingPlan("Ricette");
+  const favRecipesTitle = getHeadingPlan("Recipes");
   const recipesRowTitle = document.createElement("div");
   recipesRowTitle.className += "row w-100";
   const recipesColumnTitle = document.createElement("div");
@@ -235,7 +235,7 @@ function buildPreferencesPanel(): HTMLDivElement {
   recipesRow.append(recipesPosCol, recipesNegCol);
 
   /* Construction of Ingredients row */
-  const ingredientsTitle = getHeadingPlan("Ingredienti");
+  const ingredientsTitle = getHeadingPlan("Ingredients");
   const ingredientsRowTitle = document.createElement("div");
   ingredientsRowTitle.className += "row w-100";
   const ingredientsColumnTitle = document.createElement("div");
@@ -267,7 +267,7 @@ function buildPreferencesPanel(): HTMLDivElement {
   ingredientsRow.append(ingredientsPosOnly, ingredientsNegOnly);
 
   /** Labels row */
-  const labelsTitle = getHeadingPlan("Etichette");
+  const labelsTitle = getHeadingPlan("Labels");
   const labelsRowTitle = document.createElement("div");
   labelsRowTitle.className += "row w-100";
   const labelsColumnTitle = document.createElement("div");
