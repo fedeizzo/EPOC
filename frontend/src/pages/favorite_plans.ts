@@ -41,7 +41,7 @@ async function drawFavoritesList(favoritePlansList) {
     plan_col.classList.add("col-10");
     const plan_card = await planCard(plan);
     const favoriteHeart = document.createElement("div");
-    favoriteHeart.classList.add("col-2", "clickable");
+    favoriteHeart.classList.add("col-2", "clickable", "item-list");
     favoriteHeart.innerHTML =
       '<svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-heart-fill" fill="red" fill-opacity="0.7"\
       xmlns="http://www.w3.org/2000/svg"> \
