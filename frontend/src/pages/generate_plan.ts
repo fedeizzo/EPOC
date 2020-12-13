@@ -1,6 +1,7 @@
 let userPreferences: PreferencesClass;
 
 document.getElementById("submitButton")!.onclick = generatePlanAndRedirect;
+(document.getElementById("usePreferences")! as HTMLInputElement).checked = false;
 
 document.getElementById("usePreferences")!.onclick = async function () {
   const preferencePanelDiv = document.getElementById(
@@ -17,6 +18,18 @@ document.getElementById("usePreferences")!.onclick = async function () {
     preferencePanelDiv.innerHTML = "";
   }
 };
+
+const token_gp = getCookie_gp("JWT");
+const tokenIsPresent_gp = !(token_gp === undefined || token_gp === "");
+
+if (tokenIsPresent_gp) {
+  document!.getElementById("auth-access")!.hidden = true;
+  document!.getElementById("auth-off")!.hidden = false;
+} else {
+  document!.getElementById("auth-access")!.hidden = false;
+  document!.getElementById("auth-off")!.hidden = true;
+}
+
 
 async function generatePlanAndRedirect() {
   // Get name for the plan
@@ -72,8 +85,8 @@ async function generatePlanAndRedirect() {
     preferences: usingPreferences ? userPreferences : {},
   };
 
-  const jwt = _getCookie("JWT");
-  const jwtPresent = jwt != null && jwt !== "";
+
+  const jwtPresent = token_gp != null && token_gp !== "";
 
   //Showing loading screen
   const previousContent = document.getElementsByName("central_card")[0];
@@ -90,7 +103,7 @@ async function generatePlanAndRedirect() {
     cache: "no-cache",
     redirect: "follow",
     credentials: "same-origin",
-    headers: jwtPresent ? { Authorization: `Bearer ${jwt}` } : {},
+    headers: jwtPresent ? { Authorization: `Bearer ${token_gp}` } : {},
     body: JSON.stringify(reqBody),
   });
 
@@ -115,12 +128,11 @@ async function getPreferencesAndDraw(): Promise<HTMLDivElement> {
   userPreferences = new PreferencesClass();
 
   // Composing preferences
-  const token = _getCookie("JWT");
-  if (token) {
+  if (token_gp) {
     // real preferences if logged
     const res = await fetch(`/api/v2/preference`, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token_gp}`,
         "Content-type": "application/json",
       },
     });
@@ -398,12 +410,6 @@ function getHeadingPlan(text: String) {
   return heading;
 }
 
-function _getCookie(name: string) {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  return parts[1];
-}
-
 enum CostLevelsEnum {
   none = "None",
   veryLow = "molto basso",
@@ -454,4 +460,10 @@ function showNotificationPlan(message: string) {
   notification!.MaterialSnackbar.showSnackbar({
     message: content,
   });
+}
+
+function getCookie_gp(name: string) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  return parts[1];
 }

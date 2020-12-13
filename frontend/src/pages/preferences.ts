@@ -1,8 +1,17 @@
 const token = getJwtCookie("JWT");
+const tokenIsPresent = !(token === undefined || token === "");
+
+if (tokenIsPresent) {
+  document!.getElementById("auth-access")!.hidden = true;
+  document!.getElementById("auth-off")!.hidden = false;
+} else {
+  document!.getElementById("auth-access")!.hidden = false;
+  document!.getElementById("auth-off")!.hidden = true;
+}
 
 //Retrieves user's preferences from the server
 async function getUserPreferences() {
-  if (token != undefined) {
+  if (tokenIsPresent) {
     const res = await fetch(`/api/v2/preference`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -88,7 +97,7 @@ async function getUserPreferences() {
     ingredientsNegOnly.className += "col-md-6 ";
 
     const negIngredients: String[] = negative.ingredients;
-    ingredientsNegOnly.append(listToDivs(negIngredients, "ingredients", true));
+    ingredientsNegOnly.append(listToDivs(negIngredients, "ingredients", false));
 
     ingredientsRow.append(ingredientsPosOnly, ingredientsNegOnly);
 
@@ -163,6 +172,14 @@ async function getUserPreferences() {
     );
     document.getElementById("loading_div")?.remove();
     document.body.append(mainDiv);
+  } else {
+    const loading_div = document.getElementById("loading_div")!;
+    loading_div.innerText = "";
+    loading_div.classList.add("card", "p-4");
+    const h2 = document.createElement("h2");
+    h2.innerText = "Error: you must be logged to set any preferences";
+    h2.className = "card-title";
+    loading_div.appendChild(h2);
   }
 }
 
