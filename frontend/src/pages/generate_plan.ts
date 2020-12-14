@@ -114,13 +114,8 @@ async function generatePlanAndRedirect() {
     location.reload();
     window.location.href = `/plan/${id}`;
   } else {
+    showNotification((await response.json())["text"]);
     bodyContainer.replaceChild(previousContent, newContent);
-    const json = await response.json();
-    const text = json.text;
-    var notification: any = document.querySelector(".mdl-js-snackbar");
-    notification!.MaterialSnackbar.showSnackbar({
-      message: text,
-    });
   }
 }
 
