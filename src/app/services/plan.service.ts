@@ -150,8 +150,13 @@ export class PlanService {
         return result;
       });
 
-      // sort in descending order by score
-      ratedRecipes.sort((x, y) => y.score - x.score);
+      // in case no recipes matches preferences, choose random recipes
+      if (numValidRecipes <= 0){
+        numValidRecipes = recipes.length;
+      } else {
+        // sort in descending order by score
+        ratedRecipes.sort((x, y) => y.score - x.score);
+      }      
     }
 
     var setRandomIndexes: Set<number> = new Set<number>();
