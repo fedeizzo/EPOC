@@ -15,6 +15,10 @@
     <script type="text/javascript" src="./../src/index.js" defer></script>
     <title>Document</title>
     <style>
+      :root {
+        --navbarHeight: 56px;
+      }
+
       html,
       body,
       header,
@@ -42,9 +46,9 @@
       }
 
       .height-override {
-        height: auto;
-        margin-top: 54px;
+        margin-top: var(--navbarHeight);
         background-color: white;
+        min-height: calc(100vh - var(--navbarHeight));
       }
 
       .parent-center2 {
