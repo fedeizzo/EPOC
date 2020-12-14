@@ -11,8 +11,8 @@ import { connect, connection } from 'mongoose';
 import { AppController } from './app/app.controller';
 
 async function main() {
-  connection.on('connected', () => console.log("mi sono connesso"));
-  connection.on('disconnected', () => console.log("mi sono disconneso"));
+  connection.on('connected', () => console.log("Connected to db"));
+  connection.on('disconnected', () => console.log("Disconnected from db"));
   const uri = Config.getOrThrow('mongodb.uri', 'string');
   await connect(uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
 

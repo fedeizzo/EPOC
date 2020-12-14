@@ -131,7 +131,7 @@ async function createMockRecipe() {
     "pasta al tonno",
     "tonno alla pasta al tonno",
   ];
-  recipe.lables = ["first dish"];
+  recipe.labels = ["first dish"];
   recipe.averageRating = 3.6;
   recipe.nutritionalInfos = nInfo;
   recipe.numberOfRatings = 400;

@@ -1,5 +1,11 @@
 [![Build Status](https://travis-ci.org/fedeizzo/EPOC.svg?branch=master)](https://travis-ci.org/fedeizzo/EPOC)
+
 # EPOC
+
+<p align="center">
+  <img width="460" src="https://i.imgur.com/aQEokxI.png">
+</p>
+
 ## Table of contents
 <!--ts-->
    * [Initialize](#initialize)

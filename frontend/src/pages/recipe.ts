@@ -1,50 +1,38 @@
 async function getRecipeAndPopulate(): Promise<void> {
   const fragments = window.location.toString().split("/");
   const recipeId = fragments[fragments.length - 1];
-  const res = await fetch(`/api/v1/recipe/${recipeId}`);
+  const res = await fetch(`/api/v2/recipe/${recipeId}`);
   const json = await res.json();
-  const recipe: Recipe = json["recipe"];
 
-  const leftmost = _getLeftmostDiv(recipe);
-  const centralDiv = _getCentralDiv(recipe);
-  const rightmost = _getRightmostDiv(recipe);
-
-  const mainContainer = document.createElement("div");
-  mainContainer.classList.add("recipe_container");
-  mainContainer.append(leftmost, centralDiv, rightmost);
-
-  document.body.appendChild(mainContainer);
-
-  function _getLeftmostDiv(recipe: Recipe): HTMLElement {
-    const leftmost = document.createElement("div");
-    leftmost.classList.add("leftmost");
-    leftmost.innerHTML = `<img class='recipe_thumbnail' src='${recipe.image}'></img>`;
-    return leftmost;
+  const recipeText = document.getElementById("recipeText");
+  const title = document.getElementById("recipeTitle");
+  const image = document.getElementById("recipeImage");
+  const ingTable = document.getElementById("ingredientsTableContent");
+  const nutInfoTable = document.getElementById("nutrInfoTableContent");
+  if (image) {
+    image.innerHTML = `<img class="card-img-top mx-auto d-bloc" src='${json.recipe.image}'></img>`;
   }
-
-  function _getCentralDiv(recipe: Recipe): HTMLElement {
-    const centralDiv = document.createElement("div");
-    centralDiv.classList.add("centralDiv");
-
-    const tableContent = recipe.ingredients.reduce(
+  if (title && recipeText && ingTable && nutInfoTable) {
+    title.innerText = json.recipe.name;
+    recipeText.append(json.recipe.description);
+    const ingTableContent = json.recipe.ingredients.reduce(
       (previous, v) =>
-        `${previous}<tr><td>${v.name}</td><td>${v.quantity}</td><td>${v.unitOfMeasure}</td></tr>`,
+        `${previous}<tr><td>${v.name}</td><td>${v.quantity !== null ? v.quantity : ""}</td><td>${v.unitOfMeasure !== null ? v.unitOfMeasure : ""}</td></tr>`,
       ""
     );
-    const table = `<table>${tableContent}</table>`;
-
-    centralDiv.innerHTML = `<h2>${recipe.name}</h2>
-      <span>Ingredients</span>
-      ${table}
-      <p class='description'>${recipe.description}</p>`;
-    return centralDiv;
-  }
-
-  function _getRightmostDiv(recipe: Recipe): HTMLElement {
-    const rightmost = document.createElement("div");
-    rightmost.classList.add("rightmost");
-    rightmost.style.backgroundImage = recipe.image;
-    return rightmost;
+    const keys = Object.keys(json.recipe.nutritionalInfos);
+    const nutInfo = keys.map((key, index) => {
+      return { k: key, v: json.recipe.nutritionalInfos[key] }
+    });
+    delete nutInfo[0]
+    const nutInfoTableContent = nutInfo.reduce(
+      (previous, v) =>
+        `${previous}<tr><td>${v.k}</td><td>${v.v !== null ? v.v : ""}</td>`,
+      ""
+    );
+    console.log('nutInfoTableContent: ', nutInfoTableContent)
+    ingTable.innerHTML = ingTableContent;
+    nutInfoTable.innerHTML = nutInfoTableContent;
   }
 }
 window.onload = getRecipeAndPopulate;

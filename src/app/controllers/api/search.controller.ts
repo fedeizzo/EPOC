@@ -8,6 +8,7 @@ import {
   HttpResponse,
 } from "@foal/core";
 import {
+  PlanService,
   RecipeService,
   ServiceResponse,
   ServiceResponseCode,
@@ -17,11 +18,8 @@ export class SearchApiController {
   @dependency
   recipeService: RecipeService;
 
-  @Get("/")
-  @ValidateQueryParam("searchString", { type: "string" }, { required: true })
-  async globalSearch(ctx: Context) {
-    return this.recipeSearch(ctx);
-  }
+  @dependency
+  planService: PlanService;
 
   @Get("/recipe")
   @ValidateQueryParam("searchString", { type: "string" }, { required: true })
@@ -44,6 +42,27 @@ export class SearchApiController {
       default:
         httpResponse = new HttpResponseInternalServerError();
         break;
+    }
+    return httpResponse;
+  }
+
+  @Get("/plan")
+  @ValidateQueryParam("searchString", { type: "string" }, { required: true })
+  async planSearch(ctx: Context) {
+    const searched = ctx.request.query.searchString;
+    let response: ServiceResponse = await this.planService.getPlansByName(
+      searched
+    );
+
+    let httpResponse: HttpResponse;
+    switch (response.code) {
+      case ServiceResponseCode.ok:
+        httpResponse = new HttpResponseOK(response.buildResponse());
+        break;
+      default:
+        httpResponse = new HttpResponseInternalServerError(
+          response.buildResponse()
+        );
     }
     return httpResponse;
   }
