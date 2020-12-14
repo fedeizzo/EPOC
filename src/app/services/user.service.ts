@@ -1,8 +1,7 @@
 // 3p
-import { Config, hashPassword, verifyPassword } from '@foal/core';
-import { isCommon } from '@foal/password'
-import { connect, disconnect } from 'mongoose';
-import { DocumentType } from '@typegoose/typegoose';
+import { Config, hashPassword, verifyPassword } from "@foal/core";
+import { isCommon } from "@foal/password";
+import { DocumentType } from "@typegoose/typegoose";
 
 // App
 import { PreferencesClass, User } from "../models";
@@ -61,14 +60,16 @@ export class UserService {
         await user.save();
         response.setValues(ServiceResponseCode.ok, "OK", user);
       } catch (error) {
-        if ((error.toString()).indexOf('duplicate key error') > 0) {
+        if (error.toString().indexOf("duplicate key error") > 0) {
           response.setValues(
             ServiceResponseCode.duplicateKeyInDb,
-            "Db error, probably duplicate key");
+            "Db error, probably duplicate key"
+          );
         } else {
           response.setValues(
             ServiceResponseCode.internalServerError,
-            "Internal Server Error");
+            "Internal Server Error"
+          );
         }
       }
       // await disconnect();
@@ -135,13 +136,15 @@ export class UserService {
           doc ? doc : undefined
         );
       } else {
-        response.setValues(304, "Error deleting the user");
+        response.setValues(404, "User not found, thus not deleted");
       }
     }
 
     return response;
   }
-  async getUserByUsername(username: string): Promise<DocumentType<UserClass> | undefined | null> {
+  async getUserByUsername(
+    username: string
+  ): Promise<DocumentType<UserClass> | undefined | null> {
     const doc = await User.findOne({ username: username });
     return doc;
   }
