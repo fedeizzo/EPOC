@@ -12,16 +12,16 @@ import { SearchApiController } from "./search.controller";
 import { ServiceResponseCode } from "../../services";
 
 describe("The search controller", () => {
-  const globalSearchMethodName = "globalSearch";
+  const recipeSearchMethodName = "recipeSearch";
   describe("When we look for a recipe using a string", () => {
     it("should handle requests at GET /.", () => {
       strictEqual(
-        getHttpMethod(SearchApiController, globalSearchMethodName),
+        getHttpMethod(SearchApiController, recipeSearchMethodName),
         "GET"
       );
     });
-    it("should handle the route /", () => {
-      strictEqual(getPath(SearchApiController, globalSearchMethodName), "/");
+    it("should handle the route /recipe", () => {
+      strictEqual(getPath(SearchApiController, recipeSearchMethodName), "/recipe");
     });
     describe("Should include the result from recipeSearch in the response", () => {
       const controller: SearchApiController = createController(
@@ -39,7 +39,7 @@ describe("The search controller", () => {
           when(spiedController.recipeSearch(anything())).thenResolve(
             expectedResponse
           );
-          const res = await controller.globalSearch({} as Context);
+          const res = await controller.recipeSearch({} as Context);
           deepEqual(res, expectedResponse);
         }); // TODO, check code
       });
@@ -54,7 +54,7 @@ describe("The search controller", () => {
           when(spiedController.recipeSearch(anything())).thenResolve(
             expectedResponse
           );
-          const res = await controller.globalSearch({} as Context);
+          const res = await controller.recipeSearch({} as Context);
           deepEqual(res, expectedResponse);
         });
       });

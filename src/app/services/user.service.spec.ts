@@ -40,7 +40,7 @@ describe("The User Service", () => {
 
   describe("insertUser", () => {
     describe("When the password is to common", () => {
-      it("returns a bad response with error code 300", async () => {
+      it("returns a bad response with error code 400", async () => {
         const expectedErrorCode: ServiceResponseCode =
           ServiceResponseCode.passwordTooCommon;
         const firstName = "test";
@@ -99,7 +99,7 @@ describe("The User Service", () => {
           secondName
         );
       });
-      it("returns a bad response with error code 301", async () => {
+      it("returns a bad response with error code 401", async () => {
         const expectedErrorCode: ServiceResponseCode =
           ServiceResponseCode.duplicateKeyInDb;
         const firstName = "test";
@@ -139,7 +139,7 @@ describe("The User Service", () => {
           secondName
         );
       });
-      it("returns a bad response with error code 301", async () => {
+      it("returns a bad response with error code 401", async () => {
         const expectedErrorCode: ServiceResponseCode =
           ServiceResponseCode.duplicateKeyInDb;
         const firstName = "test";
@@ -194,7 +194,7 @@ describe("The User Service", () => {
       });
     });
     describe("When password is wrong", () => {
-      it("returns a bad response with code 302", async () => {
+      it("returns a bad response with code 402", async () => {
         const expectedErrorCode: ServiceResponseCode =
           ServiceResponseCode.wrongCredentials;
         const username = "test";
@@ -207,7 +207,7 @@ describe("The User Service", () => {
       });
     });
     describe("When username is wrong", () => {
-      it("returns a bad response with code 303", async () => {
+      it("returns a bad response with code 403", async () => {
         const expectedErrorCode: ServiceResponseCode =
           ServiceResponseCode.elementNotFound;
         const username = "ciao";

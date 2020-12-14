@@ -47,8 +47,8 @@ export class FavoritesListServiceResponse implements ServiceResponse {
       planList: this.prop?.map((x) => {
         return {
           info: x.getInfo(),
-          id: x._id
-        }
+          id: x._id,
+        };
       }),
     };
   };
@@ -160,7 +160,7 @@ export class FavoritesService {
     const response = new FavoritesListServiceResponse();
     const planService: PlanService = new PlanService();
 
-    if (user.favoritesPlan != undefined && user.favoritesPlan.length !== 0) {
+    if (user.favoritesPlan != undefined) {
       response.code = ServiceResponseCode.ok;
       response.text = "List of favorite plans for user " + user.username;
 
@@ -174,8 +174,11 @@ export class FavoritesService {
       // then it appears as null in the list
       response.prop.filter((x) => x != null);
     } else {
-      response.code = ServiceResponseCode.elementNotFound;
-      response.text = "No plans for user " + user.username;
+      response.code = ServiceResponseCode.internalServerError;
+      response.text =
+        "User document for " +
+        user.username +
+        " does not have a favorite plans entry";
     }
 
     return response;

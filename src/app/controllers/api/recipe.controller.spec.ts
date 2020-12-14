@@ -81,7 +81,7 @@ describe("The Recipe Controller", () => {
           when(mockReq.params).thenReturn({ recipeId: "anything" });
 
           const res = await controller.getRecipeById(instance(mockContext));
-          deepEqual(res, new HttpResponseNotFound(mockResponseBody));
+          deepEqual(res.statusCode, 404);
         });
       });
 
