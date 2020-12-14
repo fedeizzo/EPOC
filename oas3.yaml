@@ -137,7 +137,7 @@ paths:
         "500":
           $ref: "#/components/responses/500InternalServerError"
 
-  /recipes/{recipeId}:
+  /recipe/{recipeId}:
     get:
       description: >-
         Search a recipe using its id as parameter.
@@ -1147,7 +1147,7 @@ components:
               - plan
 
     200OkPlanGet:
-      description: Ok response for plan/get
+      description: Ok response for plan/
       content:
         application/json:
           schema:

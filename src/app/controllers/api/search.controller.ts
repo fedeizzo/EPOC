@@ -21,12 +21,6 @@ export class SearchApiController {
   @dependency
   planService: PlanService;
 
-  @Get("/")
-  @ValidateQueryParam("searchString", { type: "string" }, { required: true })
-  async globalSearch(ctx: Context) {
-    return this.recipeSearch(ctx);
-  }
-
   @Get("/recipe")
   @ValidateQueryParam("searchString", { type: "string" }, { required: true })
   async recipeSearch(ctx: Context) {
