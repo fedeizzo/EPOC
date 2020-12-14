@@ -9,7 +9,8 @@ if (tokenIsPresent) {
   document!.getElementById("auth-off")!.hidden = true;
 }
 
-//Retrieves user's preferences from the server
+// retrieves user's preferences from the server
+// draws the user preferences
 async function getUserPreferences() {
   if (tokenIsPresent) {
     const res = await fetch(`/api/v1/preference`, {
@@ -155,6 +156,8 @@ async function getUserPreferences() {
       option.text = costLevelsArray[i];
       costSelect.appendChild(option);
     }
+    console.log(positive.priceRange);
+    costSelect.value = costLevelToText[positive.priceRange];
 
     costColumn.append(costSelect);
     costRow.appendChild(costColumn);
@@ -183,6 +186,7 @@ async function getUserPreferences() {
   }
 }
 
+// returns a div with the header
 function getHeading(text: string) {
   const heading = document.createElement("h4");
   heading.innerText = text;
@@ -194,6 +198,7 @@ function getHeading(text: string) {
   return wrapper;
 }
 
+// create divs from a list of preferences
 function listToDivs(
   prefs: String[],
   listName: String,
@@ -365,6 +370,7 @@ enum CostLevels {
   high = "elevato",
   veryHigh = "molto elevata",
 }
+
 const costLevelsArray: string[] = [
   "None",
   "Very low",
@@ -373,5 +379,13 @@ const costLevelsArray: string[] = [
   "High",
   "Very high",
 ];
+
+var costLevelToText : { [costLevel: string] : string; } = {};
+costLevelToText["None"] = "None";
+costLevelToText["molto basso"] = "Very low";
+costLevelToText["basso"] = "Low";
+costLevelToText["medio"] = "Medium";
+costLevelToText["elevato"] = "High";
+costLevelToText["molto elevata"] = "Very high";
 
 getUserPreferences();
