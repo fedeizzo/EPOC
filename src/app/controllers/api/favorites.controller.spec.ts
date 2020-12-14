@@ -250,11 +250,14 @@ describe('The Favorites Controller', () => {
     });
 
     describe('When user is valid and has no favorites', () => {
-      it('returns bad request response', async () => {
+      it('returns an ok, empty response', async () => {
         const ctx = new Context({});
         ctx.user = { username: "test" };
 
-        const expectedResponse = new HttpResponseBadRequest();
+        const expectedResponse = new HttpResponseOK({
+          "planList": [],
+          "text": "List of favorite plans for user test",
+          });
         const actualResponse = await controller.getFavoritePlans(ctx);
         deepEqual(actualResponse, expectedResponse);
       });

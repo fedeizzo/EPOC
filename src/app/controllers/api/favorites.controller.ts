@@ -1,4 +1,4 @@
-import { Context, Post, Get, HttpResponseOK, HttpResponseBadRequest, HttpResponseInternalServerError, dependency, ValidateBody, Delete } from '@foal/core';
+import { Context, Post, Get, HttpResponseOK, HttpResponseBadRequest, HttpResponseInternalServerError, dependency, ValidateBody, Delete, HttpResponseNotFound } from '@foal/core';
 import { JWTRequired } from '@foal/jwt';
 import { UserService, FavoritesService } from '../../services';
 import { ServiceResponse, ServiceResponseCode } from '../../services';
@@ -99,8 +99,8 @@ export class FavoritesController {
       switch (response.code) {
         case ServiceResponseCode.ok:
           return new HttpResponseOK((response as FavoritesListServiceResponse).buildResponsePlusId());
-        case ServiceResponseCode.elementNotFound:
-          return new HttpResponseBadRequest();
+        case ServiceResponseCode.internalServerError:
+          return new HttpResponseInternalServerError();
         default:
           return new HttpResponseInternalServerError();
       }

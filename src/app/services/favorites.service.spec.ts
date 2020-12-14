@@ -1,9 +1,8 @@
-import { ObjectId } from 'mongodb';
 import { Config, createService } from '@foal/core';
-import { notEqual, strictEqual } from 'assert';
-import { UserService, FavoritesService, PlanService } from './';
-import { connection, connect, disconnect, Collection } from 'mongoose';
-import { ServiceResponse, ServiceResponseCode } from './response.service';
+import { strictEqual } from 'assert';
+import { UserService, FavoritesService } from './';
+import { connection, connect, disconnect } from 'mongoose';
+import { ServiceResponseCode } from './response.service';
 import { CostLevels, User } from '../models';
 import { emptyPrefs } from '../models/preferences.model';
 import { Plan } from '../models/plan.model';
@@ -270,14 +269,15 @@ describe("The Favorites Service", () => {
         await createFakeUser(userService);
         await createFakePlan();
       });
-      it('returns a elementNotFound response', async () => {
-        const expectedErrorCode: ServiceResponseCode = ServiceResponseCode.elementNotFound;
+      it('returns an ok response with empty list', async () => {
+        const expectedErrorCode: ServiceResponseCode = ServiceResponseCode.ok;
         const username = "test";
         const user = await userService.getUserByUsername(username);
 
         if (user != undefined) {
-          const actualErrorCode = await favoriteService.getFavoritePlansByUser(user);
-          strictEqual(actualErrorCode.code, expectedErrorCode);
+          const serviceResponse = await favoriteService.getFavoritePlansByUser(user);
+          strictEqual(serviceResponse.code, expectedErrorCode);
+          strictEqual(serviceResponse.prop.length, 0);
         } else {
           throw 'Error';
         }
