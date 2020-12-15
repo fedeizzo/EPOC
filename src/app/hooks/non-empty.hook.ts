@@ -2,11 +2,8 @@ import { Hook, HookDecorator, HttpResponseBadRequest } from "@foal/core";
 
 function hasEmptyFields(object: any): boolean {
   const jsonString = JSON.stringify(object);
-  console.log(object);
-  console.log(jsonString);
   const re = /"{2}|'{2}/;
   const hasEmptyFields = re.exec(jsonString) != null
-  console.log("ciaooooo", hasEmptyFields);
   return hasEmptyFields;
 }
 
