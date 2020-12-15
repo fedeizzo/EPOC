@@ -9,6 +9,7 @@ import { JWTRequired } from '@foal/jwt';
 // App
 import { UserService, ServiceResponse, ServiceResponseCode } from '../../services';
 import { emptyPrefs } from '../../models/preferences.model';
+import { NonEmptyBody } from '../../hooks';
 
 const signupSchema = {
   properites: {
@@ -36,6 +37,7 @@ export class AuthenticationController {
 
   @Post('/signup')
   @ValidateBody(signupSchema)
+  @NonEmptyBody()
   async signupCheck(ctx: Context) {
     const firstName:string = ctx.request.body.firstName;
     const secondName:string = ctx.request.body.secondName;
@@ -74,6 +76,7 @@ export class AuthenticationController {
 
   @Post('/login')
   @ValidateBody(loginSchema)
+  @NonEmptyBody()
   async loginCheck(ctx: Context) {
     const username: string = ctx.request.body.username;
     const password: string = ctx.request.body.password;
@@ -124,6 +127,7 @@ export class AuthenticationController {
   @JWTRequired()
   @Delete('/user')
   @ValidateBody(loginSchema)
+  @NonEmptyBody()
   async deleteUser(ctx: Context) {
     const username = ctx.request.body.username;
     const password = ctx.request.body.password;

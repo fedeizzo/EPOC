@@ -7,6 +7,7 @@ import {
   dependency,
   HttpResponse,
 } from "@foal/core";
+import { NonEmptyQuery } from "../../hooks";
 import {
   PlanService,
   RecipeService,
@@ -23,6 +24,7 @@ export class SearchApiController {
 
   @Get("/recipe")
   @ValidateQueryParam("searchString", { type: "string" }, { required: true })
+  @NonEmptyQuery()
   async recipeSearch(ctx: Context) {
     const searched = ctx.request.query.searchString;
     let response: ServiceResponse = await this.recipeService.getPartialRecipeList(
@@ -48,6 +50,7 @@ export class SearchApiController {
 
   @Get("/plan")
   @ValidateQueryParam("searchString", { type: "string" }, { required: true })
+  @NonEmptyQuery()
   async planSearch(ctx: Context) {
     const searched = ctx.request.query.searchString;
     let response: ServiceResponse = await this.planService.getPlansByName(

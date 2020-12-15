@@ -18,6 +18,7 @@ import {
 } from "../../services";
 import { User, CostLevels, PreferencesClass } from "../../models";
 import { emptyPrefs } from "../../models/preferences.model";
+import { NonEmptyBody, NonEmptyQuery } from "../../hooks";
 
 
 const generatePlanSchema = {
@@ -38,6 +39,7 @@ export class PlanController {
   @Post("/")
   @ValidateBody(generatePlanSchema)
   @JWTOptional()
+  @NonEmptyBody()
   async generatePlan(ctx: Context) {
     const json = JSON.parse(ctx.request.body);
     let name = json.name;
@@ -72,7 +74,8 @@ export class PlanController {
   }
 
   @Get("/")
-  @ValidateQueryParam("planId", { type: "string" }, { required: true })
+  @ValidateQueryParam("planId", { type: "string" }, { required: true})
+  @NonEmptyQuery()
   async getRecipeById(ctx: Context) {
     const planId = ctx.request.query.planId;
     const plan = await this.planService.getPlan(planId);
