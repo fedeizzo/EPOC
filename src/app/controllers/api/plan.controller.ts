@@ -41,12 +41,11 @@ export class PlanController {
   @JWTOptional()
   @NonEmptyBody()
   async generatePlan(ctx: Context) {
-    const json = JSON.parse(ctx.request.body);
-    let name = json.name;
-    let numberOfMeals: number = json.numberOfMeals;
-    let budget: CostLevels = json.budget;
-    let usingPreferences: boolean = json.usingPreferences;
-    let preferences: PreferencesClass = usingPreferences ? json.preferences : emptyPrefs();
+    let name = ctx.request.body.name;
+    let numberOfMeals: number = ctx.request.body.numberOfMeals;
+    let budget: CostLevels = ctx.request.body.budget;
+    let usingPreferences: boolean = ctx.request.body.usingPreferences;
+    let preferences: PreferencesClass = usingPreferences ? ctx.request.body.preferences : emptyPrefs();
 
     let user = ctx.user;
     //TODO: put inside userservice.
@@ -69,7 +68,7 @@ export class PlanController {
       case ServiceResponseCode.duplicateKeyInDb:
         return new HttpResponseConflict(response.buildResponse());
       default:
-        return new HttpResponseInternalServerError();
+        return new HttpResponseInternalServerError( { text: 'Internal error' } );
     }
   }
 

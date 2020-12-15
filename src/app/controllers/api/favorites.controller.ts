@@ -34,7 +34,7 @@ export class FavoritesController {
         case ServiceResponseCode.elementNotFound:
           return new HttpResponseBadRequest({ text: 'This plan does not exist' });
         default:
-          return new HttpResponseInternalServerError();
+          return new HttpResponseInternalServerError( { text: 'Internal error' } );
       }
     }
     else {
@@ -57,7 +57,7 @@ export class FavoritesController {
         case ServiceResponseCode.elementNotFound:
           return new HttpResponseBadRequest({ text: 'This plan does not exist or is not favorite' });
         default:
-          return new HttpResponseInternalServerError();
+          return new HttpResponseInternalServerError( { text: 'Internal error' } );
       }
     }
     else {
@@ -81,7 +81,7 @@ export class FavoritesController {
         case ServiceResponseCode.elementNotFound:
           return new HttpResponseBadRequest();
         default:
-          return new HttpResponseInternalServerError();
+          return new HttpResponseInternalServerError( { text: 'Internal error' } );
       }
     }
     else {
@@ -100,9 +100,9 @@ export class FavoritesController {
         case ServiceResponseCode.ok:
           return new HttpResponseOK((response as FavoritesListServiceResponse).buildResponsePlusId());
         case ServiceResponseCode.internalServerError:
-          return new HttpResponseInternalServerError();
+          return new HttpResponseInternalServerError( { text: 'Internal error' } );
         default:
-          return new HttpResponseInternalServerError();
+          return new HttpResponseInternalServerError( { text: 'Internal error' } );
       }
     }
     else {

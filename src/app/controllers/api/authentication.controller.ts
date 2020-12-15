@@ -67,7 +67,7 @@ export class AuthenticationController {
         break;
       case ServiceResponseCode.internalServerError:
       default:
-        httpResponse = new HttpResponseInternalServerError();
+        httpResponse = new HttpResponseInternalServerError( { text: 'Internal error' } );
         break;
     }
 
@@ -109,7 +109,7 @@ export class AuthenticationController {
         httpResponse = new HttpResponseNotFound(serviceResponse.buildResponse());
         break;
       default:
-        httpResponse = new HttpResponseInternalServerError();
+        httpResponse = new HttpResponseInternalServerError( { text: 'Internal error' } );
         break;
     }
 
@@ -150,7 +150,7 @@ export class AuthenticationController {
           httpResponse = new HttpResponseNotFound(serviceResponse.buildResponse());
           break;
         default:
-          httpResponse = new HttpResponseInternalServerError();
+          httpResponse = new HttpResponseInternalServerError( { text: 'Internal error' } );
           break;
       }
 
