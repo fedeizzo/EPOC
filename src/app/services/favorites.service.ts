@@ -172,7 +172,7 @@ export class FavoritesService {
 
       // if a plan which has been deleted is inside the user preferences
       // then it appears as null in the list
-      response.prop.filter((x) => x != null);
+      response.prop = response.prop.filter((x) => x != null);
     } else {
       response.code = ServiceResponseCode.internalServerError;
       response.text =
