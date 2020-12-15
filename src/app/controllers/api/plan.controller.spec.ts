@@ -88,7 +88,6 @@ describe('The Plan Controller', () => {
           budget: "elevato"
         };
 
-        ctx.request.body = JSON.stringify(ctx.request.body);
         const expectedResponse = new HttpResponseOK();
         const actualResponse = await controller.generatePlan(ctx);
         deepEqual(actualResponse.statusCode, expectedResponse.statusCode);
@@ -107,7 +106,6 @@ describe('The Plan Controller', () => {
           budget: "elevato"
         };
 
-        ctx.request.body = JSON.stringify(ctx.request.body);
         const expectedResponse = new HttpResponseConflict({
           text: 'Error: duplicate plan name'
         });

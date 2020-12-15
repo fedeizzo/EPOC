@@ -2,12 +2,14 @@ document.getElementById("searchBar")!.onkeydown = function (e) {
   if (e.code === "Enter") {
     const element = <HTMLInputElement>document.getElementById("searchBar");
     const query = encodeURIComponent(element.value);
-    search(query);
+    if (query.length > 0) {
+      search(query);
+    }
   }
 };
 
 const queryFromHome = window.location.href.split("searchString=")[1];
-if (queryFromHome !== undefined) {
+if (queryFromHome !== undefined && queryFromHome.length > 0) {
   // window.history.pushState("", "", '/search');
   search(queryFromHome);
 }
