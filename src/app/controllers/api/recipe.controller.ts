@@ -39,7 +39,7 @@ export class RecipeApiController {
         );
         break;
       default:
-        httpResponse = new HttpResponseInternalServerError();
+        httpResponse = new HttpResponseInternalServerError( { text: 'Internal error' } );
         break;
     }
 

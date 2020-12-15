@@ -103,7 +103,7 @@ async function generatePlanAndRedirect() {
     cache: "no-cache",
     redirect: "follow",
     credentials: "same-origin",
-    headers: jwtPresent ? { Authorization: `Bearer ${token_gp}` } : {},
+    headers: jwtPresent ? { Authorization: `Bearer ${token_gp}`, "Content-type": "application/json" } : {"Content-type": "application/json"},
     body: JSON.stringify(reqBody),
   });
 
